@@ -2,9 +2,6 @@
 
 namespace Echo\Framework\Console\Commands;
 
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-
 /**
  * Database migration commands
  */
@@ -78,7 +75,7 @@ class Migrate extends \ConsoleKit\Command
             throw new \Error("migration directory doesn't exist");
         }
         $migrations = [];
-        $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+        $files = recursiveFiles($directory);
 
         foreach ($files as $file) {
             if ($file->isFile() && $file->getExtension() === 'php') {

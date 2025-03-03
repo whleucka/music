@@ -32,13 +32,19 @@ function uri(string $name, ...$params): ?string
     return router()->searchUri($name, ...$params);
 }
 
+function recursiveFiles(string $directory)
+{
+
+    return new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+}
+
 function getClasses(string $directory): array
 {
     // Get existing classes before loading new ones
     $before = get_declared_classes();
 
     // Recursively find all PHP files
-    $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+    $files = recursiveFiles($directory);
     foreach ($files as $file) {
         if ($file->isFile() && $file->getExtension() === 'php') {
             require_once $file->getPathname();
