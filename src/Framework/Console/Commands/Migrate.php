@@ -249,6 +249,44 @@ class Migrate extends \ConsoleKit\Command
      */
     public function executeCreate(array $args, array $options = []): void
     {
-        $this->writeln("wip: create" . PHP_EOL);
+        if (empty($args)) {
+            $this->writeerr("You must provide migration name" . PHP_EOL);
+            exit;
+        }
+        $migration_path = config("paths.migrations");
+        $table = $args[0];
+        $time = time();
+        $file_name = sprintf("%s_create_%s.php", $time, $table);
+        $file_path = sprintf("%s/%s", $migration_path, $file_name);
+        $create = <<<EOT
+<?php
+
+use Echo\Interface\Database\Migration;
+use Echo\Framework\Database\{Schema, Blueprint};
+
+return new class implements Migration
+{
+    private string \$table = "{table}";
+
+    public function up(): string
+    {
+         return Schema::create(\$this->table, function (Blueprint \$table) {
+            \$table->id();
+            \$table->timestamps();
+            \$table->primaryKey("id");
+        });
+    }
+
+    public function down(): string
+    {
+         return Schema::drop(\$this->table);
+    }
+};
+EOT;
+        $migration = str_replace("{table}", $table, $create);
+        $result = file_put_contents($file_path, $migration);
+        if ($result) {
+            $this->writeln("✓ successfully created $file_name");
+        }
     }
 }
