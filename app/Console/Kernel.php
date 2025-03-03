@@ -10,5 +10,6 @@ class Kernel extends ConsoleKernel
     protected array $commands = [
         'version' => \Echo\Framework\Console\Commands\Version::class,
         'migrate' => \Echo\Framework\Console\Commands\Migrate::class,
+        'tracks' => \App\Console\Commands\Tracks::class,
     ];
 }
