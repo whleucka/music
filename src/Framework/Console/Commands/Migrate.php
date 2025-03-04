@@ -84,7 +84,7 @@ class Migrate extends \ConsoleKit\Command
                 $migrations[$basename] = $file_path;
             }
         }
-        sort($migrations);
+        asort($migrations);
         return $migrations;
     }
 
