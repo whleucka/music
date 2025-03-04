@@ -34,6 +34,7 @@ class TracksController extends Controller
     public function results(): string
     {
         return $this->render("tracks/results.html.twig", [
+            "term" => $this->track_provider->getSearchTerm(),
             "tracks" => $this->track_provider->getSearchResults(),
         ]);
     }
