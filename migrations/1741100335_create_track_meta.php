@@ -12,6 +12,7 @@ return new class implements Migration
          return Schema::create($this->table, function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger("track_id");
+            $table->varchar("cover");
             $table->varchar("artist");
             $table->varchar("album");
             $table->varchar("title");

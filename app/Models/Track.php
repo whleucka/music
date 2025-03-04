@@ -13,7 +13,7 @@ class Track extends Model
         parent::__construct('tracks', $id);
     }
 
-    public function meta(): TrackMeta
+    public function meta(): ?TrackMeta
     {
         return TrackMeta::where("track_id", $this->id)->get();
     }

@@ -72,7 +72,7 @@ class TracksController extends Controller
 
         if ($track) {
             $meta = $track->meta();
-            $this->player_provider->setPlayer("/tracks/stream/$hash", $meta->cover ?? "/images/no-album.png", $meta->artist, $meta->album, $meta->title);
+            $this->player_provider->setPlayer("/tracks/stream/$hash", $meta->cover, $meta->artist, $meta->album, $meta->title);
             trigger("player");
         }
     }

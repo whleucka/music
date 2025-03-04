@@ -69,6 +69,7 @@ class Tracks extends \ConsoleKit\Command
                 $genre = $comments["genre"] ?? [];
                 TrackMeta::create([
                     "track_id" => $track->id,
+                    "cover" => "/images/no-album.png", # FIXME
                     "artist" => $comments["artist"][0] ?? "(no artist)",
                     "album" => $comments["artist"][0] ?? "(no album)",
                     "title" => $comments["title"][0] ?? "(no title)",
