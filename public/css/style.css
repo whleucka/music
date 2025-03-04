@@ -57,8 +57,8 @@ body, html, #content {
 
 #player #cover img {
     border-radius: 8px;
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
 }
 
 /** Music */
