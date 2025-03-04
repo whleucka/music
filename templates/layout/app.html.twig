@@ -1,0 +1,9 @@
+{% extends "layout/base.html.twig" %}
+
+{% block content %}
+    <section id="app" class="d-flex flex-column p-2 h-100">
+        <section id="navbar"></section>
+        <section id="view" class="flex-grow-1">{% block view %}{% endblock %}</section>
+        <section id="player"></section>
+    </section>
+{% endblock %}

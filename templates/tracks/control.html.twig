@@ -1,0 +1,9 @@
+<form method="GET" hx-get="/tracks/search" target="#tracks #search">
+    <div class="input-group">
+        <input id="term" class="form-control" type="search" placeholder="What do you want to listen to?" name="term" value="{{ term }}" />
+        <button class="btn btn-primary" type="submit">Search</button>
+        {% if term %}
+            <button class="btn btn-danger" type="submit" hx-get="/tracks/clear" hx-target="#tracks #search">Clear</button>
+        {% endif %}
+    </div>
+</form>
