@@ -8,7 +8,7 @@ class Response implements HttpResponse
 {
     private int $code;
 
-    public function __construct(private string $content, ?int $code = null)
+    public function __construct(private ?string $content, ?int $code = null)
     {
         if (is_null($code)) {
             $this->code = http_response_code();
