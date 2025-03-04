@@ -1,10 +1,10 @@
 {% extends "layout/app.html.twig" %}
 
 {% block view %}
-    <section id="tracks" class="h-100">
-        <h1>Tracks</h1>
+    <section id="tracks" class="p-2 h-100">
+        <h2><strong>Tracks</strong></h2>
         <div id="search" hx-get="/tracks/control" hx-trigger="load"></div>
-        <div id="results"></div>
+        <div id="results" class="mt-2" hx-get="/tracks/results" hx-trigger="load, trackResults from:body"></div>
     </section>
 {% endblock %}
 

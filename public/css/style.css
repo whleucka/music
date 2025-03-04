@@ -38,3 +38,31 @@ body, html, #content {
     border-left: 4px solid #4772ff;
     fill: #4772ff;
 }
+
+/** Utility */
+.truncate {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/** App */
+#view {
+    overflow: hidden;
+}
+
+#tracks {
+    overflow: auto;
+}
+
+#player #cover img {
+    border-radius: 8px;
+    width: 80px;
+    height: 80px;
+}
+
+/** Music */
+.track-row:hover {
+    cursor: pointer;
+    background-color: rgba(0,0,0, 0.05);
+}

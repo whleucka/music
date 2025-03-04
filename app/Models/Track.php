@@ -13,12 +13,17 @@ class Track extends Model
         parent::__construct('tracks', $id);
     }
 
-    public function meta()
+    public function meta(): TrackMeta
     {
         return TrackMeta::where("track_id", $this->id)->get();
     }
 
-    public function getTags()
+    public function size(): int|false
+    {
+        return filesize($this->pathname);
+    }
+
+    public function getTags(): array
     {
         $getID3 = new getID3;
         $tags = $getID3->analyze($this->pathname);

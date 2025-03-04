@@ -27,6 +27,11 @@ function redirect(
     }
 }
 
+function trigger(string $event)
+{
+    header("HX-Trigger: $event");
+}
+
 function uri(string $name, ...$params): ?string
 {
     return router()->searchUri($name, ...$params);

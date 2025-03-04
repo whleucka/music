@@ -1,0 +1,11 @@
+<nav class="navbar navbar-light bg-light d-flex p-2">
+    <span id="cover" class="d-flex align-items-center">
+        <img src="{{ player.cover }}" alt="cover" />
+        <div class="d-flex flex-column ps-2 h-100">
+            <span><strong>{{ player.title|raw }}</strong></span>
+            <span class="text-muted"><small>{{ player.artist|raw }}</small></span>
+        </div>
+    </span>
+    <span id="controls"></span>
+    <audio src="{{ player.source }}" />
+</nav>
