@@ -16,7 +16,7 @@ class SignInController extends Controller
     #[Get("/sign-in", "auth.sign-in.index")]
     public function index(): string
     {
-        return $this->render("auth/sign-in.html.twig");
+        return $this->render("auth/sign-in/index.html.twig");
     }
 
     #[Post("/sign-in", "auth.sign-in.post", ["max_requests" => 20])]
