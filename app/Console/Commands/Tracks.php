@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Track;
+use App\Models\TrackMeta;
 
 /**
  * Music tracks command
@@ -24,6 +25,7 @@ class Tracks extends \ConsoleKit\Command
             $this->writeerr("You must provide a music directory to sync" . PHP_EOL);
             exit;
         }
+        $start = microtime(true);
         $directory = $args[0];
         $files = recursiveFiles($directory);
         $file_count = 0;
@@ -45,8 +47,43 @@ class Tracks extends \ConsoleKit\Command
             }
         }
         db()->commit();
-        $this->writeln("Successfully synchronized $directory");
+        $end = microtime(true);
+        $time_diff = number_format($end - $start, 2);
+        $this->writeln("Successfully synchronized $directory in $time_diff seconds");
         $this->writeln("Total files: " . $file_count);
         $this->writeln("New files: " . $new_count . PHP_EOL);
+    }
+
+    /**
+     * Update track meta from ID3
+     */
+    public function executeMeta(array $args, array $options = []): void
+    {
+        $start = microtime(true);
+        $tracks = Track::where(1, 1)->get();
+        db()->beginTransaction();
+        foreach($tracks as $track) {
+            if (!$track->meta()) {
+                $tags = $track->getTags();
+                $comments = $tags["comments_html"] ?? [];
+                $genre = $comments["genre"] ?? [];
+                TrackMeta::create([
+                    "track_id" => $track->id,
+                    "artist" => $comments["artist"][0] ?? "(no artist)",
+                    "album" => $comments["artist"][0] ?? "(no album)",
+                    "title" => $comments["title"][0] ?? "(no title)",
+                    "genre" => implode(", ", $genre) ?? "?",
+                    "year" => $comments["year"][0] ?? "?",
+                    "track_number" => $comments["track_number"][0] ?? "?",
+                    "playtime_string" => $tags["playtime_string"] ?? "",
+                    "bitrate" => $tags["bitrate"] ?? "?",
+                    "mime_type" => $tags["mime_type"] ?? "?",
+                ]);
+            }
+        }
+        db()->commit();
+        $end = microtime(true);
+        $time_diff = number_format($end - $start, 2);
+        $this->writeln("Successfully updated meta in $time_diff seconds" . PHP_EOL);
     }
 }
