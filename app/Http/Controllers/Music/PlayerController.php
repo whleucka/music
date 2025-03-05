@@ -20,4 +20,20 @@ class PlayerController extends Controller
             "player" => $this->provider->getPlayer(),
         ]);
     }
+
+    // Play the next track in the playlist
+    #[Get("/player/next-track", "player.next-track")]
+    public function nextTrack()
+    {
+        $this->provider->nextTrack();
+        trigger("player");
+    }
+
+    // Play the previous track in the playlist
+    #[Get("/player/prev-track", "player.prev-track")]
+    public function prevTrack()
+    {
+        $this->provider->prevTrack();
+        trigger("player");
+    }
 }

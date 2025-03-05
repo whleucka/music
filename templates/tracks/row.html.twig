@@ -1,4 +1,4 @@
-<div id="{{ track.hash }}" class="track-row d-flex align-items-center truncate" hx-get="/tracks/play/{{ track.hash }}" hx-swap="none" hx-trigger="click" title="{{ track.artist|raw }} - {{ track.title|raw }}">
+<div tabIndex="-1" id="{{ track.hash }}" class="track-row d-flex align-items-center truncate" hx-get="/tracks/play/{{ track.hash }}" hx-swap="none" hx-trigger="click" title="{{ track.artist|raw }} - {{ track.title|raw }}">
     <span class="cover"><img src="{{ track.cover }}" alt="cover" /></span>
     <span class="title px-1 flex-grow-1 truncate">{{ track.artist|raw }} - {{ track.title|raw }}</span>
     <span class="playtime">{{ track.playtime_string }}</span>

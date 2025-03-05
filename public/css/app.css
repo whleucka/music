@@ -35,7 +35,7 @@
     border-radius: 4px;
 }
 
-#tracks #results #actions button:not(:last-child) {
+#actions button:not(:last-child) {
     margin-right: 5px;
 }
 

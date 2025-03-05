@@ -27,4 +27,12 @@ class PlaylistController extends Controller
             "tracks" => $this->provider->getPlaylist(),
         ]);
     }
+
+    // Clear the current playlist
+    #[Get("/playlist/clear", "playlist.clear")]
+    public function clear(): string
+    {
+        $this->provider->clearPlaylist();
+        trigger("playlist");
+    }
 }

@@ -85,6 +85,15 @@ class TracksController extends Controller
         $track = $this->track_provider->getTrackFromHash($hash);
 
         if ($track) {
+            $playlist = $this->playlist_provider->getPlaylist();
+            if ($playlist) {
+                foreach ($playlist as $idx => $playlist_track) {
+                    if ($playlist_track['hash'] === $hash) {
+                        $this->playlist_provider->setCurrentIndex($idx);
+                        break;
+                    }
+                }
+            }
             $meta = $track->meta();
             $this->player_provider->setPlayer($hash, "/tracks/stream/$hash", $meta->cover, $meta->artist, $meta->album, $meta->title);
             trigger("player");

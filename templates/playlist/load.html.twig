@@ -1,5 +1,6 @@
 {% if tracks %}
     <div id="actions" class="sticky-top bg-white d-flex py-1">
+        <button class="btn btn-sm btn-danger" type="submit" hx-get="/playlist/clear">Clear</button>
     </div>
     {% for track in tracks %}
         {% include "tracks/row.html.twig" %}
