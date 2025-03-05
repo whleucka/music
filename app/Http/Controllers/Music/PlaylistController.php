@@ -28,6 +28,14 @@ class PlaylistController extends Controller
         ]);
     }
 
+    // Generate a random playlist
+    #[Get("/playlist/random", "playlist.random")]
+    public function random(): string
+    {
+        $this->provider->randomPlaylist();
+        trigger("playlist");
+    }
+
     // Clear the current playlist
     #[Get("/playlist/clear", "playlist.clear")]
     public function clear(): string

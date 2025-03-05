@@ -32,5 +32,15 @@ class PlaylistService
     {
         session()->set("playlist_index", $index);
     }
+
+    public function randomPlaylist(int $limit = 500)
+    {
+        $tracks = db()->fetchAll("SELECT tracks.hash, track_meta.* 
+            FROM tracks 
+            INNER JOIN track_meta ON track_meta.track_id = tracks.id 
+            ORDER BY RAND() 
+            LIMIT $limit");
+        $this->setPlaylist($tracks);
+    }
 }
 
