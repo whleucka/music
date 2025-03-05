@@ -51,8 +51,33 @@ body, html, #content {
     overflow: hidden;
 }
 
+/** Music */
 #tracks {
     overflow: auto;
+}
+
+#tracks #results .track-row {
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+}
+
+#tracks #results .track-row.active {
+    font-weight: 800;
+}
+
+#tracks #results .track-row:hover {
+    cursor: pointer;
+    background-color: rgba(0,0,0, 0.05);
+}
+
+#tracks #results .track-row .cover img {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+}
+
+#player #info {
+    width: 200px;
 }
 
 #player #cover img {
@@ -61,8 +86,6 @@ body, html, #content {
     height: 60px;
 }
 
-/** Music */
-.track-row:hover {
-    cursor: pointer;
-    background-color: rgba(0,0,0, 0.05);
+#player #controls {
+    overflow: hidden;
 }

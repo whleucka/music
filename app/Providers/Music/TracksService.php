@@ -36,6 +36,7 @@ class TracksService
             $track = Track::find($meta->track_id);
             return [
                 "hash" => $track->hash,
+                "cover" => $meta->cover,
                 "title" => $meta->title,
                 "artist" => $meta->artist,
                 "album" => $meta->album,
