@@ -12,24 +12,24 @@
 }
 
 /** Tracks */
-#tracks #results .track-row {
+.track-row {
     font-size: 1.1rem;
 }
 
-#tracks #results .track-row:not(:last-child) {
+.track-row:not(:last-child) {
     margin-bottom: 5px;
 }
 
-#tracks #results .track-row.active {
+.track-row.active {
     font-weight: 800;
 }
 
-#tracks #results .track-row:hover {
+.track-row:hover {
     cursor: pointer;
     background-color: rgba(0,0,0, 0.05);
 }
 
-#tracks #results .track-row .cover img {
+.track-row .cover img {
     width: 28px;
     height: 28px;
     border-radius: 4px;

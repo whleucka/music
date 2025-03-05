@@ -12,6 +12,7 @@ class PlayerController extends Controller
     {
     }
 
+    // Player view
     #[Get("/player", "player.index")]
     public function index(): string
     {

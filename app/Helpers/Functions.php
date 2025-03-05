@@ -24,6 +24,34 @@ function redirect(string $path): void {
     }
 }
 
+function location(
+    string $path, 
+    ?string $source = null, 
+    ?string $event = null, 
+    ?string $handler = null, 
+    ?string $target = null, 
+    ?string $swap = null,
+    ?string $values = null,
+    ?string $headers = null,
+    ?string $select = null
+) {
+    if (request()->headers->has('Hx-Request')) {
+        $options['path'] = $path;
+        foreach (compact('source', 'event', 'handler', 'target', 'swap', 'values', 'headers', 'select') as $key => $value) {
+            if ($value !== null) {
+                $options[$key] = $value;
+            }
+        }
+        $opts = json_encode($options);
+        header("HX-Location: $opts");
+        exit();
+    } else {
+        $header = sprintf("Location:%s", $path);
+        header($header);
+        exit();
+    }
+}
+
 function trigger(string $event)
 {
     header("HX-Trigger: $event");

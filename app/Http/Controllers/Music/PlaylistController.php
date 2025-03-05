@@ -12,12 +12,14 @@ class PlaylistController extends Controller
     {
     }
 
+    // Playlist view
     #[Get("/playlist", "playlist.index")]
     public function index(): string
     {
         return $this->render("playlist/index.html.twig");
     }
 
+    // Load the current playlist
     #[Get("/playlist/load", "playlist.load")]
     public function load(): string
     {

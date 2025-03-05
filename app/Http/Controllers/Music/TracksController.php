@@ -3,17 +3,20 @@
 namespace App\Http\Controllers\Music;
 
 use App\Providers\Music\PlayerService;
+use App\Providers\Music\PlaylistService;
 use App\Providers\Music\TracksService;
 use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Route\Get;
 
 class TracksController extends Controller
 {
-    public function __construct(private TracksService $track_provider, private PlayerService $player_provider)
-    {
-    }
+    public function __construct(
+        private TracksService $track_provider, 
+        private PlayerService $player_provider,
+        private PlaylistService $playlist_provider,
+    ) {}
 
-    // Tracks
+    // Tracks view
     #[Get("/tracks", "tracks.index")]
     public function index(): string
     {
@@ -64,6 +67,16 @@ class TracksController extends Controller
         trigger("trackResults");
         return $this->control();
     }
+
+    // Set search results as playlist
+    #[Get("/tracks/set-playlist", "tracks.set-playlist")]
+    public function setPlaylist()
+    {
+        $tracks = $this->track_provider->getSearchResults();
+        $this->playlist_provider->setPlaylist($tracks);
+        location("/playlist", select: "#view", target: "#view", swap: "outerHTML");
+    }
+
 
     // Set the player session and reload the player element
     #[Get("/tracks/play/{hash}", "tracks.play")]

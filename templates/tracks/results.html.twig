@@ -1,6 +1,6 @@
 {% if tracks and term %}
     <div id="actions" class="sticky-top bg-white d-flex py-1">
-        <button class="btn btn-primary">Set playlist</button>
+        <button class="btn btn-primary" hx-get="/tracks/set-playlist" hx-swap="none">Set playlist</button>
         <button class="btn btn-danger" type="submit" hx-get="/tracks/clear" hx-target="#tracks #search">Clear</button>
     </div>
     {% for track in tracks %}
