@@ -12,11 +12,8 @@ use Echo\Framework\Session\Session;
 use Echo\Interface\Http\Request as HttpRequest;
 use Echo\Interface\Routing\Router as RoutingRouter;
 
-function redirect(
-    string $path,
-): void {
+function redirect(string $path): void {
     if (request()->headers->has('Hx-Request')) {
-        $options["path"] = $path;
         $header = sprintf("HX-Redirect:%s", $path);
         header($header);
         exit();
