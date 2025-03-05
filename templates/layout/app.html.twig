@@ -1,5 +1,11 @@
 {% extends "layout/base.html.twig" %}
 
+{% block head %}
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/app.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+{% endblock %}
+
 {% block content %}
     <section id="app" class="d-flex flex-column h-100">
         <section id="navbar" hx-get="/navbar" hx-trigger="load, navbar from:body"></section>

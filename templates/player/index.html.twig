@@ -1,51 +1,106 @@
-<div class="bg-light d-flex p-2">
+<div class="bg-light d-flex align-items-center justify-content-center">
     <span id="cover" class="d-flex align-items-center">
         <img src="{{ player.cover }}" alt="cover" />
-        <div class="info d-none d-sm-block d-flex flex-column ps-2">
+    </span>
+    <span id="info" class="d-none d-md-block">
+        <div class="d-flex flex-column ps-2">
             <div class="truncate" title="{{ player.title|raw }}"><strong>{{ player.title|raw }}</strong></div>
             <div class="truncate text-muted" title="{{ player.artist|raw }}"><small>{{ player.artist|raw }}</small></div>
         </div>
     </span>
-    <span id="controls" class="d-flex align-items-center justify-content-center w-100">
-        <button class="btn" id="previous-track">Previous</button>
-        <button class="btn" id="rewind">Rewind</button>
-        <button class="btn" id="play" onClick="playPause()">Play</button>
-        <button class="btn" id="fast-forward">Forward</button>
-        <button class="btn" id="next-track">Next</button>
+    <span id="controls" class="p-1 d-flex flex-column align-items-center justify-content-center w-100">
+        <div id="track-progress" class="progress w-100 mt-3">
+            <div class="progress-bar track-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar buffer" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div class="d-flex">
+            <button class="btn" id="repeat"><i class="bi bi-repeat"></i></button>
+            <button class="btn" id="previous-track"><i class="bi bi-skip-start"></i></button>
+            <button class="btn" id="rewind"><i class="bi bi-rewind"></i></button>
+            <button class="btn" id="play" onClick="playPause()"><i class="bi bi-play"></i></button>
+            <button class="btn" id="fast-forward"><i class="bi bi-fast-forward"></i></button>
+            <button class="btn" id="next-track"><i class="bi bi-skip-end"></i></button>
+            <button class="btn" id="shuffle"><i class="bi bi-shuffle"></i></button>
+        </div>
     </span>
-    <audio id="audio" src="{{ player.source }}" autoPlay />
+    <span id="volume" class="pe-3 d-none d-lg-block">
+        <div class="d-flex align-items-center">
+            <i class="bi bi-volume-up me-1"></i>
+            <div id="volume-progress" class="progress w-100">
+                <div class="progress-bar" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+    </span>
+    <audio id="audio" src="{{ player.source }}" autoPlay>Your browser does not support the audio element.</audio>
 </div>
 
 <script>
-var player = document.getElementById("audio");
-var playButton = document.getElementById("play");
+    var player = document.getElementById("audio");
+    var playButton = document.getElementById("play");
+    var trackProgress = document.querySelector(".track-progress");
+    var bufferProgress = document.querySelector(".buffer");
 
-var playPause = async () => {
-    if (player.paused) {
-        await player.play();
-    } else {
-        await player.pause();
-    }
-}
-
-var activeTrack = () => {
-    const trackRows = document.querySelectorAll(".track-row");
-    trackRows.forEach((row) => {
-        row.classList.remove("active");
+    // Update the track progress
+    player.addEventListener('timeupdate', () => {
+        const progress = (player.currentTime / player.duration) * 100;
+        setTrackProgress(progress);
     });
 
-    const currentTrack = document.getElementById('{{ player.id }}');
-    if (currentTrack) currentTrack.classList.toggle("active");
-}
+    // Update the track buffer progress
+    player.addEventListener('progress', () => {
+        if (player.buffered.length > 0) {
+            const bufferedEnd = player.buffered.end(player.buffered.length - 1);
+            const duration = player.duration;
 
-player.onplaying  = () => {
-    playButton.innerText = "Pause";
-    console.log("playing...");
-    activeTrack();
-}
+            if (duration > 0) {
+                const buffer_progress = (player.currentTime - bufferedEnd / duration) * 100;
+                setBufferProgress(buffer_progress);
+            }
+        }
+    });
 
-player.onpause = () => {
-    playButton.innerText = "Play";
-    console.log("paused...");
-}
+    var playPause = async () => {
+        if (player.paused) {
+            await player.play();
+        } else {
+            await player.pause();
+        }
+    }
+
+    var setTrackProgress = (pct) => {
+        trackProgress.style.width = pct + '%';
+    }
+
+    var setBufferProgress = (pct) => {
+        bufferProgress.style.width = pct + '%';
+    }
+
+    var setActiveTrack = () => {
+        const currentTrack = document.getElementById('{{ player.id }}');
+        if (currentTrack) currentTrack.classList.toggle("active");
+        currentTrack.focus();
+    }
+
+    var removeActiveTrack = () => {
+        const trackRows = document.querySelectorAll(".track-row");
+        trackRows.forEach((row) => {
+            row.classList.remove("active");
+        });
+    }
+
+    player.onplaying  = () => {
+        playButton.innerHTML = `<i class="bi bi-pause"></i>`;
+        removeActiveTrack();
+        setActiveTrack();
+    }
+
+    player.onpause = () => {
+        playButton.innerHTML = `<i class="bi bi-play"></i>`;
+    }
+
+    player.onended = () => {
+        setTrackProgress(0);
+        setBufferProgress(8);
+        removeActiveTrack();
+    }
 </script>

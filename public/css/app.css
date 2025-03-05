@@ -1,0 +1,104 @@
+/** App */
+#app {
+    min-width: 400px;
+}
+#view {
+    overflow: hidden;
+}
+
+/** Nav */
+#navbar {
+    border-bottom: 1px solid #eee;
+}
+
+/** Tracks */
+#tracks #results .track-row {
+    font-size: 1.1rem;
+}
+
+#tracks #results .track-row:not(:last-child) {
+    margin-bottom: 5px;
+}
+
+#tracks #results .track-row.active {
+    font-weight: 800;
+}
+
+#tracks #results .track-row:hover {
+    cursor: pointer;
+    background-color: rgba(0,0,0, 0.05);
+}
+
+#tracks #results .track-row .cover img {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+}
+
+#tracks #results #actions button:not(:last-child) {
+    margin-right: 5px;
+}
+
+/** Player */
+#player {
+    border-top: 1px solid #eee;
+}
+
+#player #cover {
+    padding: 10px;
+}
+
+#player #cover img {
+    border-radius: 5px;
+    width: 60px;
+    height: 60px;
+}
+
+#player #info {
+    width: 250px;
+}
+
+#player #controls {
+    overflow: hidden;
+}
+
+#player #controls #track-progress {
+    width: 330px !important;
+    height: 8px;
+}
+
+#player #controls .track-progress {
+    background: #FF416C;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #FF4B2B, #FF416C);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #FF4B2B, #FF416C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+#player #controls .buffer {
+    opacity: 0.5;
+    background-color: #bbb;
+}
+
+#player #controls button {
+    font-size: 1.8rem;
+    padding: 0.6rem;
+}
+
+#player #volume {
+    width: 200px;
+}
+
+#player #volume #volume-progress {
+    height: 8px;
+}
+
+#player #volume #volume-progress .progress-bar {
+    background: #1fff00;
+}
+
+/**
+ * Utility
+ */
+.scroll-cont {
+    height: 100%;
+    overflow: auto;
+}
