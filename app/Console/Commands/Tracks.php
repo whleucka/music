@@ -11,8 +11,17 @@ use App\Models\TrackMeta;
 class Tracks extends \ConsoleKit\Command
 {
     private array $supported_extensions = [
+        "aiff",
+        "aif",
+        "mp2",
         "mp3",
+        "m4a",
+        "wav",
+        "aac",
         "flac",
+        "alac",
+        "opus",
+        "oga",
         "ogg",
     ];
 
