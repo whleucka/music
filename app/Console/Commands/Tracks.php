@@ -84,7 +84,7 @@ class Tracks extends \ConsoleKit\Command
                     "track_id" => $track->id,
                     "cover" => "/images/no-album.png",
                     "artist" => $comments["artist"][0] ?? "(no artist)",
-                    "album" => $comments["artist"][0] ?? "(no album)",
+                    "album" => $comments["album"][0] ?? "(no album)",
                     "title" => $comments["title"][0] ?? "(no title)",
                     "genre" => implode(", ", $genre) ?? "?",
                     "year" => $comments["year"][0] ?? "?",

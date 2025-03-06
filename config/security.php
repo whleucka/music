@@ -5,6 +5,6 @@ return [
     ],
     "blacklist" => [
     ],
-    "max_requests" => 200,
+    "max_requests" => 1000,
     "decay_seconds" => 60,
 ];
