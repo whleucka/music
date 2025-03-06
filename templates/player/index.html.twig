@@ -35,7 +35,7 @@
         </div>
     </span>
     {% endif %}
-    <audio id="audio" src="{{ player.source }}" autoPlay>Your browser does not support the audio element.</audio>
+    <audio id="audio" src="{{ player.source }}">Your browser does not support the audio element.</audio>
 </div>
 
 <script>
@@ -63,12 +63,20 @@
         }
     });
 
-    var playPause = async () => {
+    var playPause = () => {
         if (player.paused) {
-            await player.play();
+            play();
         } else {
-            await player.pause();
+            pause(); 
         }
+    }
+
+    var play = async () => {
+        return await player.play();
+    }
+
+    var pause = async () => {
+        return await player.pause();
     }
 
     var setTrackProgress = (pct) => {
@@ -107,5 +115,9 @@
         setBufferProgress(8);
         removeActiveTrack();
         htmx.trigger("#next-track", "nextTrack");
+    }
+
+    player.onloadeddata = () => {
+        play();
     }
 </script>

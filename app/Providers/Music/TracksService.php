@@ -30,6 +30,7 @@ class TracksService
         $tracks = TrackMeta::where("title", "LIKE", "%$term%")
             ->orWhere("album", "LIKE", "%$term%")
             ->orWhere("artist", "LIKE", "%$term%")
+            ->orderBy("album")
             ->get() ?? [];
 
         return array_map(function($meta) {

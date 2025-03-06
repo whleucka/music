@@ -3,9 +3,11 @@
         <button class="btn btn-sm btn-primary" hx-get="/tracks/set-playlist" hx-swap="none">Play all</button>
         <button class="btn btn-sm btn-danger" type="submit" hx-get="/tracks/clear" hx-target="#tracks #search">Clear</button>
     </div>
-    {% for track in tracks %}
-        {% include "tracks/row.html.twig" %}
-    {% endfor %}
+    <div class="mt-2">
+        {% for track in tracks %}
+            {% include "tracks/row.html.twig" %}
+        {% endfor %}
+    </div>
 {% elseif term %}
-    <em>No search results for '{{ term }}'</em>
+    <div class="mt-2"><em>No search results for '{{ term }}'</em></div>
 {% endif %}
