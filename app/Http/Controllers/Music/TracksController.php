@@ -110,11 +110,15 @@ class TracksController extends Controller
         $track = $this->track_provider->getTrackFromHash($hash);
 
         if ($track) {
+            $pathname = $track->meta()->mime_type !== 'audio/mpeg'
+                ? $track->transcode()
+                : $track->pathname;
+            if (!$pathname) exit;
 			header("Content-Type: audio/mpeg");
-			header("Content-Length: " . $track->size());
+			header("Content-Length: " . filesize($pathname));
 			header("Accept-Ranges: bytes");
 			header("Content-Transfer-Encoding: binary");
-			readfile($track->pathname);
+			readfile($pathname);
 			exit;
 		}
     }

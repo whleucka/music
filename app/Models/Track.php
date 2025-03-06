@@ -32,13 +32,13 @@ class Track extends Model
         return $tags;
     }
 
-    public function transcode(): string
+    public function transcode(): ?string
     {
         $storage_dir = config("paths.transcode");
         if (!file_exists($storage_dir)) {
             throw new \Exception("transcode directory does not exist");
         }
-        $md5_file = $storage_dir . md5($this->name) . '.mp3';
+        $md5_file = $storage_dir . md5($this->pathname) . '.mp3';
         if (!file_exists($md5_file)) {
             $ffmpeg = FFMpeg\FFMpeg::create([
                 'ffmpeg.binaries' => '/usr/bin/ffmpeg',
@@ -48,7 +48,7 @@ class Track extends Model
             ]);
             $audio_channels = 2;
             $bitrate = 160;
-            $audio = $ffmpeg->open($this->name);
+            $audio = $ffmpeg->open($this->pathname);
             $format = new FFMpeg\Format\Audio\Mp3('libmp3lame');
             $format
                 ->setAudioChannels($audio_channels)
