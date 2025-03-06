@@ -18,9 +18,9 @@
         <div class="d-flex">
             <!-- <button class="btn" id="repeat"><i class="bi bi-repeat"></i></button> -->
             <button class="btn" id="prev-track" hx-get="/player/prev-track" hx-trigger="click, prevTrack from:body" hx-swap="none"><i class="bi bi-skip-start"></i></button>
-            <button class="btn" id="rewind"><i class="bi bi-rewind"></i></button>
+            <button class="btn" id="rewind" onClick="seekBackward()"><i class="bi bi-rewind"></i></button>
             <button class="btn" id="play" onClick="playPause()"><i class="bi bi-play"></i></button>
-            <button class="btn" id="fast-forward"><i class="bi bi-fast-forward"></i></button>
+            <button class="btn" id="fast-forward" onClick="seekForward()"><i class="bi bi-fast-forward"></i></button>
             <button class="btn" id="next-track" hx-get="/player/next-track" hx-trigger="click, nextTrack from:body" hx-swap="none"><i class="bi bi-skip-end"></i></button>
             <button class="btn" id="shuffle"><i class="bi bi-shuffle"></i></button>
         </div>
@@ -43,27 +43,26 @@
     var playButton = document.getElementById("play");
     var trackProgress = document.querySelector(".track-progress");
     var bufferProgress = document.querySelector(".buffer");
+    var defaultSkipTime = 10;
 
     var updateProgress = () => {
         if (!player.paused && !player.ended) {
-            if (player.readyState === 4) {
-                let preloded = 0;
-                if (player.buffered.length > 0) {
-                    preloaded = (player.buffered.end(0) / player.duration) * 100;
-                    const progress = (player.currentTime / player.duration) * 100;
-                    setTrackProgress(progress);
+            if (player.readyState >= 2) { // Check if player has loaded some data
+                let progress = (player.currentTime / player.duration) * 100;
+                setTrackProgress(progress);
 
-                    if (preloaded > 0) {
-                        setBufferProgress(preloaded - progress);
-                    }
+                if (player.buffered.length > 0) {
+                    let bufferedEnd = player.buffered.end(player.buffered.length - 1);
+                    let buffer = (bufferedEnd / player.duration) * 100;
+                    setBufferProgress(buffer - progress);
                 }
+
                 requestAnimationFrame(updateProgress);
             }
         }
-    }
+    };
 
     var updateMetaData = () => {
-        console.log('Playing ' + player.title + ' track...');
         let artwork = [
             { src: '{{ player.cover }}', sizes: '192x192', type: 'image/png' }
         ];
@@ -95,13 +94,13 @@
     }
 
     var play = async () => {
-        audio.play()
+        player.play()
         .then(_ => updateMetaData())
         .catch(err => console.log(err));
     }
 
     var pause = async () => {
-        return await player.pause();
+        player.pause();
     }
 
     var setTrackProgress = (pct) => {
@@ -125,16 +124,32 @@
         });
     }
 
+    var seekForward = () => {
+        const skipTime = event.seekOffset || defaultSkipTime;
+        player.currentTime = Math.min(player.currentTime + skipTime, player.duration);
+        updatePositionState();
+    }
+
+    var seekBackward = () => {
+        const skipTime = event.seekOffset || defaultSkipTime;
+        player.currentTime = Math.max(player.currentTime - skipTime, 0);
+        updatePositionState();
+    }
+
     // Listeners
     player.onplay  = () => {
+        navigator.mediaSession.playbackState = 'playing';
         playButton.innerHTML = `<i class="bi bi-pause"></i>`;
         removeActiveTrack();
         setActiveTrack();
+    }
 
+    player.onplaying = () => {
         requestAnimationFrame(updateProgress);
     }
 
     player.onpause = () => {
+        navigator.mediaSession.playbackState = 'paused';
         playButton.innerHTML = `<i class="bi bi-play"></i>`;
     }
 
@@ -149,11 +164,8 @@
         play();
     }
 
-    navigator.mediaSession.setActionHandler('previoustrack', function() {
-        htmx.trigger("#prev-track", "prevTrack");
-    });
-
-    navigator.mediaSession.setActionHandler('nexttrack', function() {
-        htmx.trigger("#next-track", "nextTrack");
-    });
+    navigator.mediaSession.setActionHandler('previoustrack', _ => htmx.trigger("#prev-track", "prevTrack"));
+    navigator.mediaSession.setActionHandler('nexttrack', _ => htmx.trigger("#next-track", "nextTrack"));
+    navigator.mediaSession.setActionHandler('seekbackward', _ => seekBackward());
+    navigator.mediaSession.setActionHandler('seekforward', _ => seekForward());
 </script>
