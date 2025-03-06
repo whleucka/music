@@ -16,7 +16,7 @@
             <div class="progress-bar buffer" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
         <div class="d-flex">
-            <!-- <button class="btn" id="repeat"><i class="bi bi-repeat"></i></button> -->
+            <button class="btn" id="repeat"><i class="bi bi-repeat"></i></button>
             <button class="btn" id="previous-track" hx-get="/player/prev-track" hx-swap="none"><i class="bi bi-skip-start"></i></button>
             <button class="btn" id="rewind"><i class="bi bi-rewind"></i></button>
             <button class="btn" id="play" onClick="playPause()"><i class="bi bi-play"></i></button>
@@ -44,30 +44,29 @@
     var trackProgress = document.querySelector(".track-progress");
     var bufferProgress = document.querySelector(".buffer");
 
-    // Update the track progress
-    player.addEventListener('timeupdate', () => {
-        const progress = (player.currentTime / player.duration) * 100;
-        setTrackProgress(progress);
-    });
+    var updateProgress = () => {
+        if (!player.paused && !player.ended) {
+            if (player.readyState === 4) {
+                let preloded = 0;
+                if (player.buffered.length > 0) {
+                    preloaded = (player.buffered.end(0) / player.duration) * 100;
+                    const progress = (player.currentTime / player.duration) * 100;
+                    setTrackProgress(progress);
 
-    // Update the track buffer progress
-    player.addEventListener('progress', () => {
-        if (player.buffered.length > 0) {
-            const bufferedEnd = player.buffered.end(player.buffered.length - 1);
-            const duration = player.duration;
-
-            if (duration > 0) {
-                const buffer_progress = (player.currentTime - bufferedEnd / duration) * 100;
-                setBufferProgress(buffer_progress);
+                    if (preloaded > 0) {
+                        setBufferProgress(preloaded - progress);
+                    }
+                }
+                requestAnimationFrame(updateProgress);
             }
         }
-    });
+    }
 
     var playPause = () => {
         if (player.paused) {
             play();
         } else {
-            pause(); 
+            pause();
         }
     }
 
@@ -100,10 +99,12 @@
         });
     }
 
-    player.onplaying  = () => {
+    player.onplay  = () => {
         playButton.innerHTML = `<i class="bi bi-pause"></i>`;
         removeActiveTrack();
         setActiveTrack();
+
+        requestAnimationFrame(updateProgress);
     }
 
     player.onpause = () => {
