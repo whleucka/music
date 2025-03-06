@@ -7,6 +7,7 @@ class PlaylistService
     public function setPlaylist(array $tracks)
     {
         session()->set("playlist", $tracks);
+        $this->setCurrentIndex(-1);
     }
 
     public function clearPlaylist()

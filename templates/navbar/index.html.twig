@@ -1,5 +1,13 @@
-<nav class="navbar navbar-light bg-light px-2">
-  <a class="navbar-brand" href="#">
-    <strong>Music</strong>
-  </a>
+<nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" hx-boost="true" href="/playlist" hx-swap="outerHTML" hx-select="#view" hx-target="#view">Music</a>
+        <div class="d-flex">
+            <form method="GET" hx-get="/tracks/search?redirect=true" swap="none">
+                <div class="input-group">
+                    <input id="search-term" class="form-control" type="input" placeholder="Search tracks" name="term" />
+                    <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+                </div>
+            </form>
+        </div>
+    </div>
 </nav>

@@ -26,24 +26,11 @@ class TracksService
     {
         $term = $this->getSearchTerm();
         if (!$term) return [];
-
-        $tracks = TrackMeta::where("title", "LIKE", "%$term%")
-            ->orWhere("album", "LIKE", "%$term%")
-            ->orWhere("artist", "LIKE", "%$term%")
-            ->orderBy("album")
-            ->get() ?? [];
-
-        return array_map(function($meta) {
-            $track = Track::find($meta->track_id);
-            return [
-                "hash" => $track->hash,
-                "cover" => $meta->cover,
-                "title" => $meta->title,
-                "artist" => $meta->artist,
-                "album" => $meta->album,
-                "playtime_string" => $meta->playtime_string,
-            ];
-        }, $tracks);
+        return db()->fetchAll("SELECT tracks.hash, track_meta.* 
+            FROM tracks 
+            INNER JOIN track_meta ON track_meta.track_id = tracks.id
+            WHERE (artist LIKE ?) OR (album LIKE ?) OR (title LIKE ?)
+            ORDER BY album, track_number", array_fill(0, 3, "%$term%")) ?? [];
     }
 
     public function getTrackFromHash(string $hash): ?Track

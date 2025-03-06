@@ -55,6 +55,9 @@ class TracksController extends Controller
         }
 
         trigger("trackResults");
+        if ($this->request->get->has('redirect')) {
+            location("/tracks", select: "#view", target: "#view", swap: "outerHTML");
+        }
         return $this->control();
     }
 
