@@ -62,14 +62,20 @@
         }
     };
 
+    var decodeHTML = (html) => {
+        var txt = document.createElement("textarea");
+        txt.innerHTML = html;
+        return txt.value;
+    }
+
     var updateMetaData = () => {
         let artwork = [
             { src: '{{ player.cover }}', sizes: '192x192', type: 'image/png' }
         ];
         navigator.mediaSession.metadata = new MediaMetadata({
-            title: '{{ player.title }}',
-            artist: '{{ player.artist }}',
-            album: '{{ player.album }}',
+            title: decodeHTML('{{ player.title|raw }}'),
+            artist: decodeHTML('{{ player.artist|raw }}'),
+            album: decodeHTML('{{ player.album|raw }}'),
             artwork
         });
         updatePositionState();
