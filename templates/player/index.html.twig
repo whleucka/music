@@ -17,7 +17,7 @@
         </div>
         <div class="d-flex">
             <!-- <button class="btn" id="repeat"><i class="bi bi-repeat"></i></button> -->
-            <button class="btn" id="previous-track" hx-get="/player/prev-track" hx-swap="none"><i class="bi bi-skip-start"></i></button>
+            <button class="btn" id="prev-track" hx-get="/player/prev-track" hx-trigger="click, prevTrack from:body" hx-swap="none"><i class="bi bi-skip-start"></i></button>
             <button class="btn" id="rewind"><i class="bi bi-rewind"></i></button>
             <button class="btn" id="play" onClick="playPause()"><i class="bi bi-play"></i></button>
             <button class="btn" id="fast-forward"><i class="bi bi-fast-forward"></i></button>
@@ -62,6 +62,30 @@
         }
     }
 
+    var updateMetaData = () => {
+        console.log('Playing ' + player.title + ' track...');
+        let artwork = [
+            { src: '{{ player.cover }}', sizes: '192x192', type: 'image/png' }
+        ];
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: '{{ player.title }}',
+            artist: '{{ player.artist }}',
+            album: '{{ player.album }}',
+            artwork
+        });
+        updatePositionState();
+    }
+
+    var updatePositionState = () => {
+        if ('setPositionState' in navigator.mediaSession) {
+            navigator.mediaSession.setPositionState({
+                duration: player.duration,
+                playbackRate: player.playbackRate,
+                position: player.currentTime
+            });
+        }
+    }
+
     var playPause = () => {
         if (player.paused) {
             play();
@@ -71,7 +95,9 @@
     }
 
     var play = async () => {
-        return await player.play();
+        audio.play()
+        .then(_ => updateMetaData())
+        .catch(err => console.log(err));
     }
 
     var pause = async () => {
@@ -99,6 +125,7 @@
         });
     }
 
+    // Listeners
     player.onplay  = () => {
         playButton.innerHTML = `<i class="bi bi-pause"></i>`;
         removeActiveTrack();
@@ -121,4 +148,12 @@
     player.onloadeddata = () => {
         play();
     }
+
+    navigator.mediaSession.setActionHandler('previoustrack', function() {
+        htmx.trigger("#prev-track", "prevTrack");
+    });
+
+    navigator.mediaSession.setActionHandler('nexttrack', function() {
+        htmx.trigger("#next-track", "nextTrack");
+    });
 </script>
