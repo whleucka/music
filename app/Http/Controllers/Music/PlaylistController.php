@@ -30,7 +30,7 @@ class PlaylistController extends Controller
 
     // Generate a random playlist
     #[Get("/playlist/random", "playlist.random")]
-    public function random(): string
+    public function random(): void
     {
         $this->provider->randomPlaylist();
         trigger("playlist");
@@ -38,7 +38,7 @@ class PlaylistController extends Controller
 
     // Clear the current playlist
     #[Get("/playlist/clear", "playlist.clear")]
-    public function clear(): string
+    public function clear(): void
     {
         $this->provider->clearPlaylist();
         trigger("playlist");

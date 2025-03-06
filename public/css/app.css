@@ -98,6 +98,7 @@
 }
 
 #player #volume {
+    display: none !important; /** TODO: wip feature */
     width: 200px;
 }
 

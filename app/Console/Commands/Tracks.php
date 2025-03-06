@@ -57,19 +57,23 @@ class Tracks extends \ConsoleKit\Command
     /**
      * Update track meta from ID3
      */
-    public function executeMeta(array $args, array $options = []): void
+    public function executeUpdateMeta(array $args, array $options = []): void
     {
         $start = microtime(true);
         $tracks = Track::where(1, 1)->get();
+        if (!$tracks) {
+            $this->writeerr("You must first synchronize library." . PHP_EOL);
+            exit;
+        }
         db()->beginTransaction();
         foreach($tracks as $track) {
             if (!$track->meta()) {
-                $tags = $track->getTags();
+                $tags = $track->tags();
                 $comments = $tags["comments_html"] ?? [];
                 $genre = $comments["genre"] ?? [];
                 TrackMeta::create([
                     "track_id" => $track->id,
-                    "cover" => "/images/no-album.png", # FIXME
+                    "cover" => "/images/no-album.png",
                     "artist" => $comments["artist"][0] ?? "(no artist)",
                     "album" => $comments["artist"][0] ?? "(no album)",
                     "title" => $comments["title"][0] ?? "(no title)",
@@ -87,4 +91,31 @@ class Tracks extends \ConsoleKit\Command
         $time_diff = number_format($end - $start, 2);
         $this->writeln("Successfully updated meta in $time_diff seconds" . PHP_EOL);
     }
+
+    /**
+     * Update track covers
+     */
+    public function executeUpdateCovers(array $args, array $options = []): void
+    {
+        $start = microtime(true);
+        $tracks = Track::where(1, 1)->get();
+        if (!$tracks) {
+            $this->writeerr("You must first synchronize library." . PHP_EOL);
+            exit;
+        }
+        db()->beginTransaction();
+        foreach($tracks as $track) {
+            $meta = $track->meta();
+            if ($meta) {
+                if ($meta->cover === "/images/no-album.png") {
+                    $meta->updateCover($track->tags());
+                }
+            }
+        }
+        db()->commit();
+        $end = microtime(true);
+        $time_diff = number_format($end - $start, 2);
+        $this->writeln("Successfully updated album covers in $time_diff seconds" . PHP_EOL);
+    }
+
 }

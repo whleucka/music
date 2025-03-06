@@ -118,4 +118,11 @@ class TracksController extends Controller
 			exit;
 		}
     }
+
+    // Display an album cover with specific dimensions
+    #[Get("tracks//cover/{hash}/{width}/{height}", "tracks.cover")]
+    public function cover()
+    {
+        
+    }
 }
