@@ -16,6 +16,10 @@
     border-bottom: 1px solid #eee;
 }
 
+#navbar #top-search {
+    width: 250px;
+}
+
 /** Tracks */
 .track-row {
     font-size: 1.1rem;

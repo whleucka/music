@@ -1,7 +1,7 @@
 <nav class="navbar bg-body-tertiary">
     <div class="container-fluid">
         <a class="navbar-brand" hx-boost="true" href="/playlist" hx-swap="outerHTML" hx-select="#view" hx-target="#view">Music</a>
-        <div class="d-flex">
+        <div id="top-search" class="d-flex">
             <form method="GET" hx-get="/tracks/search?redirect=true" swap="none">
                 <div class="input-group">
                     <input id="search-term" class="form-control" type="input" placeholder="Search tracks" name="term" />
