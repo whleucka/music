@@ -47,6 +47,7 @@
     var playButton = document.querySelector("#play");
     var trackProgress = document.querySelector(".track-progress");
     var bufferProgress = document.querySelector(".buffer");
+    var volumeProgress = document.querySelector("#volume-progress");
     var currentTrack = document.getElementById(id);
     var defaultSkipTime = 10;
 
@@ -112,8 +113,8 @@
     var play = async () => {
         player.playbackRate = 1.0;
         await player.play()
-        .then(_ => updateMetaData())
-        .catch(err => console.log(err));
+            .then(_ => updateMetaData())
+            .catch(err => console.log(err));
     }
 
     var pause = async () => {
@@ -161,6 +162,20 @@
     }
 
     // Listeners
+    volumeProgress.addEventListener('click', (event) => {
+        // Calculate where in the progress bar the user clicked (0 to 1)
+        const progressBar = volumeProgress.getBoundingClientRect();
+        const clickPositionX = event.clientX - progressBar.left;
+        const clickPositionPercentage = clickPositionX / progressBar.width;
+
+        // Set the volume (0 to 1) based on click position
+        player.volume = Math.min(Math.max(clickPositionPercentage, 0), 1);
+
+        // Update the progress bar visual
+        const progress = volumeProgress.querySelector('.progress-bar');
+        progress.style.width = (clickPositionPercentage * 100) + '%';
+    });
+
     player.onplay  = () => {
         navigator.mediaSession.playbackState = 'playing';
         playButton.innerHTML = `<i class="bi bi-pause"></i>`;

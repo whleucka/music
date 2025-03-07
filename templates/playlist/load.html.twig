@@ -14,6 +14,8 @@
     <div class="mt-2"><em>Playlist is empty</em></div>
 {% endif %}
 <script>
-    removeActiveTrack();
-    setActiveTrack();
+    document.addEventListener("DOMContentLoaded", function(event) {
+        removeActiveTrack();
+        setActiveTrack();
+    });
 </script>
