@@ -1,6 +1,8 @@
 <div class="bg-light d-flex align-items-center justify-content-center">
     <span id="cover" class="d-flex align-items-center">
-        <div class="loader lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+        {% if player.source %}
+            <div class="loader lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+        {% endif %}
         <img src="{{ player.cover }}" onError="this.src = '/images/no-album.png'" alt="cover" />
     </span>
     {% if player.source %}
