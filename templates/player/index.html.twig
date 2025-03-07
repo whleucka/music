@@ -42,10 +42,12 @@
 </div>
 
 <script>
+    var id = '{{ player.id }}';
     var player = document.getElementById("audio");
     var playButton = document.querySelector("#play");
     var trackProgress = document.querySelector(".track-progress");
     var bufferProgress = document.querySelector(".buffer");
+    var currentTrack = document.getElementById(id);
     var defaultSkipTime = 10;
 
     var updateProgress = () => {
@@ -127,7 +129,6 @@
     }
 
     var setActiveTrack = () => {
-        const currentTrack = document.getElementById('{{ player.id }}');
         if (currentTrack) currentTrack.classList.toggle("active");
         currentTrack.focus();
     }
@@ -186,14 +187,18 @@
     }
 
     player.onloadstart = () => {
-        document.querySelector("#player #cover img").style.display = "none";
-        document.querySelector("#player #cover .loader").style.display = "block";
+        if (id != '') {
+            document.querySelector("#player #cover img").style.display = "none";
+            document.querySelector("#player #cover .loader").style.display = "block";
+        }
     }
 
     player.onloadeddata = () => {
-        document.querySelector("#player #cover img").style.display = "block";
-        document.querySelector("#player .loader").style.display = "none";
-        play();
+        if (id != '') {
+            document.querySelector("#player #cover img").style.display = "block";
+            document.querySelector("#player .loader").style.display = "none";
+            play();
+        }
     }
 
     navigator.mediaSession.setActionHandler('play', async () => await player.play());
