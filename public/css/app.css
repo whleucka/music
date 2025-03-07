@@ -99,8 +99,8 @@
     background: linear-gradient(to left, #FF4B2B, #FF416C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
-#player #controls .track-progress.disabled {
-    background: #aaa;
+#player #controls .track-progress.disable {
+    opacity: 0.5;
 }
 
 #player #controls .buffer {

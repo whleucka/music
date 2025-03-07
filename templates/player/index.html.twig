@@ -146,7 +146,7 @@
     player.onplay  = () => {
         navigator.mediaSession.playbackState = 'playing';
         playButton.innerHTML = `<i class="bi bi-pause"></i>`;
-        trackProgress.classList.add("disable");
+        trackProgress.classList.remove("disable");
         removeActiveTrack();
         setActiveTrack();
     }
@@ -158,6 +158,7 @@
     player.onpause = () => {
         navigator.mediaSession.playbackState = 'paused';
         playButton.innerHTML = `<i class="bi bi-play"></i>`;
+        trackProgress.classList.add("disable");
     }
 
     player.onended = () => {
