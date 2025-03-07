@@ -24,7 +24,7 @@ class PlayerController extends Controller
 
     // Play the next track in the playlist
     #[Get("/player/next-track", "player.next-track")]
-    public function nextTrack()
+    public function nextTrack(): void
     {
         $this->provider->nextTrack();
         trigger("player");
@@ -32,9 +32,27 @@ class PlayerController extends Controller
 
     // Play the previous track in the playlist
     #[Get("/player/prev-track", "player.prev-track")]
-    public function prevTrack()
+    public function prevTrack(): void
     {
         $this->provider->prevTrack();
         trigger("player");
+    }
+
+    // Get the shuffle button
+    #[Get("/player/shuffle", "player.shuffle")]
+    public function shuffle(): string
+    {
+        $state = $this->provider->getShuffle();
+        return $this->render("player/shuffle.html.twig", [
+            "state" => $state
+        ]);
+    }
+
+    // Toggle the shuffle button
+    #[Get("/player/shuffle/toggle", "player.shuffle-toggle")]
+    public function shuffleToggle(): string
+    {
+        $this->provider->toggleShuffle();
+        return $this->shuffle();
     }
 }

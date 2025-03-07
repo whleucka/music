@@ -36,7 +36,18 @@ class PlayerService
         ];
     }
 
-    public function setPlaylistTrack(int $index)
+    public function getShuffle(): bool
+    {
+        return session()->get("shuffle") ?? false;
+    }
+
+    public function toggleShuffle(): void
+    {
+        $state = $this->getShuffle();
+        session()->set("shuffle", !$state);
+    }
+
+    public function setPlaylistTrack(int $index): void
     {
         $playlist = $this->playlist_provider->getPlaylist();
         $this->playlist_provider->setCurrentIndex($index);
@@ -46,7 +57,7 @@ class PlayerService
         }
     }
 
-    public function nextTrack()
+    public function nextTrack(): void
     {
         $index = $this->playlist_provider->getCurrentIndex();
         $playlist = $this->playlist_provider->getPlaylist();
@@ -56,7 +67,7 @@ class PlayerService
         $this->setPlaylistTrack($next_index);
     }
 
-    public function prevTrack()
+    public function prevTrack(): void
     {
         $index = $this->playlist_provider->getCurrentIndex();
         $playlist = $this->playlist_provider->getPlaylist();
