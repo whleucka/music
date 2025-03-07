@@ -103,7 +103,6 @@ class TracksController extends Controller
         }
     }
 
-    // Stream a track for playback
     #[Get("/tracks/stream/{hash}", "tracks.stream")]
     public function stream(string $hash)
     {
@@ -113,14 +112,40 @@ class TracksController extends Controller
             $pathname = $track->meta()->mime_type !== 'audio/mpeg'
                 ? $track->transcode()
                 : $track->pathname;
+
             if (!$pathname) exit;
-			header("Content-Type: audio/mpeg");
-			header("Content-Length: " . filesize($pathname));
-			header("Accept-Ranges: bytes");
-			header("Content-Transfer-Encoding: binary");
-			readfile($pathname);
-			exit;
-		}
+
+            $filesize = filesize($pathname);
+            $start = 0;
+            $length = $filesize;
+            $end = $filesize - 1;
+
+            // Handle range request
+            if (isset($_SERVER['HTTP_RANGE'])) {
+                preg_match('/bytes=(\d+)-(\d*)/', $_SERVER['HTTP_RANGE'], $matches);
+                $start = isset($matches[1]) ? intval($matches[1]) : 0;
+                $end = isset($matches[2]) && $matches[2] !== '' 
+                    ? intval($matches[2]) 
+                    : $filesize - 1;
+                $length = $end - $start + 1;
+
+                header("HTTP/1.1 206 Partial Content");
+                header("Content-Range: bytes $start-$end/$filesize");
+            } else {
+                header("HTTP/1.1 200 OK");
+            }
+
+            header("Content-Type: audio/mpeg");
+            header("Content-Length: $length");
+            header("Accept-Ranges: bytes");
+            header("Content-Transfer-Encoding: binary");
+
+            $fp = fopen($pathname, 'rb');
+            fseek($fp, $start);
+            echo fread($fp, $length);
+            fclose($fp);
+            exit;
+        }
     }
 
     // Display an album cover with specific dimensions

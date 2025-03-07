@@ -1,6 +1,7 @@
 <div class="bg-light d-flex align-items-center justify-content-center">
     <span id="cover" class="d-flex align-items-center">
-        <img src="/tracks/cover/{{ player.id }}/512/512" onError="this.src = '/images/no-album.png'" alt="cover" />
+        <div class="loader lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+        <img src="{{ player.cover }}" onError="this.src = '/images/no-album.png'" alt="cover" />
     </span>
     {% if player.source %}
     <span id="info" class="d-none d-md-block">
@@ -56,7 +57,7 @@
                     let buffer = (bufferedEnd / player.duration) * 100;
                     setBufferProgress(buffer - progress);
                 }
-
+                updatePositionState();
                 requestAnimationFrame(updateProgress);
             }
         }
@@ -87,7 +88,7 @@
     }
 
     var updatePositionState = () => {
-        if ('setPositionState' in navigator.mediaSession) {
+        if ('setPositionState' in navigator.mediaSession && !isNaN(player.duration) && player.duration > 0) {
             navigator.mediaSession.setPositionState({
                 duration: player.duration,
                 playbackRate: player.playbackRate,
@@ -105,6 +106,7 @@
     }
 
     var play = async () => {
+        player.playbackRate = 1.0;
         await player.play()
         .then(_ => updateMetaData())
         .catch(err => console.log(err));
@@ -129,8 +131,7 @@
     }
 
     var removeActiveTrack = () => {
-        const trackRows = document.querySelectorAll(".track-row");
-        trackRows.forEach((row) => {
+        document.querySelectorAll(".track-row").forEach((row) => {
             row.classList.remove("active");
         });
     }
@@ -182,7 +183,14 @@
         htmx.trigger("#next-track", "nextTrack");
     }
 
+    player.onloadstart = () => {
+        document.querySelector("#player #cover img").style.display = "none";
+        document.querySelector("#player #cover .loader").style.display = "block";
+    }
+
     player.onloadeddata = () => {
+        document.querySelector("#player #cover img").style.display = "block";
+        document.querySelector("#player .loader").style.display = "none";
         play();
     }
 
