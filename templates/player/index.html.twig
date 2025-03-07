@@ -1,6 +1,6 @@
 <div class="bg-light d-flex align-items-center justify-content-center">
     <span id="cover" class="d-flex align-items-center">
-        <img src="{{ player.cover }}" alt="cover" />
+        <img src="/tracks/cover/{{ player.id }}/512/512" onError="this.src = '/images/no-album.png'" alt="cover" />
     </span>
     {% if player.source %}
     <span id="info" class="d-none d-md-block">
@@ -18,9 +18,9 @@
         <div class="d-flex">
             <!-- <button class="btn" id="repeat"><i class="bi bi-repeat"></i></button> -->
             <button class="btn" id="prev-track" hx-get="/player/prev-track" hx-trigger="click, prevTrack from:body" hx-swap="none"><i class="bi bi-skip-start"></i></button>
-            <button class="btn" id="rewind" onClick="seekBackward()"><i class="bi bi-rewind"></i></button>
+            <button class="btn" id="rewind" onClick="seekBackward(event)"><i class="bi bi-rewind"></i></button>
             <button class="btn" id="play" onClick="playPause()"><i class="bi bi-play"></i></button>
-            <button class="btn" id="fast-forward" onClick="seekForward()"><i class="bi bi-fast-forward"></i></button>
+            <button class="btn" id="fast-forward" onClick="seekForward(event)"><i class="bi bi-fast-forward"></i></button>
             <button class="btn" id="next-track" hx-get="/player/next-track" hx-trigger="click, nextTrack from:body" hx-swap="none"><i class="bi bi-skip-end"></i></button>
             <button class="btn" id="shuffle"><i class="bi bi-shuffle"></i></button>
         </div>
@@ -70,7 +70,12 @@
 
     var updateMetaData = () => {
         let artwork = [
-            { src: '{{ player.cover }}', sizes: '192x192', type: 'image/png' }
+            { src: '{{ player.cover }}',  sizes: '96x96',   type: 'image/png' },
+            { src: '{{ player.cover }}', sizes: '128x128', type: 'image/png' },
+            { src: '{{ player.cover }}', sizes: '192x192', type: 'image/png' },
+            { src: '{{ player.cover }}', sizes: '256x256', type: 'image/png' },
+            { src: '{{ player.cover }}', sizes: '384x384', type: 'image/png' },
+            { src: '{{ player.cover }}', sizes: '512x512', type: 'image/png' },
         ];
         navigator.mediaSession.metadata = new MediaMetadata({
             title: decodeHTML('{{ player.title|raw }}'),
@@ -100,7 +105,7 @@
     }
 
     var play = async () => {
-        player.play()
+        await player.play()
         .then(_ => updateMetaData())
         .catch(err => console.log(err));
     }
@@ -130,15 +135,24 @@
         });
     }
 
-    var seekForward = () => {
+    var seekForward = (event) => {
         const skipTime = event.seekOffset || defaultSkipTime;
         player.currentTime = Math.min(player.currentTime + skipTime, player.duration);
         updatePositionState();
     }
 
-    var seekBackward = () => {
+    var seekBackward = (event) => {
         const skipTime = event.seekOffset || defaultSkipTime;
         player.currentTime = Math.max(player.currentTime - skipTime, 0);
+        updatePositionState();
+    }
+
+    var seek = (event) => {
+        if (event.fastSeek && ('fastSeek' in audio)) {
+            player.fastSeek(event.seekTime);
+            return;
+        }
+        player.currentTime = event.seekTime;
         updatePositionState();
     }
 
@@ -172,8 +186,15 @@
         play();
     }
 
+    navigator.mediaSession.setActionHandler('play', async () => await player.play());
+    navigator.mediaSession.setActionHandler('pause', _ => player.pause());
     navigator.mediaSession.setActionHandler('previoustrack', _ => htmx.trigger("#prev-track", "prevTrack"));
     navigator.mediaSession.setActionHandler('nexttrack', _ => htmx.trigger("#next-track", "nextTrack"));
-    navigator.mediaSession.setActionHandler('seekbackward', _ => seekBackward());
-    navigator.mediaSession.setActionHandler('seekforward', _ => seekForward());
+    navigator.mediaSession.setActionHandler('seekbackward', (event) => seekBackward(event));
+    navigator.mediaSession.setActionHandler('seekforward', (event) => seekForward(event));
+    try {
+        navigator.mediaSession.setActionHandler('seekto', (event) => seek(event));
+    } catch(error) {
+        console.log(err);
+    }
 </script>

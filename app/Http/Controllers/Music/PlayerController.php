@@ -18,6 +18,7 @@ class PlayerController extends Controller
     {
         return $this->render("player/index.html.twig", [
             "player" => $this->provider->getPlayer(),
+            "url" => config("app.url"),
         ]);
     }
 
