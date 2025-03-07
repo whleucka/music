@@ -28,7 +28,6 @@
             <button class="btn" id="shuffle"><i class="bi bi-shuffle"></i></button>
         </div>
     </span>
-    {% if player.source %}
     <span id="volume" class="px-5 d-none d-lg-block">
         <div class="d-flex align-items-center">
             <i class="bi bi-volume-up me-1"></i>
@@ -37,7 +36,6 @@
             </div>
         </div>
     </span>
-    {% endif %}
     <audio id="audio" src="{{ player.source }}">Your browser does not support the audio element.</audio>
 </div>
 
