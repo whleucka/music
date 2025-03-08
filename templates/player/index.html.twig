@@ -128,6 +128,7 @@
     }
 
     var setActiveTrack = () => {
+        removeActiveTrack();
         if (currentTrack) {
             currentTrack.classList.toggle("active");
             currentTrack.focus();
@@ -180,7 +181,6 @@
         navigator.mediaSession.playbackState = 'playing';
         playButton.innerHTML = `<i class="bi bi-pause"></i>`;
         trackProgress.classList.remove("disable");
-        removeActiveTrack();
         setActiveTrack();
     }
 
@@ -197,7 +197,6 @@
     player.onended = () => {
         setTrackProgress(0);
         setBufferProgress(8);
-        removeActiveTrack();
         htmx.trigger("#next-track", "nextTrack");
     }
 
