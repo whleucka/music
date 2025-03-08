@@ -57,23 +57,49 @@ class PlayerService
         }
     }
 
-    public function nextTrack(): void
+    public function getNextIndex(): int
     {
         $index = $this->playlist_provider->getCurrentIndex();
         $playlist = $this->playlist_provider->getPlaylist();
-        if (!$playlist) return;
-        if ($index + 1 > count($playlist) - 1) $index = -1;
-        $next_index = $index + 1 % count($playlist);
+        if (!$playlist) return 0;
+        $shuffle = $this->getShuffle();
+
+        if ($shuffle) {
+            $index = rand(0, count($playlist) - 1);
+        } else {
+            // Wrap around
+            if ($index + 1 > count($playlist) - 1) $index = -1;
+        }
+
+        return $index + 1 % count($playlist);
+    }
+
+    public function getPrevIndex(): int
+    {
+        $index = $this->playlist_provider->getCurrentIndex();
+        $playlist = $this->playlist_provider->getPlaylist();
+        if (!$playlist) return 0;
+        $shuffle = $this->getShuffle();
+
+        if ($shuffle) {
+            $index = rand(0, count($playlist) - 1);
+        } else {
+            // Wrap around
+            if ($index - 1 < 0) $index = count($playlist);
+        }
+
+        return $index - 1 % count($playlist);
+    }
+
+    public function nextTrack(): void
+    {
+        $next_index = $this->getNextIndex();
         $this->setPlaylistTrack($next_index);
     }
 
     public function prevTrack(): void
     {
-        $index = $this->playlist_provider->getCurrentIndex();
-        $playlist = $this->playlist_provider->getPlaylist();
-        if (!$playlist) return;
-        if ($index - 1 < 0) $index = count($playlist);
-        $prev_index = $index - 1 % count($playlist);
+        $prev_index = $this->getPrevIndex();
         $this->setPlaylistTrack($prev_index);
     }
 }

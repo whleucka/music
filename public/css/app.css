@@ -82,12 +82,13 @@
 }
 
 #player #info {
-    width: 240px;
+    width: 100%;
+    max-width: 160px;
 }
 
 #player #controls {
     overflow: hidden;
-    margin-right: 10px;
+    margin: 0 10px;
 }
 
 #player #controls #track-progress {
