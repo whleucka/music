@@ -128,8 +128,10 @@
     }
 
     var setActiveTrack = () => {
-        if (currentTrack) currentTrack.classList.toggle("active");
-        currentTrack.focus();
+        if (currentTrack) {
+            currentTrack.classList.toggle("active");
+            currentTrack.focus();
+        }
     }
 
     var removeActiveTrack = () => {
