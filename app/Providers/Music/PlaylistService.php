@@ -4,37 +4,38 @@ namespace App\Providers\Music;
 
 class PlaylistService
 {
-    public function setPlaylist(array $tracks)
+    public function setPlaylist(array $tracks): void
     {
         session()->set("playlist", $tracks);
-        $this->setCurrentIndex(-1);
+        $this->clearCurrentIndex(null);
     }
 
-    public function clearPlaylist()
+    public function clearPlaylist(): void
     {
         session()->delete("playlist");
     }
 
-    public function getPlaylist()
+    public function getPlaylist(): array
     {
-        return session()->get("playlist");
+        return session()->get("playlist") ?? [];
     }
 
-    public function getCurrentIndex()
+    public function getCurrentIndex(): ?int
     {
-        $index = session()->get("playlist_index");
-        if (is_null($index)) {
-            $this->setCurrentIndex(0);
-        }
-        return $index ?? 0;
+        return session()->get("playlist_index");
     }
 
-    public function setCurrentIndex(int $index)
+    public function setCurrentIndex(int $index): void
     {
         session()->set("playlist_index", $index);
     }
 
-    public function randomPlaylist(int $limit = 500)
+    public function clearCurrentIndex(): void
+    {
+        session()->delete("playlist_index");
+    }
+
+    public function randomPlaylist(int $limit = 500): void
     {
         $tracks = db()->fetchAll("SELECT tracks.hash, track_meta.* 
             FROM tracks 
@@ -44,4 +45,3 @@ class PlaylistService
         $this->setPlaylist($tracks);
     }
 }
-

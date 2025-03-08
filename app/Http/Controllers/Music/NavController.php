@@ -7,6 +7,7 @@ use Echo\Framework\Routing\Route\Get;
 
 class NavController extends Controller
 {
+    // Render the navbar
     #[Get("/navbar", "navbar.index")]
     public function index(): string
     {

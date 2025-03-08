@@ -73,7 +73,7 @@ class TracksController extends Controller
 
     // Set search results as playlist
     #[Get("/tracks/set-playlist", "tracks.set-playlist")]
-    public function setPlaylist()
+    public function setPlaylist(): void
     {
         $tracks = $this->track_provider->getSearchResults();
         $this->playlist_provider->setPlaylist($tracks);
@@ -103,104 +103,23 @@ class TracksController extends Controller
         }
     }
 
+    // Stream a track for playback
     #[Get("/tracks/stream/{hash}", "tracks.stream")]
-    public function stream(string $hash)
+    public function stream(string $hash): void
     {
         $track = $this->track_provider->getTrackFromHash($hash);
-
         if ($track) {
-            $pathname = $track->meta()->mime_type !== 'audio/mpeg'
-                ? $track->transcode()
-                : $track->pathname;
-
-            if (!$pathname) exit;
-
-            $filesize = filesize($pathname);
-            $start = 0;
-            $length = $filesize;
-            $end = $filesize - 1;
-
-            // Handle range request
-            if (isset($_SERVER['HTTP_RANGE'])) {
-                preg_match('/bytes=(\d+)-(\d*)/', $_SERVER['HTTP_RANGE'], $matches);
-                $start = isset($matches[1]) ? intval($matches[1]) : 0;
-                $end = isset($matches[2]) && $matches[2] !== '' 
-                    ? intval($matches[2]) 
-                    : $filesize - 1;
-                $length = $end - $start + 1;
-
-                header("HTTP/1.1 206 Partial Content");
-                header("Content-Range: bytes $start-$end/$filesize");
-            } else {
-                header("HTTP/1.1 200 OK");
-            }
-
-            header("Content-Type: audio/mpeg");
-            header("Content-Length: $length");
-            header("Accept-Ranges: bytes");
-            header("Content-Transfer-Encoding: binary");
-
-            $fp = fopen($pathname, 'rb');
-            fseek($fp, $start);
-            echo fread($fp, $length);
-            fclose($fp);
-            exit;
+            $track->stream();
         }
     }
 
     // Display an album cover with specific dimensions
     #[Get("/tracks/cover/{hash}/{width}/{height}", "tracks.cover")]
-    public function cover(string $hash, int $width, int $height): mixed
+    public function cover(string $hash, int $width, int $height): void
     {
         $track = $this->track_provider->getTrackFromHash($hash);
         if ($track) {
-            try {
-                // Set headers
-                $expires = 60 * 60 * 24 * 30; // about a month
-                header("Cache-Control: public, max-age={$expires}");
-                header("Expires: " . gmdate('D, d M Y H:i:s', time() + $expires) . ' GMT');
-                header("Access-Control-Allow-Origin: *");
-                header("Content-Type: image/png");
-
-                $cache_directory = "/tmp/";
-                // Generate a unique cache filename based on the parameters.
-                $dir_name = dirname($track->pathname);
-                $cache_filename = md5($dir_name) . '.png';
-                $cache_filepath = $cache_directory . $cache_filename;
-
-                // Check if the cached image exists.
-                if (file_exists($cache_filepath)) {
-                    // Serve the cached image.
-                    readfile($cache_filepath);
-                    exit;
-                }
-
-                $storage_path = config("paths.covers");
-                $cover = $track->meta()->cover;
-                $filename = basename($cover);
-                $image = $storage_path . $filename;
-
-                if (file_exists($image) && $cover !== "/images/no-album.png") {
-                    $imagick = new \imagick($image);
-                    //crop and resize the image
-                    $imagick->cropThumbnailImage($width, $height);
-                    //remove the canvas
-                    $imagick->setImagePage(0, 0, 0, 0);
-                    $imagick->setImageFormat("png");
-                    // Save the resized image to the cache directory.
-                    $imagick->writeImage($cache_filepath);
-                    echo $imagick->getImageBlob();
-                    exit;
-                } else {
-                    // Serve the no album png
-                    $no_album = config("paths.root") . "/public/images/no-album.png";
-                    readfile($no_album);
-                    exit;
-                }
-            } catch (\Exception $ex) {
-                error_log("imagick error: check logs " . $ex->getMessage());
-                exit;
-            }
+            $track->renderCover($width, $height);
         }
     }
 }

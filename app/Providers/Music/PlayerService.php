@@ -4,12 +4,7 @@ namespace App\Providers\Music;
 
 class PlayerService
 {
-    private PlaylistService $playlist_provider;
-
-    public function __construct()
-    {
-        $this->playlist_provider = new PlaylistService;
-    }
+    public function __construct(private PlaylistService $playlist_provider) {}
 
     public function setPlayer(string $id, string $source, string $cover, string $artist, string $album, string $title): void
     {
@@ -63,15 +58,16 @@ class PlayerService
         $playlist = $this->playlist_provider->getPlaylist();
         if (!$playlist) return 0;
         $shuffle = $this->getShuffle();
-
+        if (is_null($index) && !$shuffle) return 0;
         if ($shuffle) {
             $index = rand(0, count($playlist) - 1);
         } else {
             // Wrap around
-            if ($index + 1 > count($playlist) - 1) $index = -1;
+            if ($index + 1 > count($playlist) - 1) $index = 0;
+            else $index = $index + 1;
         }
 
-        return $index + 1 % count($playlist);
+        return $index % count($playlist);
     }
 
     public function getPrevIndex(): int
@@ -80,15 +76,17 @@ class PlayerService
         $playlist = $this->playlist_provider->getPlaylist();
         if (!$playlist) return 0;
         $shuffle = $this->getShuffle();
+        if (is_null($index) && !$shuffle) return 0;
 
         if ($shuffle) {
             $index = rand(0, count($playlist) - 1);
         } else {
             // Wrap around
-            if ($index - 1 < 0) $index = count($playlist);
+            if ($index - 1 < 0) $index = count($playlist) - 1;
+            else $index = $index - 1;
         }
 
-        return $index - 1 % count($playlist);
+        return $index % count($playlist);
     }
 
     public function nextTrack(): void
