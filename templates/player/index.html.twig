@@ -88,6 +88,7 @@
             artwork
         });
         updatePositionState();
+        setActiveTrack();
     }
 
     var updatePositionState = () => {
@@ -128,8 +129,8 @@
     }
 
     var setActiveTrack = () => {
-        removeActiveTrack();
         if (currentTrack) {
+            removeActiveTrack();
             currentTrack.classList.toggle("active");
             currentTrack.focus();
         }
@@ -181,7 +182,6 @@
         navigator.mediaSession.playbackState = 'playing';
         playButton.innerHTML = `<i class="bi bi-pause"></i>`;
         trackProgress.classList.remove("disable");
-        setActiveTrack();
     }
 
     player.onplaying = () => {
