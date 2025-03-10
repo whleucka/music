@@ -29,7 +29,7 @@ class TracksService
             FROM tracks 
             INNER JOIN track_meta ON track_meta.track_id = tracks.id
             WHERE (artist LIKE ?) OR (album LIKE ?) OR (title LIKE ?) OR (genre LIKE ?) OR (pathname LIKE ?)
-            ORDER BY album,track_number", array_fill(0, 5, "%$term%")) ?? [];
+            ORDER BY album, CAST(track_number as UNSIGNED)", array_fill(0, 5, "%$term%")) ?? [];
     }
 
     public function getTrackFromHash(string $hash): ?Track
