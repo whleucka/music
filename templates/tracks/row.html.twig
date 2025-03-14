@@ -1,5 +1,8 @@
-<div tabIndex="-1" id="{{ track.hash }}" class="track-row d-flex align-items-center truncate {% if id == track.hash %}active{% endif %}" hx-get="/tracks/play/{{ track.hash }}" hx-swap="none" hx-trigger="click" title="{{ track.artist|raw }} - {{ track.title|raw }}">
-    <span class="cover"><img loading="lazy" title="{{ track.album|raw }}" onError="this.src = '/images/no-album.png'" src="/tracks/cover/{{ track.hash }}/28/28" alt="cover" /></span>
-    <span class="title px-1 flex-grow-1 truncate">{{ track.artist|raw }} &mdash; {{ track.title|raw }}</span>
-    <span class="playtime">{{ track.playtime_string }}</span>
+<div tabIndex="-1" id="{{ track.hash }}" class="track-row d-flex align-items-center {% if id == track.hash %}active{% endif %}" title="{{ track.artist|raw }} - {{ track.title|raw }}">
+    <span class"liked px-1 d-flex align-items-center" hx-get="/like/{{ track.hash }}" hx-trigger="load"><i class="like bi bi-heart"></i></span>
+    <span class="cover px-1"><img loading="lazy" title="{{ track.album|raw }}" onError="this.src = '/images/no-album.png'" src="/tracks/cover/{{ track.hash }}/28/28" alt="cover" /></span>
+    <div class="d-flex align-items-center flex-grow-1 truncate" hx-get="/tracks/play/{{ track.hash }}" hx-swap="none" hx-trigger="click">
+        <span class="title px-1 flex-grow-1 truncate">{{ track.artist|raw }} &mdash; {{ track.title|raw }}</span>
+        <span class="playtime">{{ track.playtime_string }}</span>
+    </div>
 </div>

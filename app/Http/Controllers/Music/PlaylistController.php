@@ -4,12 +4,17 @@ namespace App\Http\Controllers\Music;
 
 use App\Providers\Music\PlayerService;
 use App\Providers\Music\PlaylistService;
+use App\Providers\Music\TrackLikeService;
 use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Route\Get;
 
 class PlaylistController extends Controller
 {
-    public function __construct(private PlaylistService $playlist_provider, private PlayerService $player_provider) {}
+    public function __construct(
+        private TrackLikeService $track_like_provider,
+        private PlaylistService $playlist_provider, 
+        private PlayerService $player_provider
+    ) {}
 
     // Playlist view
     #[Get("/playlist", "playlist.index", ["auth"])]
@@ -33,6 +38,15 @@ class PlaylistController extends Controller
     public function random(): void
     {
         $this->playlist_provider->randomPlaylist();
+        trigger("playlist");
+    }
+
+    // Generate a random playlist
+    #[Get("/playlist/liked", "playlist.liked", ["auth"])]
+    public function liked(): void
+    {
+        $tracks = $this->track_like_provider->getUserLikes($this->user->id);
+        $this->playlist_provider->setPlaylist($tracks);
         trigger("playlist");
     }
 

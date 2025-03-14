@@ -4,14 +4,14 @@ namespace App\Http\Controllers\Music;
 
 use App\Providers\Music\PlayerService;
 use App\Providers\Music\PlaylistService;
-use App\Providers\Music\TracksService;
+use App\Providers\Music\TrackService;
 use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Route\Get;
 
 class TracksController extends Controller
 {
     public function __construct(
-        private TracksService $track_provider, 
+        private TrackService $track_provider, 
         private PlayerService $player_provider,
         private PlaylistService $playlist_provider,
     ) {}

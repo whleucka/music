@@ -4,7 +4,7 @@ namespace App\Providers\Music;
 
 use App\Models\Track;
 
-class TracksService
+class TrackService
 {
     public function getSearchTerm(): ?string
     {
