@@ -16,15 +16,22 @@ class TracksController extends Controller
         private PlaylistService $playlist_provider,
     ) {}
 
+    // Default route
+    #[Get("/", "app")]
+    public function app(): void
+    {
+        redirect("/playlist");
+    }
+
     // Tracks view
-    #[Get("/tracks", "tracks.index")]
+    #[Get("/tracks", "tracks.index", ["auth"])]
     public function index(): string
     {
         return $this->render("tracks/index.html.twig");
     }
 
     // Load the search control
-    #[Get("/tracks/control", "tracks.control")]
+    #[Get("/tracks/control", "tracks.control", ["auth"])]
     public function control(): string
     {
         return $this->render("tracks/control.html.twig", [
@@ -33,7 +40,7 @@ class TracksController extends Controller
     }
 
     // Load the search results
-    #[Get("/tracks/results", "tracks.results")]
+    #[Get("/tracks/results", "tracks.results", ["auth"])]
     public function results(): string
     {
         return $this->render("tracks/results.html.twig", [
@@ -43,7 +50,7 @@ class TracksController extends Controller
     }
 
     // Search for a track
-    #[Get("/tracks/search", "tracks.search")]
+    #[Get("/tracks/search", "tracks.search", ["auth"])]
     public function search(): string
     {
         $valid = $this->validate([
@@ -62,7 +69,7 @@ class TracksController extends Controller
     }
 
     // Clear the track search term and results
-    #[Get("/tracks/clear", "tracks.clear")]
+    #[Get("/tracks/clear", "tracks.clear", ["auth"])]
     public function clear(): string
     {
         $this->track_provider->clearSearchTerm();
@@ -72,7 +79,7 @@ class TracksController extends Controller
     }
 
     // Set search results as playlist
-    #[Get("/tracks/set-playlist", "tracks.set-playlist")]
+    #[Get("/tracks/set-playlist", "tracks.set-playlist", ["auth"])]
     public function setPlaylist(): void
     {
         $tracks = $this->track_provider->getSearchResults();
@@ -82,7 +89,7 @@ class TracksController extends Controller
 
 
     // Set the player session and reload the player element
-    #[Get("/tracks/play/{hash}", "tracks.play")]
+    #[Get("/tracks/play/{hash}", "tracks.play", ["auth"])]
     public function play(string $hash): void
     {
         $track = $this->track_provider->getTrackFromHash($hash);
@@ -104,7 +111,7 @@ class TracksController extends Controller
     }
 
     // Stream a track for playback
-    #[Get("/tracks/stream/{hash}", "tracks.stream")]
+    #[Get("/tracks/stream/{hash}", "tracks.stream", ["auth"])]
     public function stream(string $hash): void
     {
         $track = $this->track_provider->getTrackFromHash($hash);
@@ -114,7 +121,7 @@ class TracksController extends Controller
     }
 
     // Display an album cover with specific dimensions
-    #[Get("/tracks/cover/{hash}/{width}/{height}", "tracks.cover")]
+    #[Get("/tracks/cover/{hash}/{width}/{height}", "tracks.cover", ["auth"])]
     public function cover(string $hash, int $width, int $height): void
     {
         $track = $this->track_provider->getTrackFromHash($hash);

@@ -12,14 +12,14 @@ class PlaylistController extends Controller
     public function __construct(private PlaylistService $playlist_provider, private PlayerService $player_provider) {}
 
     // Playlist view
-    #[Get("/playlist", "playlist.index")]
+    #[Get("/playlist", "playlist.index", ["auth"])]
     public function index(): string
     {
         return $this->render("playlist/index.html.twig");
     }
 
     // Load the current playlist
-    #[Get("/playlist/load", "playlist.load")]
+    #[Get("/playlist/load", "playlist.load", ["auth"])]
     public function load(): string
     {
         return $this->render("playlist/load.html.twig", [
@@ -29,7 +29,7 @@ class PlaylistController extends Controller
     }
 
     // Generate a random playlist
-    #[Get("/playlist/random", "playlist.random")]
+    #[Get("/playlist/random", "playlist.random", ["auth"])]
     public function random(): void
     {
         $this->playlist_provider->randomPlaylist();
@@ -37,7 +37,7 @@ class PlaylistController extends Controller
     }
 
     // Clear the current playlist
-    #[Get("/playlist/clear", "playlist.clear")]
+    #[Get("/playlist/clear", "playlist.clear", ["auth"])]
     public function clear(): void
     {
         $this->playlist_provider->clearPlaylist();
