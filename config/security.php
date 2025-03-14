@@ -1,6 +1,7 @@
 <?php
 
 return [
+    "authenticated_route" => "/dashboard",
     "whitelist" => [
     ],
     "blacklist" => [

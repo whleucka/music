@@ -20,7 +20,7 @@ class RegisterController extends Controller
     }
 
     #[Post("/register", "auth.register.post", ["max_requests" => 20])]
-    public function post()
+    public function post(): string
     {
         $this->setValidationMessage("password.min_length", "Must be at least 10 characters");
         $this->setValidationMessage("password.regex", "Must contain 1 upper case, 1 digit, 1 symbol");
@@ -35,7 +35,7 @@ class RegisterController extends Controller
         if ($valid) {
             $success = $this->provider->register($valid->first_name, $valid->surname, $valid->email, $valid->password);
             if ($success) {
-                redirect("/dashboard");
+                redirect(config("security.authenticated_route"));
             } else {
                 Flash::add("warning", "Failed to register new account");
             }

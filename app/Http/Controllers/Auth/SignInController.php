@@ -20,7 +20,7 @@ class SignInController extends Controller
     }
 
     #[Post("/sign-in", "auth.sign-in.post", ["max_requests" => 20])]
-    public function post()
+    public function post(): string
     {
         $valid = $this->validate([
             "email" => ["required", "email"],
@@ -29,7 +29,7 @@ class SignInController extends Controller
         if ($valid) {
             $success = $this->provider->signIn($valid->email, $valid->password);
             if ($success) {
-                redirect("/dashboard");
+                redirect(config("security.authenticated_route"));
             } else {
                 Flash::add("warning", "Invalid email and/or password");
             }
