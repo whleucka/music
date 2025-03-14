@@ -26,16 +26,18 @@ class PlayerController extends Controller
     #[Get("/player/next-track", "player.next-track")]
     public function nextTrack(): void
     {
-        $this->provider->nextTrack();
-        trigger("player");
+        if ($this->provider->nextTrack()) {
+            trigger("player");
+        }
     }
 
     // Play the previous track in the playlist
     #[Get("/player/prev-track", "player.prev-track")]
     public function prevTrack(): void
     {
-        $this->provider->prevTrack();
-        trigger("player");
+        if ($this->provider->prevTrack()) {
+            trigger("player");
+        }
     }
 
     // Get the shuffle button

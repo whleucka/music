@@ -34,8 +34,11 @@ class TrackMeta extends Model
     private function extract(string $filepath, array $picture): ?string
     {
         $cover_directory = config("paths.covers");
-        if (!file_exists($cover_directory)) {
-            throw new \Exception("cover directory does not exist");
+        if (!file_exists($cover_directory) && !mkdir($cover_directory, 0775, true)) {
+            throw new \Exception("Failed to create cover directory: $cover_directory");
+        }
+        if (!is_writable($cover_directory)) {
+            throw new \Exception("cover directory is not writable");
         }
         $ext = match ($picture["image_mime"]) {
             "image/jpeg" => ".jpg",

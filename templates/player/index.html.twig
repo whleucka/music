@@ -3,7 +3,7 @@
         {% if player.source %}
             <div class="loader lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         {% endif %}
-        <img src="{{ player.cover }}" onError="this.src = '/images/no-album.png'" alt="cover" />
+        <img src="{{ player.cover }}" title="{{ player.album|raw }}" onError="this.src = '/images/no-album.png'" alt="cover" />
     </span>
     {% if player.source %}
     <span id="info" class="d-none d-md-block">
