@@ -57,7 +57,7 @@
     height: 28px;
     border-radius: 4px;
 }
-.track-row .liked.active {
+.track-row .liked {
     color: #222;
     opacity: 0.8;
 }
