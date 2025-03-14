@@ -59,4 +59,40 @@ class PlaylistController extends Controller
         $this->playlist_provider->clearPlaylist();
         trigger("playlist");
     }
+
+    // Play the next track in the playlist
+    #[Get("/playlist/next-track", "playlist.next-track", ["auth"])]
+    public function nextTrack(): void
+    {
+        if ($this->playlist_provider->nextTrack()) {
+            trigger("player");
+        }
+    }
+
+    // Play the previous track in the playlist
+    #[Get("/playlist/prev-track", "playlist.prev-track", ["auth"])]
+    public function prevTrack(): void
+    {
+        if ($this->playlist_provider->prevTrack()) {
+            trigger("player");
+        }
+    }
+
+    // Get the shuffle button
+    #[Get("/playlist/shuffle", "playlist.shuffle", ["auth"])]
+    public function shuffle(): string
+    {
+        $state = $this->playlist_provider->getShuffle();
+        return $this->render("player/shuffle.html.twig", [
+            "state" => $state
+        ]);
+    }
+
+    // Toggle the shuffle button
+    #[Get("/playlist/shuffle/toggle", "playlist.shuffle-toggle", ["auth"])]
+    public function shuffleToggle(): string
+    {
+        $this->playlist_provider->toggleShuffle();
+        return $this->shuffle();
+    }
 }
