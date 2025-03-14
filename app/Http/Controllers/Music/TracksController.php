@@ -105,7 +105,7 @@ class TracksController extends Controller
                 }
             }
             $meta = $track->meta();
-            $this->player_provider->setPlayer($hash, "/tracks/stream/$hash", $meta->cover, $meta->artist, $meta->album, $meta->title);
+            $this->playlist_provider->setPlayer($hash, "/tracks/stream/$hash", $meta->cover, $meta->artist, $meta->album, $meta->title);
             trigger("player");
         }
     }
