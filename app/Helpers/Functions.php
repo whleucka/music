@@ -3,7 +3,6 @@
 use App\Application;
 use App\Http\Kernel as HttpKernel;
 use App\Console\Kernel as ConsoleKernel;
-use App\Models\User;
 use Echo\Framework\Container\Container;
 use Echo\Framework\Database\Connection;
 use Echo\Framework\Database\Drivers\MySQL;
@@ -12,14 +11,6 @@ use Echo\Framework\Routing\Router;
 use Echo\Framework\Session\Session;
 use Echo\Interface\Http\Request as HttpRequest;
 use Echo\Interface\Routing\Router as RoutingRouter;
-
-function user(): ?User
-{
-    $uuid = session()->get("user_uuid");
-    return $uuid
-        ? User::where("uuid", $uuid)
-        : null;
-}
 
 function redirect(string $path): void {
     if (request()->headers->has('Hx-Request')) {
