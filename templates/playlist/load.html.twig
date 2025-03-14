@@ -9,7 +9,9 @@
     </div>
 {% else %}
     <div id="actions" class="sticky-top bg-white d-flex py-1">
-        <button class="btn btn-sm btn-primary" type="submit" hx-get="/playlist/liked" hx-swap="none">Liked tracks</button>
+        {% if has_liked %}
+            <button class="btn btn-sm btn-primary" type="submit" hx-get="/playlist/liked" hx-swap="none">Liked tracks</button>
+        {% endif %}
         <button class="btn btn-sm btn-primary" type="submit" hx-get="/playlist/random" hx-swap="none">Random tracks</button>
     </div>
     <div class="mt-2"><em>Playlist is empty</em></div>

@@ -27,7 +27,9 @@ class PlaylistController extends Controller
     #[Get("/playlist/load", "playlist.load", ["auth"])]
     public function load(): string
     {
+        $tracks = $this->track_like_provider->getUserLikes($this->user->id);
         return $this->render("playlist/load.html.twig", [
+            "has_liked" => ($tracks),
             "tracks" => $this->playlist_provider->getPlaylist(),
             "id" => $this->player_provider->getPlayer()["id"],
         ]);
