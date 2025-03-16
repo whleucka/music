@@ -17,10 +17,6 @@
     margin-bottom: 8px;
 }
 
-.track-row.active {
-    font-weight: 800;
-}
-
 .track-row:hover {
     cursor: pointer;
     background-color: rgba(0,0,0, 0.05);
@@ -32,7 +28,8 @@
     border-radius: 6px;
 }
 
-.track-row .title {
+.track-row.active .title {
+    font-weight: 800;
 }
 
 .track-row .artist {
