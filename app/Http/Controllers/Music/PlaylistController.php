@@ -39,7 +39,7 @@ class PlaylistController extends Controller
     #[Get("/playlist/random", "playlist.random", ["auth"])]
     public function random(): void
     {
-        $this->playlist_provider->randomPlaylist();
+        $this->playlist_provider->randomPlaylist($this->user->id);
         trigger("playlist");
     }
 

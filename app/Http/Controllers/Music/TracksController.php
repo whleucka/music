@@ -45,7 +45,7 @@ class TracksController extends Controller
     {
         return $this->render("tracks/results.html.twig", [
             "term" => $this->track_provider->getSearchTerm(),
-            "tracks" => $this->track_provider->getSearchResults(),
+            "tracks" => $this->track_provider->getSearchResults($this->user->id),
         ]);
     }
 
@@ -82,7 +82,7 @@ class TracksController extends Controller
     #[Get("/tracks/set-playlist", "tracks.set-playlist", ["auth"])]
     public function setPlaylist(): void
     {
-        $tracks = $this->track_provider->getSearchResults();
+        $tracks = $this->track_provider->getSearchResults($this->user->id);
         $this->playlist_provider->setPlaylist($tracks);
         location("/playlist", select: "#view", target: "#view", swap: "outerHTML");
     }

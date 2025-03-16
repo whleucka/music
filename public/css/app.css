@@ -13,12 +13,8 @@
 }
 
 /** Tracks */
-.track-row {
-    font-size: 1.2rem;
-}
-
 .track-row:not(:last-child) {
-    margin-bottom: 5px;
+    margin-bottom: 8px;
 }
 
 .track-row.active {
@@ -31,13 +27,25 @@
 }
 
 .track-row .cover img {
-    width: 28px;
-    height: 28px;
-    border-radius: 4px;
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
 }
+
+.track-row .title {
+}
+
+.track-row .artist {
+    font-size: 0.8rem;
+}
+
+.track-row .like {
+    font-size: 1.5rem;
+}
+
 .track-row .liked {
     color: #222;
-    opacity: 0.8;
+    opacity: 0.3;
 }
 
 .track-row .liked.active {

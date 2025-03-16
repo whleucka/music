@@ -35,13 +35,13 @@ class PlaylistService
         session()->delete("playlist_index");
     }
 
-    public function randomPlaylist(int $limit = 500): void
+    public function randomPlaylist(int $user_id, int $limit = 500): void
     {
-        $tracks = db()->fetchAll("SELECT tracks.hash, track_meta.* 
+        $tracks = db()->fetchAll("SELECT tracks.hash, track_meta.*, (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = tracks.id) as liked
             FROM tracks 
             INNER JOIN track_meta ON track_meta.track_id = tracks.id 
             ORDER BY RAND() 
-            LIMIT $limit");
+            LIMIT $limit", [$user_id]);
         $this->setPlaylist($tracks);
     }
 
