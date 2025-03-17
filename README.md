@@ -1,7 +1,7 @@
 # Music
 ![php composer](https://github.com/whleucka/echo/actions/workflows/php.yml/badge.svg)
 
-![image](https://github.com/user-attachments/assets/8eef55e1-04ec-4223-97a5-2c7040de8cf3)
+![image](https://github.com/user-attachments/assets/da498d70-1372-4f3c-abc0-32498e702782)
 WIP: coming soon
 
 ### License
