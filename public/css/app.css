@@ -215,10 +215,17 @@
     }
 }
 
+/** Now playing (playlist) */
+#top-play {
+    font-size: 2.0rem;
+    font-weight: bold;
+}
+
+
 /** Playlists */
 .header {
-    padding: 20px;
-    height: 190px;
+    padding: 10px;
+    height: 150px;
 }
 
 .header h2 {
@@ -228,6 +235,10 @@
 /**
  * Utility
  */
+.hidden {
+    display: none;
+}
+
 *:focus {
     box-shadow: none !important;
     outline-style: none;
@@ -313,10 +324,12 @@
 /** Larger devices */
 @media (min-width: 576px) {
     .header {
-        padding: 15px;
         height: 180px;
     }
     .header h2 {
         font-size: 3rem !important;
+    }
+    #top-play {
+        font-size: 2.5rem;
     }
 }

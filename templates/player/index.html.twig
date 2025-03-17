@@ -107,6 +107,7 @@
     }
 
     var play = async () => {
+        if (!id) document.getElementById("next-track").click();
         player.playbackRate = 1.0;
         await player.play()
             .then(_ => updateMetaData())
