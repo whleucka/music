@@ -296,7 +296,7 @@
 @media (min-width: 576px) {
     .header {
         padding: 15px;
-        height: 150px;
+        height: 180px;
     }
     .header h2 {
         font-size: 3rem !important;
