@@ -222,7 +222,7 @@
 }
 
 .header h2 {
-    font-size: 3rem !important;
+    font-size: 2rem !important;
 }
 
 /**
@@ -290,4 +290,15 @@
 
 #navbar #menu .nav-item {
     white-space: nowrap;
+}
+
+/** Larger devices */
+@media (min-width: 576px) {
+    .header {
+        padding: 15px;
+        height: 150px;
+    }
+    .header h2 {
+        font-size: 3rem !important;
+    }
 }
