@@ -217,7 +217,7 @@
 
 /** Now playing (playlist) */
 #top-play {
-    font-size: 2.0rem;
+    font-size: 2.5rem;
     font-weight: bold;
 }
 
@@ -317,6 +317,10 @@
     width: 60%;
 }
 
+#navbar #menu #top-search input {
+    border: 1px solid #ddd;
+}
+
 #navbar #menu .nav-item {
     white-space: nowrap;
 }
@@ -330,6 +334,6 @@
         font-size: 3rem !important;
     }
     #top-play {
-        font-size: 2.5rem;
+        font-size: 3rem;
     }
 }

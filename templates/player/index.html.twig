@@ -23,7 +23,7 @@
             <button class="btn" id="play" onClick="playPause()"><i class="bi bi-play"></i></button>
             <button class="btn" id="fast-forward" onClick="seekForward(event)"><i class="bi bi-fast-forward"></i></button>
             <button class="btn" id="next-track" hx-get="/playlist/next-track" hx-trigger="click, nextTrack from:body" hx-swap="none"><i class="bi bi-skip-end"></i></button>
-            <button class="btn" hx-get="/playlist/shuffle"hx-trigger="load" hx-swap="outerHTML" style="width: 48px;"></button>
+            <button class="btn {% if player.shuffle %}active{% endif %}" hx-get="/playlist/shuffle/toggle" hx-swap="outerHTML" id="shuffle"><i class="bi bi-shuffle"></i></button>
         </div>
     </span>
     <span id="volume" class="d-none d-lg-block me-3">

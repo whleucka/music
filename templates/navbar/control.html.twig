@@ -1,0 +1,5 @@
+<div id="top-search" class="d-flex ms-auto justify-content-end">
+    <form method="GET" hx-get="/tracks/search?redirect=true" hx-on::after-request="document.querySelector('#search-term').value = ''" swap="none">
+        <input id="search-term" class="form-control" type="input" placeholder="Search tracks" name="term" />
+    </form>
+</div>

@@ -93,10 +93,11 @@ class PlaylistService
         return session()->get("shuffle") ?? false;
     }
 
-    public function toggleShuffle(): void
+    public function toggleShuffle(): bool
     {
         $state = $this->getShuffle();
         session()->set("shuffle", !$state);
+        return !$state;
     }
 
     public function setPlayer(string $id, string $source, string $cover, string $artist, string $album, string $title): void

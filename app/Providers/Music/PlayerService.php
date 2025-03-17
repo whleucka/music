@@ -13,6 +13,7 @@ class PlayerService
             "artist" => "",
             "album" => "",
             "title" => "",
+            "shuffle" => session()->get("shuffle") ?? false,
         ];
     }
 }

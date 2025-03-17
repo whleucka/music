@@ -7,6 +7,7 @@ body, html, #content {
 }
 
 #sign-in form, #register form {
+    width: 350px;
     border-radius: 10px;
     padding: 20px;
     background-color: #fff;
