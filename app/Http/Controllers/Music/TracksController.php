@@ -83,7 +83,7 @@ class TracksController extends Controller
     public function setPlaylist(): void
     {
         $tracks = $this->track_provider->getSearchResults($this->user->id);
-        $this->playlist_provider->setPlaylist($tracks);
+        $this->playlist_provider->setPlaylistTracks($tracks);
         location("/playlist", select: "#view", target: "#view", swap: "outerHTML");
     }
 

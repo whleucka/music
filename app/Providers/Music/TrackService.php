@@ -25,7 +25,8 @@ class TrackService
     {
         $term = $this->getSearchTerm();
         if (!$term) return [];
-        return db()->fetchAll("SELECT tracks.hash, track_meta.*, (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = tracks.id) as liked
+        return db()->fetchAll("SELECT tracks.hash, track_meta.*, 
+            (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = tracks.id) as liked
             FROM tracks 
             INNER JOIN track_meta ON track_meta.track_id = tracks.id
             WHERE (artist LIKE ?) OR (album LIKE ?) OR (title LIKE ?) OR (genre LIKE ?) OR (pathname LIKE ?)

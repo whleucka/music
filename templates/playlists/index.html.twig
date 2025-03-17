@@ -1,0 +1,8 @@
+{% extends "layout/app.html.twig" %}
+
+{% block view %}
+    <section id="playlist" class="h-100 scroll-cont">
+        <h2 class="p-2 fw-bold"><i class="bi bi-file-earmark-music"></i> Playlists</h2>
+        <div id="load" class="p-2" hx-get="/playlists/load" hx-trigger="load, playlists from:body"></div>
+    </section>
+{% endblock %}

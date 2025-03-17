@@ -4,16 +4,16 @@ namespace App\Models;
 
 use Echo\Framework\Database\Model;
 
-class TrackLike extends Model
+class PlaylistTrack extends Model
 {
     public function __construct(?string $id = null)
     {
-        parent::__construct('track_likes', $id);
+        parent::__construct('playlist_tracks', $id);
     }
 
-    public function user(): User
+    public function playlist(): Playlist
     {
-        return User::find($this->user_id);
+        return Playlist::find($this->playlist_id);
     }
 
     public function track(): Track
@@ -21,3 +21,4 @@ class TrackLike extends Model
         return Track::find($this->track_id);
     }
 }
+

@@ -12,7 +12,7 @@ class PlayerController extends Controller
     {}
 
     // Player view
-    #[Get("/player", "player.index", ["auth"])]
+    #[Get("/player", "player.index")]
     public function index(): string
     {
         return $this->render("player/index.html.twig", [

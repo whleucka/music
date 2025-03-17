@@ -2,12 +2,54 @@
 
 namespace App\Providers\Music;
 
+use App\Models\Playlist;
+
 class PlaylistService
 {
-    public function setPlaylist(array $tracks): void
+    public function setPlaylistTracks(array $tracks): void
     {
         session()->set("playlist", $tracks);
         $this->clearCurrentIndex(null);
+    }
+
+    public function setPlaylist(int $playlist_id): void
+    {
+        $tracks = $this->getPlaylistTracks($playlist_id);
+        $this->setPlaylistTracks($tracks ?? []);
+    }
+
+    public function getPlaylists(int $user_id): ?array
+    {
+        return db()->fetchAll("SELECT *
+            FROM playlists
+            WHERE user_id = ?", [$user_id]);
+    }
+
+    public function getPlaylistTracks(int $playlist_id): ?array
+    {
+        return db()->fetchAll("SELECT tracks.hash, track_meta.*,
+            (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = tracks.id) as liked
+            FROM playlist_tracks 
+            INNER JOIN tracks ON tracks.id = playlist_tracks.track_id
+            INNER JOIN track_meta ON track_meta.track_id= tracks.id
+            WHERE playlist_id = ?
+            ORDER BY track_meta.artist, track_meta.album, CAST(track_number as UNSIGNED)", [$playlist_id]);
+    }
+
+    public function createPlaylist(int $user_id, string $name): Playlist|bool
+    {
+        return Playlist::create([
+            "user_id" => $user_id,
+            "name" => $name,
+        ]);
+    }
+
+    public function deletePlaylist(int $playlist_id): void
+    {
+        $playlist = Playlist::find($playlist_id);
+        if ($playlist) {
+            $playlist->delete();
+        }
     }
 
     public function clearPlaylist(): void
@@ -37,12 +79,13 @@ class PlaylistService
 
     public function randomPlaylist(int $user_id, int $limit = 500): void
     {
-        $tracks = db()->fetchAll("SELECT tracks.hash, track_meta.*, (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = tracks.id) as liked
+        $tracks = db()->fetchAll("SELECT tracks.hash, track_meta.*, 
+            (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = tracks.id) as liked
             FROM tracks 
             INNER JOIN track_meta ON track_meta.track_id = tracks.id 
             ORDER BY RAND() 
             LIMIT $limit", [$user_id]);
-        $this->setPlaylist($tracks);
+        $this->setPlaylistTracks($tracks);
     }
 
     public function getShuffle(): bool

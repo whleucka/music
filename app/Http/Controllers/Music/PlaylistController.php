@@ -48,7 +48,7 @@ class PlaylistController extends Controller
     public function liked(): void
     {
         $tracks = $this->track_like_provider->getUserLikes($this->user->id);
-        $this->playlist_provider->setPlaylist($tracks);
+        $this->playlist_provider->setPlaylistTracks($tracks);
         trigger("playlist");
     }
 

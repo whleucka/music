@@ -17,7 +17,8 @@ class TrackLikeService
             FROM track_likes 
             INNER JOIN tracks ON tracks.id = track_likes.track_id
             INNER JOIN track_meta ON track_meta.track_id= tracks.id
-            WHERE user_id = ?", [$user_id]);
+            WHERE user_id = ?
+            ORDER BY track_meta.artist, track_meta.album, CAST(track_number as UNSIGNED)", [$user_id]);
     }
 
     public function likeTrack(int $user_id, int $track_id): void
