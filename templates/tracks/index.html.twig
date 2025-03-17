@@ -2,9 +2,11 @@
 
 {% block view %}
     <section id="tracks" class="h-100 scroll-cont">
-        <h2 class="p-2 fw-bold"><i class="bi bi-disc"></i> Tracks</h2>
-        <div id="search" class="p-2" hx-get="/tracks/control" hx-trigger="load"></div>
-        <div id="results" class="p-2" hx-get="/tracks/results" hx-trigger="load, trackResults from:body"></div>
+        <div class="header bg-sin">
+            <h2 class="p-2 fw-bold"><i class="bi bi-disc"></i> Tracks</h2>
+            <div id="search" class="p-2" hx-get="/tracks/control" hx-trigger="load"></div>
+        </div>
+        <div id="results" class="p-2" hx-get="/tracks/load" hx-trigger="load, trackResults from:body"></div>
     </section>
 {% endblock %}
 

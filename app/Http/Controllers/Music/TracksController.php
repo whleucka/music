@@ -40,10 +40,10 @@ class TracksController extends Controller
     }
 
     // Load the search results
-    #[Get("/tracks/results", "tracks.results", ["auth"])]
-    public function results(): string
+    #[Get("/tracks/load", "tracks.load", ["auth"])]
+    public function load(): string
     {
-        return $this->render("tracks/results.html.twig", [
+        return $this->render("tracks/load.html.twig", [
             "term" => $this->track_provider->getSearchTerm(),
             "tracks" => $this->track_provider->getSearchResults($this->user->id),
         ]);

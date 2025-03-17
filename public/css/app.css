@@ -56,14 +56,13 @@
 /**
  * Actions
  */
-#actions button.btn-primary {
+#actions .btn-primary {
     background: #DA22FF;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #9733EE, #DA22FF);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #9733EE, #DA22FF); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    border: 1px solid #DA22FF;
 }
 
-#actions button:not(:last-child) {
+#actions .btn:not(:last-child) {
     margin-right: 5px;
 }
 
@@ -216,12 +215,23 @@
     }
 }
 
+/** Playlists */
+.header {
+    padding: 20px;
+    height: 190px;
+}
+
+.header h2 {
+    font-size: 3rem !important;
+}
+
 /**
  * Utility
  */
 *:focus {
     box-shadow: none !important;
     outline-style: none;
+    border: 0;
 }
 
 .scroll-cont {
@@ -231,6 +241,7 @@
 
 /** Buttons */
 .btn {
+    border: none;
     opacity: 0.8;
 }
 .btn:hover {
@@ -240,13 +251,31 @@
     background: #36D1DC;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #5B86E5, #36D1DC);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #5B86E5, #36D1DC); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    border: 1px solid #36D1DC;
 }
 .btn-danger {
     background: #FF416C;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #FF4B2B, #FF416C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-    border: 1px soild #FF416C;
+}
+
+/** Colours */
+.bg-moon {
+    color: #fff;
+    background: #4e54c8;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to top, #8f94fb, #4e54c8);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to top, #8f94fb, #4e54c8); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.bg-sin {
+    color: #fff;
+    background: #ED213A;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to bottom, #93291E, #ED213A);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #93291E, #ED213A); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+.bg-lush {
+    color: #fff;
+    background: #56ab2f;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to top, #a8e063, #56ab2f);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to top, #a8e063, #56ab2f); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 

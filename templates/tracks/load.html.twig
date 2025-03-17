@@ -13,4 +13,9 @@
         <button class="btn btn-sm btn-danger" type="submit" hx-get="/tracks/clear" hx-target="#tracks #search">Clear search</button>
     </div>
     <div class="mt-2"><em>No search results for '{{ term }}'</em></div>
+{% else %}
+    <div id="actions" class="sticky-top bg-white d-flex py-1">
+        <a class="btn btn-sm btn-primary" hx-boost="true" href="/playlists" hx-swap="outerHTML" hx-target="#view" hx-select="#view">Create new playlist</a>
+    </div>
+    <div class="mt-2"><em>Try searching for an artist, album, title, or genre!</em></div>
 {% endif %}
