@@ -133,15 +133,15 @@ class PlaylistService
     {
         $index = $this->getPlaylistTrackIndex();
         $playlist = $this->getPlaylistTracks();
-        if (!$playlist || count($playlist) <= 1) return null;
         $shuffle = $this->getShuffle();
+
+        if (!$playlist || count($playlist) <= 1) return null;
         if (is_null($index) && !$shuffle) return 0;
+
         if ($shuffle) {
             $index = rand(0, count($playlist) - 1);
         } else {
-            // Wrap around
-            if ($index + 1 > count($playlist) - 1) $index = 0;
-            else $index = $index + 1;
+            $index = $index + 1;
         }
 
         return $index % count($playlist);
@@ -151,16 +151,15 @@ class PlaylistService
     {
         $index = $this->getPlaylistTrackIndex();
         $playlist = $this->getPlaylistTracks();
-        if (!$playlist || count($playlist) <= 1) return null;
         $shuffle = $this->getShuffle();
+
+        if (!$playlist || count($playlist) <= 1) return null;
         if (is_null($index) && !$shuffle) return 0;
 
         if ($shuffle) {
             $index = rand(0, count($playlist) - 1);
         } else {
-            // Wrap around
-            if ($index - 1 < 0) $index = count($playlist) - 1;
-            else $index = $index - 1;
+            $index = $index - 1;
         }
 
         return $index % count($playlist);
