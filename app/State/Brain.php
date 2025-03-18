@@ -17,6 +17,6 @@ class Brain
 
     public function __get(string $name): mixed
     {
-        return $this->state[$name];
+        return $this->state[$name] ?? throw new \Exception("brain state does not exist: $name");
     }
 }

@@ -97,9 +97,9 @@ class TracksController extends Controller
         if ($track) {
             $tracks = $this->playlist_provider->getPlaylistTracks();
             if ($tracks) {
-                foreach ($tracks as $idx => $playlist_track) {
+                foreach ($tracks as $index => $playlist_track) {
                     if ($playlist_track['hash'] === $hash) {
-                        $this->playlist_provider->setPlaylistIndex($idx);
+                        $this->playlist_provider->setPlaylistTrackIndex($index);
                         break;
                     }
                 }

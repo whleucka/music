@@ -66,22 +66,21 @@ class PlaylistService
     public function setPlaylistTracks(array $tracks): void
     {
         brain()->playlist->tracks = $tracks;
-        $this->clearPlaylistIndex(null);
     }
 
-    public function getPlaylistIndex(): ?int
+    public function getPlaylistTrackIndex(): ?int
     {
-        return brain()->playlist->index;
+        return brain()->playlist->track_index;
     }
 
-    public function setPlaylistIndex(int $index): void
+    public function setPlaylistTrackIndex(int $index): void
     {
-        brain()->playlist->index = $index;
+        brain()->playlist->track_index = $index;
     }
 
-    public function clearPlaylistIndex(): void
+    public function clearPlaylistTrackIndex(): void
     {
-        brain()->playlist->index = null;
+        brain()->playlist->track_index = null;
     }
 
     public function setRandomPlaylist(int $user_id, int $limit = 500): void
@@ -123,7 +122,7 @@ class PlaylistService
     public function setPlaylistTrack(int $index): void
     {
         $playlist = $this->getPlaylistTracks();
-        $this->setPlaylistIndex($index);
+        $this->setPlaylistTrackIndex($index);
         $track = $playlist[$index] ?? null;
         if ($track) {
             $this->setPlayer($track['hash'], "/tracks/stream/{$track['hash']}", $track['cover'], $track['artist'], $track['album'], $track['title']);
@@ -132,7 +131,7 @@ class PlaylistService
 
     public function getNextIndex(): ?int
     {
-        $index = $this->getPlaylistIndex();
+        $index = $this->getPlaylistTrackIndex();
         $playlist = $this->getPlaylistTracks();
         if (!$playlist || count($playlist) <= 1) return null;
         $shuffle = $this->getShuffle();
@@ -150,7 +149,7 @@ class PlaylistService
 
     public function getPrevIndex(): ?int
     {
-        $index = $this->getPlaylistIndex();
+        $index = $this->getPlaylistTrackIndex();
         $playlist = $this->getPlaylistTracks();
         if (!$playlist || count($playlist) <= 1) return null;
         $shuffle = $this->getShuffle();

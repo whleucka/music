@@ -12,7 +12,7 @@ class Playlist
     public string $state_name = "playlist";
     public array $default = [
         "id" => "",
-        "index" => 0,
+        "track_index" => 0,
         "tracks" => [],
     ];
 }

@@ -4,17 +4,9 @@ namespace Echo\Traits\State;
 
 trait SessionProperties
 {
-    public function __construct()
-    {
-        $state = $this->getState();
-        if (is_null($state)) {
-            session()->set($this->state_name, $this->default);
-        }
-    }
-
     public function getState(): ?array
     {
-        return session()->get($this->state_name);
+        return session()->get($this->state_name) ?? $this->default;
     }
 
     public function setState(array $state)
@@ -32,6 +24,6 @@ trait SessionProperties
     public function __get($name): mixed
     {
         $state = $this->getState();
-        return $state[$name];
+        return $state[$name] ?? null;
     }
 }
