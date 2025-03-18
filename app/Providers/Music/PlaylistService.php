@@ -115,6 +115,7 @@ class PlaylistService
             "artist" => $artist,
             "album" => $album,
             "title" => $title,
+            "shuffle" => $this->getShuffle(),
         ];
         brain()->player->setState($player);
     }
