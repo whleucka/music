@@ -1,6 +1,9 @@
+{% include 'components/validation.html.twig' with {'validate': 'name'} %}
 {% if playlists %}
     <div class="mt-2">
-        <p>wip</p>
+        {% for playlist in playlists %}
+            {% include "playlists/row.html.twig" %}
+        {% endfor %}
     </div>
 {% else %}
     <div class="mt-2"><em>There are no playlists yet</em></div>

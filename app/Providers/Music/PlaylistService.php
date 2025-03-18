@@ -57,7 +57,14 @@ class PlaylistService
         session()->delete("playlist");
     }
 
-    public function getPlaylist(): array
+    public function getPlaylist(int $user_id, string $uuid): ?array
+    {
+        return db()->fetch("SELECT * 
+            FROM playlists 
+            WHERE user_id = ? AND uuid = ?", [$user_id, $uuid]);
+    }
+
+    public function getCurrentPlaylistTracks(): array
     {
         return session()->get("playlist") ?? [];
     }
@@ -115,7 +122,7 @@ class PlaylistService
 
     public function setPlaylistTrack(int $index): void
     {
-        $playlist = $this->getPlaylist();
+        $playlist = $this->getCurrentPlaylistTracks();
         $this->setCurrentIndex($index);
         $track = $playlist[$index] ?? null;
         if ($track) {
@@ -126,7 +133,7 @@ class PlaylistService
     public function getNextIndex(): ?int
     {
         $index = $this->getCurrentIndex();
-        $playlist = $this->getPlaylist();
+        $playlist = $this->getCurrentPlaylistTracks();
         if (!$playlist || count($playlist) <= 1) return null;
         $shuffle = $this->getShuffle();
         if (is_null($index) && !$shuffle) return 0;
@@ -144,7 +151,7 @@ class PlaylistService
     public function getPrevIndex(): ?int
     {
         $index = $this->getCurrentIndex();
-        $playlist = $this->getPlaylist();
+        $playlist = $this->getCurrentPlaylistTracks();
         if (!$playlist || count($playlist) <= 1) return null;
         $shuffle = $this->getShuffle();
         if (is_null($index) && !$shuffle) return 0;

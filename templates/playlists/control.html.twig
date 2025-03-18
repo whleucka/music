@@ -1,0 +1,6 @@
+<form method="GET" hx-get="/playlists/create" hx-swap="none" hx-on:submit="document.getElementById('name').value = ''">
+    <div class="input-group">
+        <input id="name" class="form-control bg-light border-0" type="input" placeholder="Playlist name..." name="name" value="" />
+        <button style="opacity: 1;" class="btn bg-light text-dark" type="submit"><i class="bi bi-plus-circle"></i> Create</button>
+    </div>
+</form>

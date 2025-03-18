@@ -61,7 +61,7 @@ class TracksController extends Controller
             $this->track_provider->setSearchTerm($valid->term);
         }
 
-        trigger("trackResults");
+        trigger("tracks");
         if ($this->request->get->has('redirect')) {
             location("/tracks", select: "#view", target: "#view", swap: "outerHTML");
         }
@@ -74,7 +74,7 @@ class TracksController extends Controller
     {
         $this->track_provider->clearSearchTerm();
 
-        trigger("trackResults");
+        trigger("tracks");
         return $this->control();
     }
 
@@ -95,7 +95,7 @@ class TracksController extends Controller
         $track = $this->track_provider->getTrackFromHash($hash);
 
         if ($track) {
-            $playlist = $this->playlist_provider->getPlaylist();
+            $playlist = $this->playlist_provider->getCurrentPlaylistTracks();
             if ($playlist) {
                 foreach ($playlist as $idx => $playlist_track) {
                     if ($playlist_track['hash'] === $hash) {

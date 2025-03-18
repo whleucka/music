@@ -221,8 +221,13 @@
     font-weight: bold;
 }
 
-
 /** Playlists */
+#playlists #load div {
+    margin-bottom: 4px;
+}
+
+
+/** Headers */
 .header {
     padding: 10px;
     height: 150px;
@@ -252,7 +257,7 @@
 
 /** Buttons */
 .btn {
-    border: none;
+    border: 0;
     opacity: 0.8;
 }
 .btn:hover {

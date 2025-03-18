@@ -30,7 +30,7 @@ class PlaylistController extends Controller
         $tracks = $this->track_like_provider->getUserLikes($this->user->id);
         return $this->render("playlist/load.html.twig", [
             "has_liked" => ($tracks),
-            "tracks" => $this->playlist_provider->getPlaylist(),
+            "tracks" => $this->playlist_provider->getCurrentPlaylistTracks(),
             "id" => $this->player_provider->getPlayer()["id"],
         ]);
     }

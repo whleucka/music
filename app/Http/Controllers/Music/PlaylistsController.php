@@ -26,4 +26,28 @@ class PlaylistsController extends Controller
             "playlists" => $this->provider->getPlaylists($this->user->id)
         ]);
     }
+
+    #[Get("/playlists/create", "playlists.create", ["auth"])]
+    public function create(): void
+    {
+        $valid = $this->validate([
+            "name" => ["required", "min_length:2"]
+        ]);
+
+        if ($valid) {
+            $this->provider->createPlaylist($this->user->id, $valid->name);
+        }
+
+        trigger("playlists");
+    }
+
+    #[Get("/playlists/delete/{uuid}", "playlists.delete", ["auth"])]
+    public function delete(string $uuid): void
+    {
+        $playlist = $this->provider->getPlaylist($this->user->id, $uuid);
+        if ($playlist) {
+            $this->provider->deletePlaylist($playlist['id']);
+            trigger("playlists");
+        }
+    }
 }

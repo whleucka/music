@@ -1,0 +1,7 @@
+<div class="d-flex align-items-center truncate w-100">
+    <span class="flex-grow-1 truncate">{{ playlist.name}}</span>
+    <div>
+        <button class="btn btn-primary" hx-get="/playlists/load/{{ playlist.uuid }}">Load</button>
+        <button class="btn btn-danger" hx-confirm="Are you sure you want to delete this playlist?" hx-get="/playlists/delete/{{ playlist.uuid }}">Delete</button>
+    </div>
+</div>
