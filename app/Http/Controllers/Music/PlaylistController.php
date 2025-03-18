@@ -30,7 +30,7 @@ class PlaylistController extends Controller
         $tracks = $this->track_like_provider->getUserLikes($this->user->id);
         return $this->render("playlist/load.html.twig", [
             "has_liked" => ($tracks),
-            "tracks" => $this->playlist_provider->getCurrentPlaylistTracks(),
+            "tracks" => $this->playlist_provider->getPlaylistTracks(),
             "id" => $this->player_provider->getPlayer()["id"],
         ]);
     }
@@ -39,7 +39,7 @@ class PlaylistController extends Controller
     #[Get("/playlist/random", "playlist.random", ["auth"])]
     public function random(): void
     {
-        $this->playlist_provider->randomPlaylist($this->user->id);
+        $this->playlist_provider->setRandomPlaylist($this->user->id);
         trigger("playlist");
     }
 
@@ -56,7 +56,7 @@ class PlaylistController extends Controller
     #[Get("/playlist/clear", "playlist.clear", ["auth"])]
     public function clear(): void
     {
-        $this->playlist_provider->clearPlaylist();
+        $this->playlist_provider->clearPlaylistTracks();
         trigger("playlist");
     }
 

@@ -11,7 +11,7 @@ use Echo\Framework\Routing\Route\Get;
 class TracksController extends Controller
 {
     public function __construct(
-        private TrackService $track_provider, 
+        private TrackService $track_provider,
         private PlayerService $player_provider,
         private PlaylistService $playlist_provider,
     ) {}
@@ -95,11 +95,11 @@ class TracksController extends Controller
         $track = $this->track_provider->getTrackFromHash($hash);
 
         if ($track) {
-            $playlist = $this->playlist_provider->getCurrentPlaylistTracks();
-            if ($playlist) {
-                foreach ($playlist as $idx => $playlist_track) {
+            $tracks = $this->playlist_provider->getPlaylistTracks();
+            if ($tracks) {
+                foreach ($tracks as $idx => $playlist_track) {
                     if ($playlist_track['hash'] === $hash) {
-                        $this->playlist_provider->setCurrentIndex($idx);
+                        $this->playlist_provider->setPlaylistIndex($idx);
                         break;
                     }
                 }

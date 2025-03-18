@@ -4,7 +4,7 @@ namespace App\Providers\Music;
 
 class TrackLikeService
 {
-    public function getTrackLike(int $user_id, int $track_id): ?array
+    public function getUserTrackLike(int $user_id, int $track_id): ?array
     {
         return db()->fetch("SELECT *, 1 as liked
             FROM track_likes 

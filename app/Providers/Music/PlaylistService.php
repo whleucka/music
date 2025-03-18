@@ -6,26 +6,20 @@ use App\Models\Playlist;
 
 class PlaylistService
 {
-    public function setPlaylistTracks(array $tracks): void
-    {
-        session()->set("playlist", $tracks);
-        $this->clearCurrentIndex(null);
-    }
-
     public function setPlaylist(int $playlist_id): void
     {
-        $tracks = $this->getPlaylistTracks($playlist_id);
+        $tracks = $this->getPlaylistByID($playlist_id);
         $this->setPlaylistTracks($tracks ?? []);
     }
 
-    public function getPlaylists(int $user_id): ?array
+    public function getUserPlaylists(int $user_id): ?array
     {
         return db()->fetchAll("SELECT *
             FROM playlists
             WHERE user_id = ?", [$user_id]);
     }
 
-    public function getPlaylistTracks(int $playlist_id): ?array
+    public function getPlaylistByID(int $playlist_id): ?array
     {
         return db()->fetchAll("SELECT tracks.hash, track_meta.*,
             (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = tracks.id) as liked
@@ -52,39 +46,45 @@ class PlaylistService
         }
     }
 
-    public function clearPlaylist(): void
-    {
-        session()->delete("playlist");
-    }
-
-    public function getPlaylist(int $user_id, string $uuid): ?array
+    public function getUserPlaylist(int $user_id, string $uuid): ?array
     {
         return db()->fetch("SELECT * 
             FROM playlists 
             WHERE user_id = ? AND uuid = ?", [$user_id, $uuid]);
     }
 
-    public function getCurrentPlaylistTracks(): array
+    public function getPlaylistTracks(): array
     {
-        return session()->get("playlist") ?? [];
+        return brain()->playlist->tracks;
     }
 
-    public function getCurrentIndex(): ?int
+    public function clearPlaylistTracks(): void
     {
-        return session()->get("playlist_index");
+        brain()->playlist->tracks = [];
     }
 
-    public function setCurrentIndex(int $index): void
+    public function setPlaylistTracks(array $tracks): void
     {
-        session()->set("playlist_index", $index);
+        brain()->playlist->tracks = $tracks;
+        $this->clearPlaylistIndex(null);
     }
 
-    public function clearCurrentIndex(): void
+    public function getPlaylistIndex(): ?int
     {
-        session()->delete("playlist_index");
+        return brain()->playlist->index;
     }
 
-    public function randomPlaylist(int $user_id, int $limit = 500): void
+    public function setPlaylistIndex(int $index): void
+    {
+        brain()->playlist->index = $index;
+    }
+
+    public function clearPlaylistIndex(): void
+    {
+        brain()->playlist->index = null;
+    }
+
+    public function setRandomPlaylist(int $user_id, int $limit = 500): void
     {
         $tracks = db()->fetchAll("SELECT tracks.hash, track_meta.*, 
             (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = tracks.id) as liked
@@ -97,14 +97,14 @@ class PlaylistService
 
     public function getShuffle(): bool
     {
-        return session()->get("shuffle") ?? false;
+        return brain()->player->shuffle ?? false;
     }
 
     public function toggleShuffle(): bool
     {
-        $state = $this->getShuffle();
-        session()->set("shuffle", !$state);
-        return !$state;
+        $shuffle = !$this->getShuffle();
+        brain()->player->shuffle = $shuffle;
+        return $shuffle;
     }
 
     public function setPlayer(string $id, string $source, string $cover, string $artist, string $album, string $title): void
@@ -117,13 +117,13 @@ class PlaylistService
             "album" => $album,
             "title" => $title,
         ];
-        session()->set("player", $player);
+        brain()->player->setState($player);
     }
 
     public function setPlaylistTrack(int $index): void
     {
-        $playlist = $this->getCurrentPlaylistTracks();
-        $this->setCurrentIndex($index);
+        $playlist = $this->getPlaylistTracks();
+        $this->setPlaylistIndex($index);
         $track = $playlist[$index] ?? null;
         if ($track) {
             $this->setPlayer($track['hash'], "/tracks/stream/{$track['hash']}", $track['cover'], $track['artist'], $track['album'], $track['title']);
@@ -132,8 +132,8 @@ class PlaylistService
 
     public function getNextIndex(): ?int
     {
-        $index = $this->getCurrentIndex();
-        $playlist = $this->getCurrentPlaylistTracks();
+        $index = $this->getPlaylistIndex();
+        $playlist = $this->getPlaylistTracks();
         if (!$playlist || count($playlist) <= 1) return null;
         $shuffle = $this->getShuffle();
         if (is_null($index) && !$shuffle) return 0;
@@ -150,8 +150,8 @@ class PlaylistService
 
     public function getPrevIndex(): ?int
     {
-        $index = $this->getCurrentIndex();
-        $playlist = $this->getCurrentPlaylistTracks();
+        $index = $this->getPlaylistIndex();
+        $playlist = $this->getPlaylistTracks();
         if (!$playlist || count($playlist) <= 1) return null;
         $shuffle = $this->getShuffle();
         if (is_null($index) && !$shuffle) return 0;

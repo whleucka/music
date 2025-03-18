@@ -3,6 +3,7 @@
 use App\Application;
 use App\Http\Kernel as HttpKernel;
 use App\Console\Kernel as ConsoleKernel;
+use App\State\Brain;
 use Echo\Framework\Container\Container;
 use Echo\Framework\Database\Connection;
 use Echo\Framework\Database\Drivers\MySQL;
@@ -11,6 +12,11 @@ use Echo\Framework\Routing\Router;
 use Echo\Framework\Session\Session;
 use Echo\Interface\Http\Request as HttpRequest;
 use Echo\Interface\Routing\Router as RoutingRouter;
+
+function brain()
+{
+    return container()->get(Brain::class);
+}
 
 function redirect(string $path): void {
     if (request()->headers->has('Hx-Request')) {

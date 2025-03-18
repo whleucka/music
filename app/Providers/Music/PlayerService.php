@@ -6,14 +6,6 @@ class PlayerService
 {
     public function getPlayer(): array
     {
-        return session()->get("player") ?? [
-            "id" => "",
-            "source" => "",
-            "cover" => "/images/no-album.png",
-            "artist" => "",
-            "album" => "",
-            "title" => "",
-            "shuffle" => session()->get("shuffle") ?? false,
-        ];
+        return brain()->player->getState();
     }
 }

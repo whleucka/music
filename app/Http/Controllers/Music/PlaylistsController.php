@@ -23,7 +23,7 @@ class PlaylistsController extends Controller
     public function load(): string
     {
         return $this->render("playlists/load.html.twig", [
-            "playlists" => $this->provider->getPlaylists($this->user->id)
+            "playlists" => $this->provider->getUserPlaylists($this->user->id)
         ]);
     }
 
@@ -44,7 +44,7 @@ class PlaylistsController extends Controller
     #[Get("/playlists/delete/{uuid}", "playlists.delete", ["auth"])]
     public function delete(string $uuid): void
     {
-        $playlist = $this->provider->getPlaylist($this->user->id, $uuid);
+        $playlist = $this->provider->getUserPlaylist($this->user->id, $uuid);
         if ($playlist) {
             $this->provider->deletePlaylist($playlist['id']);
             trigger("playlists");

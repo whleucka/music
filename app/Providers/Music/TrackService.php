@@ -8,20 +8,20 @@ class TrackService
 {
     public function getSearchTerm(): ?string
     {
-        return session()->get("tracks_search");
+        return brain()->tracks->term;
     }
 
     public function setSearchTerm(string $term): void
     {
-        session()->set("tracks_search", $term);
+        brain()->tracks->term = trim($term);
     }
 
     public function clearSearchTerm(): void
     {
-        session()->delete("tracks_search");
+        brain()->tracks->term = null;
     }
 
-    public function getSearchResults(int $user_id): array
+    public function getSearchResults(int $user_id): ?array
     {
         $term = $this->getSearchTerm();
         if (!$term) return [];
@@ -38,4 +38,3 @@ class TrackService
         return Track::where("hash", $hash)->get();
     }
 }
-
