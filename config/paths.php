@@ -10,6 +10,7 @@ return [
     "template_cache" => $root . "templates/.cache",
     "jobs" => $root . "jobs",
     "logs" => $root . "storage/logs/",
+    "session" => "/tmp",
     "covers" => $root . "storage/tracks/covers/",
     "transcode" => $root . "storage/tracks/transcode/",
     "public_covers" => '/covers/',

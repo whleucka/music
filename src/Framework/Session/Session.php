@@ -4,6 +4,17 @@ namespace Echo\Framework\Session;
 
 use Echo\Traits\Creational\Singleton;
 
+ini_set('session.gc_maxlifetime', config("session.gc_maxlifetime"));
+ini_set('session.gc_probability', config("session.gc_probability"));
+ini_set('session.gc_divisor', config("session.gc_divisor"));
+$session_path = config("paths.session");
+if (!is_dir($session_path)) {
+    mkdir($session_path, 01733, true);
+    chown($session_path, 'www-data');
+    chgrp($session_path, 'www-data');
+}
+session_save_path($session_path);
+
 class Session
 {
     use Singleton;
