@@ -1,7 +1,7 @@
 {% if tracks and term %}
     <div id="actions" class="sticky-top bg-white d-flex py-1">
         <button class="btn btn-sm btn-primary" hx-get="/tracks/set-playlist" hx-swap="none">Play all</button>
-        <button class="btn btn-sm btn-danger" type="submit" hx-get="/tracks/clear" hx-target="#tracks #search">Clear</button>
+        <button class="btn btn-sm btn-danger" type="submit" hx-get="/tracks/clear" hx-target="#tracks #search">Clear search</button>
     </div>
     <div class="mt-2">
         {% for track in tracks %}

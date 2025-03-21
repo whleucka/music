@@ -139,11 +139,9 @@ class PlaylistService
         if (!$playlist || count($playlist) <= 1) return null;
         if (is_null($index) && !$shuffle) return 0;
 
-        if ($shuffle) {
-            $index = rand(0, count($playlist) - 1);
-        } else {
-            $index = $index + 1;
-        }
+        $index = $shuffle
+            ? rand(0, count($playlist) - 1)
+            : $index + 1;
 
         return $index % count($playlist);
     }
@@ -157,11 +155,9 @@ class PlaylistService
         if (!$playlist || count($playlist) <= 1) return null;
         if (is_null($index) && !$shuffle) return 0;
 
-        if ($shuffle) {
-            $index = rand(0, count($playlist) - 1);
-        } else {
-            $index = $index - 1;
-        }
+        $index = $shuffle
+            ? rand(0, count($playlist) - 1)
+            : $index - 1;
 
         return $index % count($playlist);
     }
