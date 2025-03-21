@@ -4,7 +4,7 @@
     <section id="playlist" class="h-100 scroll-cont">
         <div class="header bg-twitch">
             <h2 class="p-2 fw-bold"><i class="bi bi-headphones"></i> Now Playing</h2>
-            <button id="top-play" onClick="document.getElementById('play').click()" class="btn hidden"><i class="bi bi-play-circle text-white"></i></button>
+            <button id="top-play" hx-get="/playlist/play" hx-swap="none" class="btn hidden"><i class="bi bi-play-circle text-white"></i></button>
         </div>
         <div id="load" class="p-2" hx-get="/playlist/load" hx-trigger="load, playlist from:body"></div>
     </section>

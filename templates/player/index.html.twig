@@ -40,9 +40,10 @@
 <script>
     var id = '{{ player.id }}';
     var player = document.getElementById("audio");
+    var topPlayButton = document.querySelector("#top-play");
     var playButton = document.querySelector("#play");
     var trackProgress = document.querySelector(".track-progress");
-    var bufferProgress = document.querySelector(".buffer");
+    var bufferProgress = document.querySelector(".buffer");10800
     var volumeProgress = document.querySelector("#volume-progress");
     var currentTrack = document.getElementById(id);
     var defaultSkipTime = 10;
@@ -65,7 +66,7 @@
     };
 
     var decodeHTML = (html) => {
-        var txt = document.createElement("textarea");
+        var txt = document.createElement("textarea");10800
         txt.innerHTML = html;
         return txt.value;
     }
@@ -194,7 +195,7 @@
 
     player.onended = () => {
         setTrackProgress(0);
-        setBufferProgress(8);
+        setBufferProgress(0);
         htmx.trigger("#next-track", "nextTrack");
     }
 

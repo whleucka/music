@@ -78,6 +78,14 @@ class PlaylistController extends Controller
         }
     }
 
+    // Play playlist
+    #[Get("/playlist/play", "playlist.play", ["auth"])]
+    public function play(): void
+    {
+        $this->playlist_provider->clearPlaylistTrackIndex();
+        $this->nextTrack();
+    }
+
     // Toggle the shuffle button
     #[Get("/playlist/shuffle/toggle", "playlist.shuffle-toggle", ["auth"])]
     public function shuffleToggle(): string
