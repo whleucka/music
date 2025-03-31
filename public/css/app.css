@@ -13,6 +13,12 @@
 }
 
 /** Tracks */
+.track-row {
+    overflow: visible;
+}
+.dropstart .dropdown-toggle::before {
+    content: none;
+}
 .track-row:not(:last-child) {
     margin-bottom: 6px;
 }
