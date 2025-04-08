@@ -16,6 +16,9 @@
 .track-row {
     overflow: visible;
 }
+.dropdown-menu .dropdown-item {
+    max-width: 350px;
+}
 .dropstart .dropdown-toggle::before {
     content: none;
 }
