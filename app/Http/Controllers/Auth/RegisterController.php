@@ -23,13 +23,12 @@ class RegisterController extends Controller
     public function post(): string
     {
         $this->setValidationMessage("password.min_length", "Must be at least 10 characters");
-        $this->setValidationMessage("password.regex", "Must contain 1 upper case, 1 digit, 1 symbol");
         $this->setValidationMessage("password_match.match", "Password does not match");
         $valid = $this->validate([
             "first_name" => ["required"],
             "surname" => ["required"],
             "email" => ["required", "email"],
-            "password" => ["required", "min_length:10", "regex:^(?=.*[A-Z])(?=.*\W)(?=.*\d).+$"],
+            "password" => ["required", "min_length:4"],
             "password_match" => ["required", "match:password"],
         ]);
         if ($valid) {
