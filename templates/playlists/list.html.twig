@@ -1,0 +1,10 @@
+<ul class="dropdown-menu dropdown-submenu playlists">
+    {% for playlist in playlists %}
+    <li><a class="dropdown-item" href="#" 
+        hx-trigger="click" 
+        hx-get="/playlists/{{ playlist.uuid }}/{{ hash }}" 
+        hx-swap="none">
+    {% if playlist.has_track %}<i class="bi bi-check text-success pe-1"></i>{% else %}<i class="bi bi-x text-danger pe-1"></i>{% endif %}{{ playlist.name }}
+    </a></li>
+    {% endfor %}
+</ul>

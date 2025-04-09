@@ -27,6 +27,31 @@ class PlaylistsController extends Controller
         ]);
     }
 
+    // Play a user playlist
+    #[Get("/playlists/{uuid}/play", "playlists.play", ["auth"])]
+    public function playPlaylist($uuid): void
+    {
+        $this->provider->playPlaylist($this->user->id, $uuid);
+        location("/playlist", select: "#view", target: "#view", swap: "outerHTML");
+    }
+
+    // Get a list of user playlists
+    #[Get("/playlists/list/{hash}", "playlists.list", ["auth"])]
+    public function list(string $hash): string
+    {
+        return $this->render("playlists/list.html.twig", [
+            "hash" => $hash,
+            "playlists" => $this->provider->getPlaylistListTrack($this->user->id, $hash),
+        ]);
+    }
+
+    // Add track to user playlist
+    #[Get("/playlists/{uuid}/{hash}", "playlist.list", ["auth"])]
+    public function add(string $uuid, string $hash): void
+    {
+        $this->provider->toggleTrackPlaylist($this->user->id, $uuid, $hash);
+    }
+
     #[Get("/playlists/create", "playlists.create", ["auth"])]
     public function create(): void
     {

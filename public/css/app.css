@@ -16,11 +16,23 @@
 .track-row {
     overflow: visible;
 }
+.dropdown-menu {
+    z-index: 9999;
+}
+.dropdown-menu li {
+    position: relative;
+}
 .dropdown-menu .dropdown-item {
     max-width: 350px;
 }
 .dropstart .dropdown-toggle::before {
     content: none;
+}
+.dropdown-menu .dropdown-submenu {
+    display: none;
+}
+.dropdown-menu > li:hover > .dropdown-submenu {
+    display: block;
 }
 .track-row:not(:last-child) {
     margin-bottom: 6px;
@@ -56,9 +68,7 @@
 }
 
 .track-row .liked.active {
-    color: #e52d27;  /* fallback for old browsers */
-    color: -webkit-linear-gradient(to right, #FF00BF, #e52d27);  /* Chrome 10-25, Safari 5.1-6 */
-    color: linear-gradient(to left, #FF00BF, #e52d27); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    color: #e52d27;
     opacity: 1;
 }
 

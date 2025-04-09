@@ -87,7 +87,6 @@ class TracksController extends Controller
         location("/playlist", select: "#view", target: "#view", swap: "outerHTML");
     }
 
-
     // Set the player session and reload the player element
     #[Get("/tracks/play/{hash}", "tracks.play", ["auth"])]
     public function play(string $hash): void

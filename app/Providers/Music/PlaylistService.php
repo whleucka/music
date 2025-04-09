@@ -3,6 +3,8 @@
 namespace App\Providers\Music;
 
 use App\Models\Playlist;
+use App\Models\PlaylistTrack;
+use App\Models\Track;
 
 class PlaylistService
 {
@@ -19,7 +21,50 @@ class PlaylistService
             WHERE user_id = ?", [$user_id]);
     }
 
-    public function getPlaylistByID(int $playlist_id): ?array
+    public function getPlaylistListTrack(int $user_id, string $hash): ?array
+    {
+        $track = Track::where("hash", $hash)->get();
+        return db()->fetchAll("SELECT *, (SELECT 1 
+                FROM playlist_tracks 
+                WHERE playlist_id = playlists.id AND track_id = ?) as has_track
+            FROM playlists
+            WHERE user_id = ?", [$track->id, $user_id]);
+    }
+
+    public function toggleTrackPlaylist(int $user_id, string $uuid, string $hash): void
+    {
+        $playlist = Playlist::where("uuid", $uuid)
+            ->andWhere("user_id", $user_id)->get();
+        $track = Track::where("hash", $hash)->get();
+
+        if (!$playlist || !$track) return;
+
+        $playlist_track = PlaylistTrack::where("playlist_id", $playlist->id)
+            ->andWhere("track_id", $track->id)->get();
+
+        if ($playlist_track) {
+            // Exists, so delete it
+            $playlist_track->delete();
+        } else {
+            // Add track to the playlist
+            PlaylistTrack::create([
+                "playlist_id" => $playlist->id, 
+                "track_id" => $track->id,
+            ]);
+        }
+    }
+
+    public function playPlaylist(int $user_id, string $uuid): void
+    {
+        $playlist = Playlist::where("uuid", $uuid)->get();
+
+        if (!$playlist) return;
+
+        $tracks = $this->getPlaylistByID($user_id, $playlist->id);
+        $this->setPlaylistTracks($tracks);
+    }
+
+    public function getPlaylistByID(int $user_id, int $playlist_id): ?array
     {
         return db()->fetchAll("SELECT tracks.hash, track_meta.*,
             (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = tracks.id) as liked
@@ -27,7 +72,7 @@ class PlaylistService
             INNER JOIN tracks ON tracks.id = playlist_tracks.track_id
             INNER JOIN track_meta ON track_meta.track_id= tracks.id
             WHERE playlist_id = ?
-            ORDER BY track_meta.artist, track_meta.album, CAST(track_number as UNSIGNED)", [$playlist_id]);
+            ORDER BY track_meta.artist, track_meta.album, CAST(track_number as UNSIGNED)", [$user_id, $playlist_id]);
     }
 
     public function createPlaylist(int $user_id, string $name): Playlist|bool
