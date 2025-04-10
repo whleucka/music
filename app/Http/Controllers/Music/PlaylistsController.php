@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Music;
 
 use App\Providers\Music\PlaylistService;
+use App\Providers\Music\TrackService;
 use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Route\Get;
 
 class PlaylistsController extends Controller
 {
-    public function __construct(private PlaylistService $provider)
-    {
-    }
+    public function __construct(
+        private PlaylistService $playlist_provider,
+        private TrackService $track_provider
+    ) {}
+
     // Render user playlists
     #[Get("/playlists", "playlists.index", ["auth"])]
     public function index(): string
@@ -23,15 +26,15 @@ class PlaylistsController extends Controller
     public function load(): string
     {
         return $this->render("playlists/load.html.twig", [
-            "playlists" => $this->provider->getUserPlaylists($this->user->id)
+            "playlists" => $this->playlist_provider->getUserPlaylists($this->user->id)
         ]);
     }
 
     // Play a user playlist
-    #[Get("/playlists/{uuid}/play", "playlists.play", ["auth"])]
-    public function playPlaylist($uuid): void
+    #[Get("/playlists/play/{uuid}", "playlists.play", ["auth"])]
+    public function playPlaylist(string $uuid): void
     {
-        $this->provider->playPlaylist($this->user->id, $uuid);
+        $this->playlist_provider->playPlaylist($this->user->id, $uuid);
         location("/playlist", select: "#view", target: "#view", swap: "outerHTML");
     }
 
@@ -41,17 +44,26 @@ class PlaylistsController extends Controller
     {
         return $this->render("playlists/list.html.twig", [
             "hash" => $hash,
-            "playlists" => $this->provider->getPlaylistListTrack($this->user->id, $hash),
+            "playlists" => $this->playlist_provider->getPlaylistListTrack($this->user->id, $hash),
         ]);
     }
 
     // Add track to user playlist
-    #[Get("/playlists/{uuid}/{hash}", "playlist.list", ["auth"])]
+    #[Get("/playlists/add-track/{uuid}/{hash}", "playlist.add-track", ["auth"])]
     public function add(string $uuid, string $hash): void
     {
-        $this->provider->toggleTrackPlaylist($this->user->id, $uuid, $hash);
+        $this->playlist_provider->toggleTrackPlaylist($this->user->id, $uuid, $hash);
     }
 
+    // Add search to user playlist
+    #[Get("/playlists/add-tracks/{uuid}", "playlist.add-tracks", ["auth"])]
+    public function add_tracks(string $uuid): void
+    {
+        $tracks = $this->track_provider->getSearchResults($this->user->id);
+        $this->playlist_provider->addTracksToPlaylist($this->user->id, $tracks, $uuid);
+    }
+
+    // Create a new playlist
     #[Get("/playlists/create", "playlists.create", ["auth"])]
     public function create(): void
     {
@@ -60,18 +72,19 @@ class PlaylistsController extends Controller
         ]);
 
         if ($valid) {
-            $this->provider->createPlaylist($this->user->id, $valid->name);
+            $this->playlist_provider->createPlaylist($this->user->id, $valid->name);
         }
 
         trigger("playlists");
     }
 
+    // Delete a playlist
     #[Get("/playlists/delete/{uuid}", "playlists.delete", ["auth"])]
-    public function delete(string $uuid): void
+    public function delete(string $uuid)
     {
-        $playlist = $this->provider->getUserPlaylist($this->user->id, $uuid);
+        $playlist = $this->playlist_provider->getUserPlaylist($this->user->id, $uuid);
         if ($playlist) {
-            $this->provider->deletePlaylist($playlist['id']);
+            $this->playlist_provider->deletePlaylist($playlist['id']);
             trigger("playlists");
         }
     }

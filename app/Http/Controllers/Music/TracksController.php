@@ -44,6 +44,7 @@ class TracksController extends Controller
     public function load(): string
     {
         return $this->render("tracks/load.html.twig", [
+            "playlists" => $this->playlist_provider->getUserPlaylists($this->user->id),
             "term" => $this->track_provider->getSearchTerm(),
             "tracks" => $this->track_provider->getSearchResults($this->user->id),
         ]);

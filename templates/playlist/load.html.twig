@@ -10,9 +10,6 @@
     <script>document.getElementById("top-play").style.display = "block";</script>
 {% else %}
     <div id="actions" class="sticky-top bg-white d-flex py-1">
-        {% if has_liked %}
-            <button class="btn btn-sm btn-primary" type="submit" hx-get="/playlist/liked" hx-swap="none">Liked tracks</button>
-        {% endif %}
         {% if playlists %}
         <div class="btn-group">
             <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
@@ -22,11 +19,14 @@
                 {% for playlist in playlists %}
                 <li>
                     <a class="dropdown-item" 
-                        hx-get="/playlists/{{ playlist.uuid }}/play" hx-swap="none" href="#">{{ playlist.name }}</a>
+                        hx-get="/playlists/play/{{ playlist.uuid }}" hx-swap="none" href="#">{{ playlist.name }}</a>
                 </li>
                 {% endfor %}
             </ul>
         </div>
+        {% endif %}
+        {% if has_liked %}
+            <button class="btn btn-sm btn-primary" type="submit" hx-get="/playlist/liked" hx-swap="none">Liked tracks</button>
         {% endif %}
         <button class="btn btn-sm btn-primary" type="submit" hx-get="/playlist/random" hx-swap="none">Random tracks</button>
     </div>

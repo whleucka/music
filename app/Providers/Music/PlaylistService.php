@@ -8,9 +8,9 @@ use App\Models\Track;
 
 class PlaylistService
 {
-    public function setPlaylist(int $playlist_id): void
+    public function setPlaylist(int $user_id, int $playlist_id): void
     {
-        $tracks = $this->getPlaylistByID($playlist_id);
+        $tracks = $this->getPlaylistByID($user_id, $playlist_id);
         $this->setPlaylistTracks($tracks ?? []);
     }
 
@@ -51,6 +51,26 @@ class PlaylistService
                 "playlist_id" => $playlist->id, 
                 "track_id" => $track->id,
             ]);
+        }
+    }
+
+    public function addTracksToPlaylist(int $user_id, ?array $tracks, string $uuid)
+    {
+        $playlist = Playlist::where("uuid", $uuid)
+            ->andWhere("user_id", $user_id)->get();
+
+        if (!$playlist) return;
+
+        foreach ($tracks as $track) {
+            $playlist_track = PlaylistTrack::where("playlist_id", $playlist->id)
+                ->andWhere("track_id", $track['id'])->get();
+            if (!$playlist_track) {
+                // Add track to the playlist
+                PlaylistTrack::create([
+                    "playlist_id" => $playlist->id, 
+                    "track_id" => $track['id'],
+                ]);
+            }
         }
     }
 
