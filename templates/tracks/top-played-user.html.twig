@@ -1,0 +1,6 @@
+{% if top_played %}
+    <h5>Top played tracks</h5>
+    {% for track in top_played %}
+        {% include "tracks/played-row.html.twig" %}
+    {% endfor %}
+{% endif %}

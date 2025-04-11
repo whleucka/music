@@ -1,0 +1,8 @@
+{% if recently_played %}
+    <h5>Recently played</h5>
+    {% for track in recently_played %}
+        {% include "tracks/row-recent.html.twig" %}
+    {% endfor %}
+{% else %}
+    <div class="mt-2 load-msg"><em>Try searching for an artist, album, title, or genre!</em></div>
+{% endif %}

@@ -47,6 +47,25 @@ class TracksController extends Controller
             "playlists" => $this->playlist_provider->getUserPlaylistsFromDB($this->user->id),
             "term" => $this->track_provider->getSearchTerm(),
             "tracks" => $this->track_provider->getSearchResultsFromDB($this->user->id),
+            // "top_played" => $this->track_provider->getTopPlayedFromDB(),
+        ]);
+    }
+
+    // Get most recent played tracks
+    #[Get("/tracks/recently-played", "tracks.recently-played", ["auth"])]
+    public function recently_played(): string
+    {
+        return $this->render("tracks/recently-played.html.twig", [
+            "recently_played" => $this->track_provider->getRecentlyPlayedFromDB(),
+        ]);
+    }
+
+    // Get top played user tracks
+    #[Get("/tracks/top-played-user", "tracks.top-played-user", ["auth"])]
+    public function top_played_user(): string
+    {
+        return $this->render("tracks/top-played-user.html.twig", [
+            "top_played" => $this->track_provider->getUserTopPlayedFromDB($this->user->id),
         ]);
     }
 
@@ -95,6 +114,7 @@ class TracksController extends Controller
         $track = $this->track_provider->getTrackFromHash($hash);
 
         if ($track) {
+            // Tracks from session, but queried from DB
             $tracks = $this->playlist_provider->getPlaylistTracks();
             if ($tracks) {
                 foreach ($tracks as $index => $playlist_track) {
@@ -106,7 +126,8 @@ class TracksController extends Controller
             }
             $meta = $track->meta();
             $this->playlist_provider->setPlayer($hash, "/tracks/stream/$hash", $meta->cover, $meta->artist, $meta->album, $meta->title);
-            trigger("player");
+            $this->track_provider->logPlay($this->user->id, $track->id);
+            trigger("player, recently-played, top-played-user");
         }
     }
 

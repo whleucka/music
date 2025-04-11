@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Music;
 use App\Providers\Music\PlayerService;
 use App\Providers\Music\PlaylistService;
 use App\Providers\Music\TrackLikeService;
+use App\Providers\Music\TrackService;
 use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Route\Get;
 
 class PlaylistController extends Controller
 {
     public function __construct(
+        private TrackService $track_provider,
         private TrackLikeService $track_like_provider,
         private PlaylistService $playlist_provider, 
         private PlayerService $player_provider
@@ -66,7 +68,9 @@ class PlaylistController extends Controller
     public function nextTrack(): void
     {
         if ($this->playlist_provider->nextTrack()) {
-            trigger("player");
+            $track = $this->playlist_provider->getCurrentPlaylistTrack();
+            $this->track_provider->logPlay($this->user->id, $track['id']);
+            trigger("player, recently-played, top-played-user");
         }
     }
 
@@ -75,7 +79,9 @@ class PlaylistController extends Controller
     public function prevTrack(): void
     {
         if ($this->playlist_provider->prevTrack()) {
-            trigger("player");
+            $track = $this->playlist_provider->getCurrentPlaylistTrack();
+            $this->track_provider->logPlay($this->user->id, $track['id']);
+            trigger("player, recently-played, top-played-user");
         }
     }
 

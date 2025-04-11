@@ -200,6 +200,13 @@ class PlaylistService
         }
     }
 
+    public function getCurrentPlaylistTrack()
+    {
+        $index = $this->getPlaylistTrackIndex();
+        $playlist = $this->getPlaylistTracks();
+        return $playlist[$index] ?? null;
+    }
+
     public function getNextIndex(): ?int
     {
         $index = $this->getPlaylistTrackIndex();
