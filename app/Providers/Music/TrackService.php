@@ -54,8 +54,9 @@ class TrackService
             FROM track_play
             INNER JOIN tracks ON track_id = tracks.id
             INNER JOIN track_meta ON track_meta.track_id = tracks.id
+            WHERE user_id = ?
             ORDER BY track_play.id DESC
-            LIMIT $limit", [$user_id]) ?? [];
+            LIMIT $limit", [$user_id, $user_id]) ?? [];
     }
 
     public function getTopPlayedFromDB(int $user_id, int $limit = 10)
