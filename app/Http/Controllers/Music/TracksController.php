@@ -47,7 +47,7 @@ class TracksController extends Controller
             "playlists" => $this->playlist_provider->getUserPlaylistsFromDB($this->user->id),
             "term" => $this->track_provider->getSearchTerm(),
             "tracks" => $this->track_provider->getSearchResultsFromDB($this->user->id),
-            // "top_played" => $this->track_provider->getTopPlayedFromDB(),
+            // "top_played" => $this->track_provider->getTopPlayedFromDB($this->user->id),
         ]);
     }
 
@@ -56,7 +56,7 @@ class TracksController extends Controller
     public function recently_played(): string
     {
         return $this->render("tracks/recently-played.html.twig", [
-            "recently_played" => $this->track_provider->getRecentlyPlayedFromDB(),
+            "recently_played" => $this->track_provider->getRecentlyPlayedFromDB($this->user->id),
         ]);
     }
 

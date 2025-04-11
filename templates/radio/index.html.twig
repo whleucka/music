@@ -5,10 +5,7 @@
         <div class="header bg-moon">
             <h2 class="p-2 fw-bold"><i class="bi bi-broadcast"></i> Radio</h2>
         </div>
-        <div id="load" class="p-2" hx-get="/radio/load" hx-trigger="load, radio from:body"></div>
-        <div id="content-loader" class="htmx-indicator d-flex justify-content-center align-items-center w-100 p-3">
-            <img src="/images/sonic.gif" alt="loading" />
-        </div>
+        <div id="load" class="p-2" hx-indicator="#content-loader" hx-get="/radio/load" hx-trigger="load, radio from:body"></div>
     </section>
 {% endblock %}
 

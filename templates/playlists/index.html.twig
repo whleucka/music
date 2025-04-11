@@ -6,9 +6,6 @@
             <h2 class="p-2 fw-bold"><i class="bi bi-file-earmark-music"></i> Playlists</h2>
             <div class="p-2">{% include "playlists/control.html.twig" %}</div>
         </div>
-        <div id="load" class="p-2" hx-get="/playlists/load" hx-trigger="load, playlists from:body"></div>
-        <div id="content-loader" class="htmx-indicator d-flex justify-content-center align-items-center w-100 p-3">
-            <img src="/images/sonic.gif" alt="loading" />
-        </div>
+        <div id="load" class="p-2" hx-indicator="#content-loader" hx-get="/playlists/load" hx-trigger="load, playlists from:body"></div>
     </section>
 {% endblock %}

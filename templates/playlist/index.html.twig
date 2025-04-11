@@ -7,8 +7,5 @@
             <button id="top-play" hx-get="/playlist/play" hx-swap="none" class="btn hidden"><i class="bi bi-play-circle text-white"></i></button>
         </div>
         <div id="load" class="p-2" hx-indicator="#content-loader" hx-get="/playlist/load" hx-trigger="load, playlist from:body"></div>
-        <div id="content-loader" class="htmx-indicator d-flex justify-content-center align-items-center w-100 p-3">
-            <img src="/images/sonic.gif" alt="loading" />
-        </div>
     </section>
 {% endblock %}

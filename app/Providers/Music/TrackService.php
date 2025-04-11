@@ -47,17 +47,18 @@ class TrackService
         ]);
     }
 
-    public function getRecentlyPlayedFromDB(int $limit = 10)
+    public function getRecentlyPlayedFromDB(int $user_id, int $limit = 10)
     {
-        return db()->fetchAll("SELECT tracks.hash, track_meta.*
+        return db()->fetchAll("SELECT tracks.hash, track_meta.*,
+            (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = track_play.track_id) as liked
             FROM track_play
             INNER JOIN tracks ON track_id = tracks.id
             INNER JOIN track_meta ON track_meta.track_id = tracks.id
             ORDER BY track_play.id DESC
-            LIMIT $limit") ?? [];
+            LIMIT $limit", [$user_id]) ?? [];
     }
 
-    public function getTopPlayedFromDB(int $limit = 10)
+    public function getTopPlayedFromDB(int $user_id, int $limit = 10)
     {
         return db()->fetchAll("SELECT tracks.hash,
             ANY_VALUE(track_meta.cover) AS cover,
@@ -70,13 +71,14 @@ class TrackService
             ANY_VALUE(track_meta.playtime_string) AS playtime_string,
             ANY_VALUE(track_meta.bitrate) AS bitrate,
             ANY_VALUE(track_meta.mime_type) AS mime_type,
-            COUNT(track_play.id) AS play_count
+            COUNT(track_play.id) AS play_count,
+            (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = track_play.track_id) as liked
             FROM track_play
             INNER JOIN tracks ON track_id = tracks.id
             INNER JOIN track_meta ON track_meta.track_id = tracks.id
             GROUP BY track_play.track_id
             ORDER BY count(track_play.track_id) DESC
-            LIMIT $limit") ?? [];
+            LIMIT $limit", [$user_id]) ?? [];
     }
 
     public function getUserTopPlayedFromDB(int $user_id, int $limit = 10)
@@ -92,13 +94,14 @@ class TrackService
             ANY_VALUE(track_meta.playtime_string) AS playtime_string,
             ANY_VALUE(track_meta.bitrate) AS bitrate,
             ANY_VALUE(track_meta.mime_type) AS mime_type,
-            COUNT(track_play.id) AS play_count
+            COUNT(track_play.id) AS play_count,
+            (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = track_play.track_id) as liked
             FROM track_play
             INNER JOIN tracks ON track_id = tracks.id
             INNER JOIN track_meta ON track_meta.track_id = tracks.id
             WHERE user_id = ?
             GROUP BY track_play.track_id
             ORDER BY count(track_play.track_id) DESC
-            LIMIT $limit", [$user_id]) ?? [];
+            LIMIT $limit", [$user_id, $user_id]) ?? [];
     }
 }
