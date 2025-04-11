@@ -26,7 +26,7 @@ class PlaylistsController extends Controller
     public function load(): string
     {
         return $this->render("playlists/load.html.twig", [
-            "playlists" => $this->playlist_provider->getUserPlaylists($this->user->id)
+            "playlists" => $this->playlist_provider->getUserPlaylistsFromDB($this->user->id)
         ]);
     }
 
@@ -44,7 +44,7 @@ class PlaylistsController extends Controller
     {
         return $this->render("playlists/list.html.twig", [
             "hash" => $hash,
-            "playlists" => $this->playlist_provider->getPlaylistListTrack($this->user->id, $hash),
+            "playlists" => $this->playlist_provider->getPlaylistListFromDB($this->user->id, $hash),
         ]);
     }
 
@@ -52,14 +52,18 @@ class PlaylistsController extends Controller
     #[Get("/playlists/add-track/{uuid}/{hash}", "playlist.add-track", ["auth"])]
     public function add(string $uuid, string $hash): void
     {
-        $this->playlist_provider->toggleTrackPlaylist($this->user->id, $uuid, $hash);
+        $playlist = $this->playlist_provider->getPlaylistByUUID($this->user->id, $uuid);
+        $track = $this->track_provider->getTrackFromHash($hash);
+        if ($playlist && $track) {
+            $this->playlist_provider->toggleTrackPlaylist($playlist->id, $track->id);
+        }
     }
 
     // Add search to user playlist
     #[Get("/playlists/add-tracks/{uuid}", "playlist.add-tracks", ["auth"])]
     public function add_tracks(string $uuid): void
     {
-        $tracks = $this->track_provider->getSearchResults($this->user->id);
+        $tracks = $this->track_provider->getSearchResultsFromDB($this->user->id);
         $this->playlist_provider->addTracksToPlaylist($this->user->id, $tracks, $uuid);
     }
 
@@ -82,9 +86,9 @@ class PlaylistsController extends Controller
     #[Get("/playlists/delete/{uuid}", "playlists.delete", ["auth"])]
     public function delete(string $uuid)
     {
-        $playlist = $this->playlist_provider->getUserPlaylist($this->user->id, $uuid);
+        $playlist = $this->playlist_provider->getUserPlaylistFromDB($this->user->id, $uuid);
         if ($playlist) {
-            $this->playlist_provider->deletePlaylist($playlist['id']);
+            $this->playlist_provider->deletePlaylist($this->user->id, $playlist['id']);
             trigger("playlists");
         }
     }

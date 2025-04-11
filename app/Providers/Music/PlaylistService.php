@@ -10,18 +10,18 @@ class PlaylistService
 {
     public function setPlaylist(int $user_id, int $playlist_id): void
     {
-        $tracks = $this->getPlaylistByID($user_id, $playlist_id);
+        $tracks = $this->getPlaylistFromDB($user_id, $playlist_id);
         $this->setPlaylistTracks($tracks ?? []);
     }
 
-    public function getUserPlaylists(int $user_id): ?array
+    public function getUserPlaylistsFromDB(int $user_id): ?array
     {
         return db()->fetchAll("SELECT *
             FROM playlists
             WHERE user_id = ?", [$user_id]);
     }
 
-    public function getPlaylistListTrack(int $user_id, string $hash): ?array
+    public function getPlaylistListFromDB(int $user_id, string $hash): ?array
     {
         $track = Track::where("hash", $hash)->get();
         return db()->fetchAll("SELECT *, (SELECT 1 
@@ -31,60 +31,64 @@ class PlaylistService
             WHERE user_id = ?", [$track->id, $user_id]);
     }
 
-    public function toggleTrackPlaylist(int $user_id, string $uuid, string $hash): void
+    public function toggleTrackPlaylist(int $playlist_id, int $track_id): void
     {
-        $playlist = Playlist::where("uuid", $uuid)
-            ->andWhere("user_id", $user_id)->get();
-        $track = Track::where("hash", $hash)->get();
-
-        if (!$playlist || !$track) return;
-
-        $playlist_track = PlaylistTrack::where("playlist_id", $playlist->id)
-            ->andWhere("track_id", $track->id)->get();
+        $playlist_track = $this->getPlaylistTrack($playlist_id, $track_id);
 
         if ($playlist_track) {
             // Exists, so delete it
             $playlist_track->delete();
         } else {
-            // Add track to the playlist
-            PlaylistTrack::create([
-                "playlist_id" => $playlist->id, 
-                "track_id" => $track->id,
-            ]);
+            $this->createPlaylistTrack($playlist_id, $track_id);
         }
+    }
+
+    public function createPlaylistTrack(int $playlist_id, int $track_id)
+    {
+        // Add track to the playlist
+        PlaylistTrack::create([
+            "playlist_id" => $playlist_id, 
+            "track_id" => $track_id,
+        ]);
+    }
+
+    public function getPlaylistTrack(int $playlist_id, int $track_id)
+    {
+
+        return PlaylistTrack::where("playlist_id", $playlist_id)
+            ->andWhere("track_id", $track_id)->get();
     }
 
     public function addTracksToPlaylist(int $user_id, ?array $tracks, string $uuid)
     {
-        $playlist = Playlist::where("uuid", $uuid)
-            ->andWhere("user_id", $user_id)->get();
+        $playlist = $this->getPlaylistByUUID($user_id, $uuid);
 
         if (!$playlist) return;
 
         foreach ($tracks as $track) {
-            $playlist_track = PlaylistTrack::where("playlist_id", $playlist->id)
-                ->andWhere("track_id", $track['id'])->get();
+            $playlist_track = $this->getPlaylistTrack($playlist->id, $track['id']);
             if (!$playlist_track) {
-                // Add track to the playlist
-                PlaylistTrack::create([
-                    "playlist_id" => $playlist->id, 
-                    "track_id" => $track['id'],
-                ]);
+                $this->createPlaylistTrack($playlist->id, $track['id']);
             }
         }
     }
 
+    public function getPlaylistByUUID(int $user_id, string $uuid)
+    {
+        return Playlist::where("uuid", $uuid)->andWhere("user_id", $user_id)->get();
+    }
+
     public function playPlaylist(int $user_id, string $uuid): void
     {
-        $playlist = Playlist::where("uuid", $uuid)->get();
+        $playlist = $this->getPlaylistByUUID($user_id, $uuid);
 
         if (!$playlist) return;
 
-        $tracks = $this->getPlaylistByID($user_id, $playlist->id);
+        $tracks = $this->getPlaylistFromDB($user_id, $playlist->id);
         $this->setPlaylistTracks($tracks);
     }
 
-    public function getPlaylistByID(int $user_id, int $playlist_id): ?array
+    public function getPlaylistFromDB(int $user_id, int $playlist_id): ?array
     {
         return db()->fetchAll("SELECT tracks.hash, track_meta.*,
             (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = tracks.id) as liked
@@ -103,15 +107,16 @@ class PlaylistService
         ]);
     }
 
-    public function deletePlaylist(int $playlist_id): void
+    public function deletePlaylist(int $user_id, int $playlist_id): void
     {
-        $playlist = Playlist::find($playlist_id);
+        $playlist = Playlist::where("id", $playlist_id)
+            ->andWhere("user_id", $user_id)->get();
         if ($playlist) {
             $playlist->delete();
         }
     }
 
-    public function getUserPlaylist(int $user_id, string $uuid): ?array
+    public function getUserPlaylistFromDB(int $user_id, string $uuid): ?array
     {
         return db()->fetch("SELECT * 
             FROM playlists 
@@ -148,7 +153,7 @@ class PlaylistService
         brain()->playlist->track_index = null;
     }
 
-    public function setRandomPlaylist(int $user_id, int $limit = 500): void
+    public function setRandomPlaylistFromDB(int $user_id, int $limit = 500): void
     {
         $tracks = db()->fetchAll("SELECT tracks.hash, track_meta.*, 
             (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = tracks.id) as liked

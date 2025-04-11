@@ -21,7 +21,7 @@ class TrackService
         brain()->tracks->term = null;
     }
 
-    public function getSearchResults(int $user_id): ?array
+    public function getSearchResultsFromDB(int $user_id): ?array
     {
         $term = $this->getSearchTerm();
         if (!$term) return [];

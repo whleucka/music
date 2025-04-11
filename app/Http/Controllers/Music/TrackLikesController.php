@@ -20,7 +20,7 @@ class TrackLikesController extends Controller
     {
         $track = $this->track_provider->getTrackFromHash($hash);
         if ($track) {
-            $liked = $this->track_like_provider->getUserTrackLike($this->user->id, $track->id);
+            $liked = $this->track_like_provider->getUserTrackLikeFromDB($this->user->id, $track->id);
             return $this->render("track-likes/index.html.twig", [
                 "hash" => $track->hash,
                 "liked" => $liked,
@@ -35,7 +35,7 @@ class TrackLikesController extends Controller
     {
         $track = $this->track_provider->getTrackFromHash($hash);
         if ($track) {
-            $liked = $this->track_like_provider->getUserTrackLike($this->user->id, $track->id);
+            $liked = $this->track_like_provider->getUserTrackLikeFromDB($this->user->id, $track->id);
             if ($liked) {
                 $this->track_like_provider->unlikeTrack($this->user->id, $track->id);
             } else {
