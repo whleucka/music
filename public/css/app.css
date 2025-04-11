@@ -375,6 +375,9 @@
     animation: animloader 2s linear infinite;
 }
 
+#content-loader {
+}
+
 #content-loader img {
     width: 60px;
     height: 60px;
