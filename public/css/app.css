@@ -349,6 +349,49 @@
     white-space: nowrap;
 }
 
+/**
+ * Spinner
+ */
+.loader{
+    display: block;
+    position: relative;
+    height: 12px;
+    width: 80%;
+    border: 1px solid #fff;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.loader::after {
+    content: '';
+    width: 40%;
+    height: 100%;
+    background: #56ab2f;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to left, #a8e063, #56ab2f);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to left, #a8e063, #56ab2f); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-sizing: border-box;
+    animation: animloader 2s linear infinite;
+}
+
+#content-loader img {
+    width: 60px;
+    height: 60px;
+}
+
+@keyframes animloader {
+    0% {
+        left: 0;
+        transform: translateX(-100%);
+    }
+    100% {
+        left: 100%;
+        transform: translateX(0%);
+    }
+}
+
+
 /** Larger devices */
 @media (min-width: 576px) {
     .header {
