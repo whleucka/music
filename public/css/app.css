@@ -75,6 +75,10 @@
 /**
  * Actions
  */
+#actions .btn {
+    height: 30px;
+    white-space: nowrap;
+}
 #actions .btn-primary {
     background: #485563;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #29323c, #485563);  /* Chrome 10-25, Safari 5.1-6 */
@@ -87,7 +91,7 @@
 
 /** Player */
 #player {
-    border-top: 1px solid #eee;
+    border-top: 3px solid #ddd;
 }
 
 #player #cover {

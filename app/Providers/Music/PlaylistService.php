@@ -217,7 +217,7 @@ class PlaylistService
         if (is_null($index) && !$shuffle) return 0;
 
         $index = $shuffle
-            ? rand(0, count($playlist) - 1)
+            ? rand(1, count($playlist) - 1)
             : $index + 1;
 
         return $index % count($playlist);
@@ -233,7 +233,7 @@ class PlaylistService
         if (is_null($index) && !$shuffle) return 0;
 
         $index = $shuffle
-            ? rand(0, count($playlist) - 1)
+            ? rand(1, count($playlist) - 1)
             : $index - 1;
 
         return $index % count($playlist);

@@ -18,11 +18,11 @@
         </div>
         <div class="d-flex">
             <!-- <button class="btn" id="repeat"><i class="bi bi-repeat"></i></button> -->
-            <button class="btn" id="prev-track" hx-get="/playlist/prev-track" hx-trigger="click, prevTrack from:body" hx-swap="none"><i class="bi bi-skip-start"></i></button>
+            <button class="btn" id="prev-track" hx-get="/playlist/prev-track" hx-indicator="#content-loader" hx-trigger="click, prevTrack from:body" hx-swap="none"><i class="bi bi-skip-start"></i></button>
             <button class="btn" id="rewind" onClick="seekBackward(event)"><i class="bi bi-rewind"></i></button>
             <button class="btn" id="play" onClick="playPause()"><i class="bi bi-play"></i></button>
             <button class="btn" id="fast-forward" onClick="seekForward(event)"><i class="bi bi-fast-forward"></i></button>
-            <button class="btn" id="next-track" hx-get="/playlist/next-track" hx-trigger="click, nextTrack from:body" hx-swap="none"><i class="bi bi-skip-end"></i></button>
+            <button class="btn" id="next-track" hx-get="/playlist/next-track" hx-indicator="#content-loader" hx-trigger="click, nextTrack from:body" hx-swap="none"><i class="bi bi-skip-end"></i></button>
             <button class="btn {% if player.shuffle %}active{% endif %}" hx-get="/playlist/shuffle/toggle" hx-swap="outerHTML" id="shuffle"><i class="bi bi-shuffle"></i></button>
         </div>
     </span>
