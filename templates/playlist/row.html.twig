@@ -1,0 +1,54 @@
+
+<div tabIndex="-1" id="{{ track.hash }}" class="track-row d-flex align-items-center truncate {% if id == track.hash %}active{% endif %}">
+    <span class="liked px-1 {% if track.liked %}active{% endif %} d-flex align-items-center justify-content-center" hx-get="/like/toggle/{{ track.hash }}" hx-swap="outerHTML" hx-trigger="click">
+        <i class="like bi {% if track.liked %}bi-heart-fill{% else %}bi-heart{% endif %}"></i>
+    </span>
+    <span class="cover px-1">
+        <img loading="lazy" title="{{ track.album|raw }}" onError="this.src = '/images/no-album.png'" src="/tracks/cover/{{ track.hash }}/38/38" alt="cover" />
+    </span>
+    <div class="d-flex align-items-center flex-grow-1 truncate">
+        <div class="d-flex flex-column flex-grow-1 truncate">
+            <span class="title px-1 truncate">{{ track.title|raw }}</span>
+            <span class="artist px-1 truncate text-muted">{{ track.artist|raw }}</span>
+        </div>
+    </div>
+    <span class="menu">
+        <div class="btn-group dropstart">
+            <button type="button" 
+                hx-trigger="mouseenter" 
+                hx-get="/playlists/list/{{ track.hash }}" 
+                hx-target="next .playlists" 
+                hx-swap="outerHTML"
+                class="btn dropdown-toggle" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false">
+                <i class="bi bi-three-dots-vertical"></i>
+            </button>
+            <ul class="dropdown-menu">
+                <li><span class="dropdown-item" 
+                    hx-get="/playlist/play/{{ track.hash }}" 
+                    hx-swap="none" 
+                    hx-trigger="click"
+                    ><i class="bi bi-play-btn pe-1"></i> Play</span></li>
+                {% if playlists %}
+                <li>
+                    <a class="dropdown-item" href="#">
+                        <div class="d-flex align-items-center">
+                            <span class="flex-grow-1">Playlist</span>
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </div>
+                    </a>
+                    <ul class="dropdown-menu dropdown-submenu playlists">
+                    </ul>
+                </li>
+                {% endif %}
+                <li><span class="dropdown-item truncate disabled"><i class="bi bi-person pe-1"></i> {{ track.artist|raw }}</span></li>
+                <li><span class="dropdown-item truncate disabled"><i class="bi bi-music-note pe-1"></i> {{ track.title|raw }}</span></li>
+                <li><span class="dropdown-item truncate disabled"><i class="bi bi-disc pe-1"></i> {{ track.album|raw }}</span></li>
+                {% if track.playtime_string %}
+                <li><span class="dropdown-item disabled"><i class="bi bi-clock pe-1"></i> {{ track.playtime_string }}</span></li>
+                {% endif %}
+            </ul>
+        </div>
+    </span>
+</div>

@@ -114,16 +114,6 @@ class TracksController extends Controller
         $track = $this->track_provider->getTrackFromHash($hash);
 
         if ($track) {
-            // Tracks from session, but queried from DB
-            $tracks = $this->playlist_provider->getPlaylistTracks();
-            if ($tracks) {
-                foreach ($tracks as $index => $playlist_track) {
-                    if ($playlist_track['hash'] === $hash) {
-                        $this->playlist_provider->setPlaylistTrackIndex($index);
-                        break;
-                    }
-                }
-            }
             $meta = $track->meta();
             $this->playlist_provider->setPlayer($hash, "/tracks/stream/$hash", $meta->cover, $meta->artist, $meta->album, $meta->title);
             $this->track_provider->logPlay($this->user->id, $track->id);

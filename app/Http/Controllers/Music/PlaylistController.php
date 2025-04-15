@@ -86,12 +86,36 @@ class PlaylistController extends Controller
     }
 
     // Play playlist
-    #[Get("/playlist/play", "playlist.play", ["auth"])]
-    public function play(): void
+    #[Get("/playlist/play", "playlist.play-playlist", ["auth"])]
+    public function play_playist(): void
     {
         $this->playlist_provider->clearPlaylistTrackIndex();
         $this->nextTrack();
     }
+
+    #[Get("/playlist/play/{hash}", "playlist.play", ["auth"])]
+    public function play(string $hash): void
+    {
+        $track = $this->track_provider->getTrackFromHash($hash);
+
+        if ($track) {
+            // Tracks from session, but queried from DB
+            $tracks = $this->playlist_provider->getPlaylistTracks();
+            if ($tracks) {
+                foreach ($tracks as $index => $playlist_track) {
+                    if ($playlist_track['hash'] === $hash) {
+                        $this->playlist_provider->setPlaylistTrackIndex($index);
+                        break;
+                    }
+                }
+            }
+            $meta = $track->meta();
+            $this->playlist_provider->setPlayer($hash, "/tracks/stream/$hash", $meta->cover, $meta->artist, $meta->album, $meta->title);
+            $this->track_provider->logPlay($this->user->id, $track->id);
+            trigger("player, recently-played, top-played-user");
+        }
+    }
+
 
     // Toggle the shuffle button
     #[Get("/playlist/shuffle/toggle", "playlist.shuffle-toggle", ["auth"])]
