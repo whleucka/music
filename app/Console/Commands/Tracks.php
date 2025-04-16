@@ -25,6 +25,24 @@ class Tracks extends \ConsoleKit\Command
         "ogg",
     ];
 
+    public function executeRemoveOrphans(array $args, array $options = []): void
+    {
+        $tracks = Track::where(1, 1)->get();
+        $start = microtime(true);
+        $removed = 0;
+        db()->beginTransaction();
+        foreach ($tracks as $track) {
+            if (!file_exists($track->pathname)) {
+                $track->delete();
+                $removed++;
+            }
+        }
+        db()->commit();
+        $end = microtime(true);
+        $time_diff = number_format($end - $start, 2);
+        $this->writeln("Successfully removed $removed orphaned files in $time_diff seconds");
+    }
+
     /**
      * Synchronize music tracks with database
      */
