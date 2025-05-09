@@ -26,7 +26,7 @@
     "scripts": {
         "test": "phpunit tests",
         "clear-cache": "rm -rf templates/.cache/*",
-        "post-create-project-cmd": [
+        "post-install-cmd": [
             "php -r \"copy('.env.example', '.env');\""
         ]
     },
