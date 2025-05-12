@@ -106,10 +106,17 @@ class Kernel implements HttpKernel
                 $api_response["error"] = $error;
             }
             // API response
-            return new JsonResponse($api_response);
+            $response = new JsonResponse($api_response);
         } else {
             // Web response
-            return new HttpResponse($content);
+            $response = new HttpResponse($content);
         }
+
+        // Set the headers
+        foreach ($controller->getHeaders() as $key => $value) {
+            $response->setHeader($key, $value);
+        }
+
+        return $response;
     }
 }

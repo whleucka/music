@@ -12,6 +12,7 @@ class Controller implements HttpController
 {
     protected ?User $user = null;
     protected Request $request;
+    private array $headers = [];
     private array $validation_errors = [];
     private array $validation_messages = [
         "required" => "Required field",
@@ -36,12 +37,22 @@ class Controller implements HttpController
         "regex" => "Does not match pattern",
     ];
 
-    public function setUser(?User $user)
+    public function setHeader(string $key, string $value): void
+    {
+        $this->headers[$key] = $value;
+    }
+
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    public function setUser(?User $user): void
     {
         $this->user = $user;
     }
 
-    public function getUser()
+    public function getUser(): ?User
     {
         return $this->user;
     }
@@ -56,9 +67,17 @@ class Controller implements HttpController
         return $this->request;
     }
 
-    public function getValiationErrors()
+    public function getValiationErrors(): array
     {
         return $this->validation_errors;
+    }
+
+    public function htmxTrigger(array|string $opts): void
+    {
+        if (is_array($opts)) {
+            $opts = json_encode($opts);
+        }
+        $this->setHeader("HX-Trigger", $opts);
     }
 
     public function validate(array $ruleset): ?object

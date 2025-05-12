@@ -7,6 +7,7 @@ use Echo\Interface\Http\Response;
 class JsonResponse implements Response
 {
     private int $code;
+    private array $headers;
 
     public function __construct(private array $content, ?int $code = null)
     {
@@ -23,11 +24,19 @@ class JsonResponse implements Response
         ob_start();
         ob_clean();
         http_response_code($this->code);
+        $this->sendHeaders();
         echo json_encode($this->content, JSON_PRETTY_PRINT);
     }
 
-    public function setHeader(string $name, string $value): void
+    public function setHeader(string $key, string $value): void
     {
-        header("$name: $value");
+        $this->headers[$key] = $value;
+    }
+
+    private function sendHeaders(): void
+    {
+        foreach ($this->headers as $key => $value) {
+            header("$key: $value");
+        }
     }
 }

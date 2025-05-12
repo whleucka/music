@@ -18,6 +18,27 @@ function brain()
     return container()->get(Brain::class);
 }
 
+/**
+ * Web application
+ */
+function app(): Application
+{
+    $kernel = new HttpKernel();
+    return new Application($kernel);
+}
+
+/**
+ * Console application
+ */
+function console(): Application
+{
+    $kernel = new ConsoleKernel();
+    return new Application($kernel);
+}
+
+/**
+ * Redirect
+ */
 function redirect(string $path): void {
     if (request()->headers->has('Hx-Request')) {
         $header = sprintf("HX-Redirect:%s", $path);
@@ -30,6 +51,9 @@ function redirect(string $path): void {
     }
 }
 
+/**
+ * Redirect location
+ */
 function location(
     string $path, 
     ?string $source = null, 
@@ -59,52 +83,6 @@ function location(
     }
 }
 
-function trigger(string $event)
-{
-    header("HX-Trigger: $event");
-}
-
-function uri(string $name, ...$params): ?string
-{
-    return router()->searchUri($name, ...$params);
-}
-
-function recursiveFiles(string $directory)
-{
-
-    return new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
-}
-
-function getClasses(string $directory): array
-{
-    // Get existing classes before loading new ones
-    $before = get_declared_classes();
-
-    // Recursively find all PHP files
-    $files = recursiveFiles($directory);
-    foreach ($files as $file) {
-        if ($file->isFile() && $file->getExtension() === 'php') {
-            require_once $file->getPathname();
-        }
-    }
-
-    // Get all declared classes after loading
-    $after = get_declared_classes();
-
-    // Return only the new classes
-    return array_diff($after, $before);
-}
-
-function router(): RoutingRouter
-{
-    return container()->get(Router::class);
-}
-
-function request(): HttpRequest
-{
-    return container()->get(Request::class);
-}
-
 /**
  * Get application container
  */
@@ -118,8 +96,17 @@ function container()
  */
 function db()
 {
-    $mysql = container()->get(MySQL::class);
-    return Connection::getInstance($mysql);
+    try {
+        $mysql = container()->get(MySQL::class);
+        $db = Connection::getInstance($mysql);
+        return $db;
+    } catch (RuntimeException $ex) {
+        if (preg_match('/Unknown database/', $ex->getMessage())) {
+            error_log("Database connection error. Are you sure the database exists?");
+            error_log("Please refer to setup guide: https://github.com/whleucka/echo");
+            exit;
+        }
+    }
 }
 
 /**
@@ -130,6 +117,25 @@ function session()
     return Session::getInstance();
 }
 
+/**
+ * Get web router
+ */
+function router(): RoutingRouter
+{
+    return container()->get(Router::class);
+}
+
+/**
+ * Get http request
+ */
+function request(): HttpRequest
+{
+    return container()->get(Request::class);
+}
+
+/**
+ * Get env value
+ */
 function env(string $name, mixed $default = null)
 {
     // Load environment
@@ -141,6 +147,15 @@ function env(string $name, mixed $default = null)
     }
     return $_ENV[$name];
 }
+
+/**
+ * Get route uri
+ */
+function uri(string $name, ...$params): ?string
+{
+    return router()->searchUri($name, ...$params);
+}
+
 
 /**
  * Dump
@@ -157,24 +172,6 @@ function dd(mixed $payload): void
 {
     dump($payload);
     die;
-}
-
-/**
- * Web application
- */
-function app(): Application
-{
-    $kernel = new HttpKernel();
-    return new Application($kernel);
-}
-
-/**
- * Console application
- */
-function console(): Application
-{
-    $kernel = new ConsoleKernel();
-    return new Application($kernel);
 }
 
 /**
@@ -206,4 +203,33 @@ function config(string $name): mixed
     }
 
     return null;
+}
+
+/**
+ * Helpers
+ */
+function recursiveFiles(string $directory)
+{
+
+    return new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+}
+
+function getClasses(string $directory): array
+{
+    // Get existing classes before loading new ones
+    $before = get_declared_classes();
+
+    // Recursively find all PHP files
+    $files = recursiveFiles($directory);
+    foreach ($files as $file) {
+        if ($file->isFile() && $file->getExtension() === 'php') {
+            require_once $file->getPathname();
+        }
+    }
+
+    // Get all declared classes after loading
+    $after = get_declared_classes();
+
+    // Return only the new classes
+    return array_diff($after, $before);
 }

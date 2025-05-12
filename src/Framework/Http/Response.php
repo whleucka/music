@@ -7,6 +7,7 @@ use Echo\Interface\Http\Response as HttpResponse;
 class Response implements HttpResponse
 {
     private int $code;
+    private array $headers = [];
 
     public function __construct(private ?string $content, ?int $code = null)
     {
@@ -21,12 +22,20 @@ class Response implements HttpResponse
     {
         ob_start();
         ob_clean();
+        $this->sendHeaders();
         http_response_code($this->code);
         echo $this->content;
     }
 
-    public function setHeader(string $name, string $value): void
+    public function setHeader(string $key, string $value): void
     {
-        header("$name: $value");
+        $this->headers[$key] = $value;
+    }
+
+    private function sendHeaders(): void
+    {
+        foreach ($this->headers as $key => $value) {
+            header("$key: $value");
+        }
     }
 }

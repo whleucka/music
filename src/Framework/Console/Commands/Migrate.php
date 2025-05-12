@@ -143,6 +143,21 @@ class Migrate extends \ConsoleKit\Command
         }
     }
 
+    private function newDatabase()
+    {
+        $db_name = config("db.name");
+        db()->execute("CREATE DATABASE $db_name");
+        db()->execute("USE $db_name");
+        $this->writeln("✓ successfully created new database $db_name");
+    }
+
+    private function dropDatabase()
+    {
+        $db_name = config("db.name");
+        db()->execute("DROP DATABASE IF EXISTS $db_name");
+        $this->writeln("✓ successfully deleted database $db_name");
+    }
+
     /**
      * Display current migration status
      */
@@ -173,10 +188,8 @@ class Migrate extends \ConsoleKit\Command
         $this->writeln("This operation will drop the current database if it exists.");
 
         if ($dialog->confirm("Are you sure you want to migrate a fresh database?")) {
-            $db_name = config("db.name");
-            db()->execute("DROP DATABASE IF EXISTS $db_name");
-            db()->execute("CREATE DATABASE $db_name");
-            db()->execute("USE $db_name");
+            $this->dropDatabase();
+            $this->newDatabase();
 
             $this->initMigrations();
 
