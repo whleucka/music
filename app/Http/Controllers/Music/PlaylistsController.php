@@ -79,7 +79,7 @@ class PlaylistsController extends Controller
             $this->playlist_provider->createPlaylist($this->user->id, $valid->name);
         }
 
-        trigger("playlists");
+        $this->htmxTrigger("playlists");
     }
 
     // Delete a playlist
@@ -89,7 +89,7 @@ class PlaylistsController extends Controller
         $playlist = $this->playlist_provider->getUserPlaylistFromDB($this->user->id, $uuid);
         if ($playlist) {
             $this->playlist_provider->deletePlaylist($this->user->id, $playlist['id']);
-            trigger("playlists");
+            $this->htmxTrigger("playlists");
         }
     }
 }

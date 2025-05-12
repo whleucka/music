@@ -81,7 +81,7 @@ class TracksController extends Controller
             $this->track_provider->setSearchTerm($valid->term);
         }
 
-        trigger("tracks");
+        $this->htmxTrigger("tracks");
         if ($this->request->get->has('redirect')) {
             location("/tracks", select: "#view", target: "#view", swap: "outerHTML");
         }
@@ -94,7 +94,7 @@ class TracksController extends Controller
     {
         $this->track_provider->clearSearchTerm();
 
-        trigger("tracks");
+        $this->htmxTrigger("tracks");
         return $this->control();
     }
 
@@ -117,7 +117,7 @@ class TracksController extends Controller
             $meta = $track->meta();
             $this->playlist_provider->setPlayer($hash, "/tracks/stream/$hash", $meta->cover, $meta->artist, $meta->album, $meta->title);
             $this->track_provider->logPlay($this->user->id, $track->id);
-            trigger("player, recently-played, top-played-user");
+            $this->htmxTrigger("player, recently-played, top-played-user");
         }
     }
 
