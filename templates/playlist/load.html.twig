@@ -1,5 +1,5 @@
 {% if tracks %}
-    <div id="actions" class="sticky-top bg-white d-flex py-1">
+    <div id="actions" class="sticky-top bg-white d-flex py-1 table-responsive">
         <button class="btn btn-sm btn-danger" type="submit" hx-get="/playlist/clear" hx-swap="none">Clear playlist</button>
     </div>
     <div class="mt-2">
@@ -9,7 +9,7 @@
     </div>
     <script>document.getElementById("top-play").style.display = "block";</script>
 {% else %}
-    <div id="actions" class="sticky-top bg-white d-flex py-1">
+    <div id="actions" class="sticky-top bg-white d-flex py-1 table-responsive">
         <button class="btn btn-sm btn-primary" hx-get="/playlists" hx-swap="outerHTML" hx-target="#view" hx-select="#view">New playlist</button>
         {% if playlists %}
         <div class="btn-group">
