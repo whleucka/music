@@ -2,6 +2,7 @@
     <div id="actions" class="sticky-top bg-white d-flex py-1 table-responsive">
         <button class="btn btn-sm btn-primary" hx-get="/tracks/set-playlist" hx-swap="none">Play all</button>
         <button class="btn btn-sm btn-primary" hx-get="/playlists" hx-swap="outerHTML" hx-target="#view" hx-select="#view">New playlist</button>
+        <p></p>
         {% if playlists %}
         <div class="btn-group">
             <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">

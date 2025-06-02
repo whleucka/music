@@ -249,6 +249,15 @@
 }
 
 
+#actions .btn-group {
+    position: relative;
+}
+
+#actions .btn-group .dropdown-menu {
+    position: fixed !important;
+}
+
+
 /** Headers */
 .header {
     padding: 10px;
