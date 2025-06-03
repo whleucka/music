@@ -1,0 +1,16 @@
+{% extends "layout/base.html.twig" %}
+
+{% block title %}404 Not Found{% endblock %}
+
+{% block content %}
+    <style>
+    </style>
+    <div id="error404" class="p-4 container">
+        <h1>404 Not Found</h1>
+        <p class="lead">The file or resource you requested could not be located.</p>
+        <img style="max-width: 600px;" class="w-100" src="https://media2.giphy.com/media/g01ZnwAUvutuK8GIQn/giphy.gif?cid=5a38a5a2npx88b1l9o3jz4zgahszlhj8flen63uzyj12m1zx&ep=v1_gifs_search&rid=giphy.gif&ct=g" alt="Confused Travolta" />
+        <div class="mt-2">
+            <button class="btn btn-success mt-3" onClick="history.back()">Go back</button>
+        </div>
+    </div>
+{% endblock %}

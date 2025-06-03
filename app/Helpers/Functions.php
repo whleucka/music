@@ -6,6 +6,7 @@ use App\Console\Kernel as ConsoleKernel;
 use App\State\Brain;
 use Echo\Framework\Container\Container;
 use Echo\Framework\Database\Connection;
+use Echo\Framework\Database\Drivers\MariaDB;
 use Echo\Framework\Database\Drivers\MySQL;
 use Echo\Framework\Http\Request;
 use Echo\Framework\Routing\Router;
@@ -37,53 +38,6 @@ function console(): Application
 }
 
 /**
- * Redirect
- */
-function redirect(string $path): void {
-    if (request()->headers->has('Hx-Request')) {
-        $header = sprintf("HX-Redirect:%s", $path);
-        header($header);
-        exit();
-    } else {
-        $header = sprintf("Location:%s", $path);
-        header($header);
-        exit();
-    }
-}
-
-/**
- * Redirect location
- */
-function location(
-    string $path, 
-    ?string $source = null, 
-    ?string $event = null, 
-    ?string $handler = null, 
-    ?string $target = null, 
-    ?string $swap = null,
-    ?string $values = null,
-    ?string $headers = null,
-    ?string $select = null
-) {
-    if (request()->headers->has('Hx-Request')) {
-        $options = [];
-        $options['path'] = $path;
-        foreach (compact('source', 'event', 'handler', 'target', 'swap', 'values', 'headers', 'select') as $key => $value) {
-            if ($value !== null) {
-                $options[$key] = $value;
-            }
-        }
-        $opts = json_encode($options);
-        header("HX-Location: $opts");
-        exit();
-    } else {
-        $header = sprintf("Location:%s", $path);
-        header($header);
-        exit();
-    }
-}
-
-/**
  * Get application container
  */
 function container()
@@ -91,22 +45,29 @@ function container()
     return Container::getInstance();
 }
 
+function twig()
+{
+    $twig = container()->get(\Twig\Environment::class);
+    return $twig;
+}
+
 /**
  * Get PDO DB
  */
 function db()
 {
-    try {
-        $mysql = container()->get(MySQL::class);
-        $db = Connection::getInstance($mysql);
-        return $db;
-    } catch (RuntimeException $ex) {
-        if (preg_match('/Unknown database/', $ex->getMessage())) {
-            error_log("Database connection error. Are you sure the database exists?");
-            error_log("Please refer to setup guide: https://github.com/whleucka/echo");
-            exit;
-        }
+    $root_dir = config("paths.root");
+    $driver = config("db.driver");
+    $driver_class = match($driver) {
+        'mysql' => MySQL::class,
+        'mariadb' => MariaDB::class,
+    };
+    $exists = file_exists($root_dir . '.env');
+    if ($exists) {
+        $db_driver = container()->get($driver_class);
+        return Connection::getInstance($db_driver);
     }
+    return null;
 }
 
 /**
@@ -203,33 +164,4 @@ function config(string $name): mixed
     }
 
     return null;
-}
-
-/**
- * Helpers
- */
-function recursiveFiles(string $directory)
-{
-
-    return new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
-}
-
-function getClasses(string $directory): array
-{
-    // Get existing classes before loading new ones
-    $before = get_declared_classes();
-
-    // Recursively find all PHP files
-    $files = recursiveFiles($directory);
-    foreach ($files as $file) {
-        if ($file->isFile() && $file->getExtension() === 'php') {
-            require_once $file->getPathname();
-        }
-    }
-
-    // Get all declared classes after loading
-    $after = get_declared_classes();
-
-    // Return only the new classes
-    return array_diff($after, $before);
 }

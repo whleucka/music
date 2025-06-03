@@ -1,5 +1,7 @@
 {% extends "layout/base.html.twig" %}
 
+{% block title %}{{ parent() }} - Dashboard{% endblock %}
+
 {% block content %}
     <p>Hello, {{ first_name }}, you are now signed in!</p>
     <p><a href="/sign-out">Sign out</a></p>

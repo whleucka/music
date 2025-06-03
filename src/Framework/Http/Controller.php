@@ -4,18 +4,20 @@ namespace Echo\Framework\Http;
 
 use App\Models\User;
 use Echo\Framework\Session\Flash;
-use Echo\Framework\View\TwigExtension;
 use Echo\Interface\Http\Controller as HttpController;
 use Echo\Interface\Http\Request;
+use Echo\Framework\View\TwigExtension;
+use Error;
 
 class Controller implements HttpController
 {
     protected ?User $user = null;
-    protected Request $request;
+    protected ?Request $request = null;
     private array $headers = [];
     private array $validation_errors = [];
     private array $validation_messages = [
         "required" => "Required field",
+        "unique" => "Must be unique",
         "string" => "Must be a string",
         "array" => "Must be an array",
         "date" => "Invalid date format",
@@ -72,7 +74,10 @@ class Controller implements HttpController
         return $this->validation_errors;
     }
 
-    public function htmxTrigger(array|string $opts): void
+    /**
+     * HTMX Trigger
+     */
+    public function hxTrigger(array|string $opts): void
     {
         if (is_array($opts)) {
             $opts = json_encode($opts);
@@ -94,6 +99,7 @@ class Controller implements HttpController
                 $request_value = $request[$field] ?? null;
                 $result = match($rule) {
                     'match' => $request_value == $request[$rule_val],
+                    'unique' => count(db()->fetch("SELECT 1 FROM $rule_val WHERE $field = ?", [$request_value])) === 0,
                     'min_length' => strlen($request_value) >= $rule_val,
                     'max_length' => strlen($request_value) <= $rule_val,
                     'required' => !is_null($request_value) && $request_value !== '',
@@ -151,11 +157,19 @@ class Controller implements HttpController
         ];
     }
 
+    public function pageNotFound()
+    {
+            $content = twig()->render("error/404.html.twig");
+            $response = new Response($content, 404);
+            $response->send();
+            exit;
+    }
+
     protected function render(string $template, array $data = []): string
     {
-        $twig = container()->get(\Twig\Environment::class);
-        $twig->addExtension(new TwigExtension);
+        $twig = twig();
         $data = array_merge($data, $this->getDefaultTemplateData());
+        $twig->addExtension(new TwigExtension);
         return $twig->render($template, $data);
     }
 }

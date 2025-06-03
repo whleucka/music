@@ -1,6 +1,6 @@
 <?php
 
 return [
-    "server" => env("DEV_SERVER", "0.0.0.0"),
-    "port" => env("DEV_PORT", "8000"),
+    "server" => "0.0.0.0",
+    "port" => 8000,
 ];

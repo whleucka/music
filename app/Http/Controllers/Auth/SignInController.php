@@ -29,7 +29,8 @@ class SignInController extends Controller
         if ($valid) {
             $success = $this->provider->signIn($valid->email, $valid->password);
             if ($success) {
-                redirect(config("security.authenticated_route"));
+                $path = config("security.authenticated_route");
+                header("HX-Redirect: $path");
             } else {
                 Flash::add("warning", "Invalid email and/or password");
             }

@@ -1,9 +1,22 @@
 {% extends "layout/base.html.twig" %}
 
+{% block title %}{{ parent() }} - Sign In{% endblock %}
+
 {% block content %}
-    <section id="sign-in" class="d-flex align-items-center justify-content-center h-100">
-        <form method="POST" hx-post="{{ uri('auth.sign-in.post') }}" hx-swap="outerHTML" hx-target="#sign-in" hx-select="#sign-in">
+    <style>
+    html, body {
+        height: 100%;
+    }
+    #sign-in form {
+        max-width: 360px;
+    }
+    </style>
+    <section id="sign-in" class="container d-flex justify-content-center align-items-center h-100">
+        <form class="bg-light rounded shadow p-4" method="POST" hx-post="{{ uri('auth.sign-in.post') }}" hx-swap="outerHTML" hx-target="#sign-in" hx-select="#sign-in">
             {{ csrf()|raw }}
+            <h1>Sign In</h1>
+            <p>Welcome back! Please sign in below.</p>
+            <hr>
             {% include "components/flash.html.twig" %}
             <div class="form-floating mb-3">
                 <input type="input" class="form-control {% if validation_errors.email is defined %}is-invalid{% endif %}" id="email" name="email" placeholder="" autocomplete="email">
@@ -18,7 +31,7 @@
             <div class="d-grid gap-2 mb-3">
                 <button type="submit" class="btn btn-primary">Log in</button>
             </div>
-            <div class="d-flex justify-content-center">
+            <div class="d-flex mt-4 justify-content-center">
                 <p><a hx-boost="true" href="/register" hx-swap="outerHTML" hx-select="#register" hx-target="#sign-in">Create new account</a></p>
             </div>
         </form>

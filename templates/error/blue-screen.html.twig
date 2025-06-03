@@ -1,0 +1,40 @@
+{% extends "layout/base.html.twig" %}
+
+{% block title %}Fatal Error{% endblock %}
+
+{% block content %}
+    <style>
+        body {
+            color: #fff;
+            background-color: #0271a9;
+        }
+        #blue-screen {
+            font-size: 0.8rem;
+            overflow: auto;
+        }
+        #blue-screen h1 {
+            font-size: 8.5rem;
+            font-weight: 300;
+        }
+        #blue-screen .qr {
+            height: 100px;
+            width: 100px;
+        }
+    </style>
+    <div id="blue-screen" class="p-4 container">
+        <h1>:(</h1>
+        <h3>{{ message }}</h3>
+        <p class="lead">We're just collecting some error info, and then you can refresh this page.</p>
+        {% if debug %}
+            <h5>Error: {{ e.getMessage() }}</h5>
+            <p class="trace"><pre><strong>File:</strong> {{ e.getFile() }}:{{ e.getLine() }}<br>{{ e.getTraceAsString() }}</pre></p>
+        {% endif %}
+        <div class="mt-2">
+            <img class="qr rounded float-start me-3" src="{{ qr }}" alt="qr" />
+            <button class="btn btn-primary" onClick="location.reload()">Refresh</button>
+            {% if is_logged %}
+            <button class="btn btn-primary" onClick="location.replace('/sign-out')">Sign out</button>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

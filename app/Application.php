@@ -13,7 +13,7 @@ class Application implements EchoApplication
     public function __construct(private ConsoleKernel|HttpKernel $kernel)
     {
         $dotenv = Dotenv\Dotenv::createImmutable(config("paths.root"));
-        $dotenv->load();
+        $dotenv->safeLoad();
     }
 
     public function run(): void

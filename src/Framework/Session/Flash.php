@@ -12,7 +12,7 @@ class Flash
     public static function add(string $type, string $message): void
     {
         $flash = session()->get("flash") ?? [];
-        $flash[strtolower($type)][] = $message;
+        $flash[strtolower($type)][md5($message)][] = $message;
         session()->set("flash", $flash);
     }
 
@@ -25,5 +25,11 @@ class Flash
         $flash = session()->get("flash") ?? [];
         session()->set("flash", []);
         return $flash;
+    }
+
+    public static function destroy(): void
+    {
+        $flash = [];
+        session()->set("flash", $flash);
     }
 }

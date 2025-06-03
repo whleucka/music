@@ -2,21 +2,22 @@
 
 namespace Echo\Framework\Database;
 
+use Echo\Framework\Session\Flash;
 use Echo\Interface\Database\Connection as DatabaseConnection;
 use Echo\Interface\Database\Driver;
 use Echo\Traits\Creational\Singleton;
 use PDO;
 use PDOException;
-use RuntimeException;
 
 final class Connection implements DatabaseConnection
 {
     use Singleton;
 
+    private bool $connected = false;
     private ?PDO $link = null;
     private Driver $driver;
 
-    private function __construct(Driver $driver)
+    public function __construct(Driver $driver)
     {
         $this->driver = $driver;
         $this->connect();
@@ -30,10 +31,28 @@ final class Connection implements DatabaseConnection
         return self::$instance;
     }
 
+    public static function newInstance(Driver $driver): Connection
+    {
+        self::$instance = new self($driver);
+        return self::$instance;
+    }
+
+    public function isConnected(): bool
+    {
+        return $this->connected;
+    }
+
+    public function tryConnection(): bool
+    {
+        $this->connect();
+        return $this->connected;
+    }
+
     private function connect(): void
     {
         if ($this->link === null) {
             try {
+                $this->connected = true;
                 $this->link = new PDO(
                     $this->driver->getDsn(),
                     $this->driver->getUsername(),
@@ -41,14 +60,29 @@ final class Connection implements DatabaseConnection
                     $this->driver->getOptions()
                 );
             } catch (PDOException $e) {
-                throw new RuntimeException('Database connection failed: ' . $e->getMessage());
+                error_log("Please refer to setup guide: https://github.com/whleucka/echo");
+
+                $debug = config("app.debug");
+                if ($debug) {
+                    Flash::add("danger", "Database connection failed.");
+                }
+
+                $this->connected = false;
+
+                if (preg_match('/unknown database/i', $e->getMessage())) {
+                    error_log('Unknown database. ' . $e->getMessage());
+                } else if (preg_match('/Name or service not known/', $e->getMessage())) {
+                    error_log('Unknown database host. ' . $e->getMessage());
+                } else {
+                    error_log('Unknown database error. ' . $e->getMessage());
+                }
             }
         }
     }
 
     public function execute(string $sql, array $params = []): mixed
     {
-        $this->connect();
+        if (!$this->connected) return null;
         $stmt = $this->link->prepare($sql);
         $stmt->execute($params);
         return $stmt;
@@ -66,13 +100,11 @@ final class Connection implements DatabaseConnection
 
     public function lastInsertId(): string
     {
-        $this->connect();
         return $this->link->lastInsertId();
     }
 
     public function beginTransaction(): bool
     {
-        $this->connect();
         return $this->link->beginTransaction();
     }
 
@@ -88,7 +120,6 @@ final class Connection implements DatabaseConnection
 
     public function getLink(): PDO
     {
-        $this->connect();
         return $this->link;
     }
 }

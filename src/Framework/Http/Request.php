@@ -33,6 +33,11 @@ class Request implements HttpRequest
         $this->headers = new Headers($headers);
     }
 
+    public function isHTMX(): bool
+    {
+        return $this->headers->has('HX-Request');
+    }
+
     public function getUri(): string
     {
         return strtok($_SERVER["REQUEST_URI"], '?');
@@ -58,8 +63,9 @@ class Request implements HttpRequest
         $this->attributes[$name] = $value;
     }
 
-    public function getClientIp(): string
+    public function getClientIp(): ?string
     {
+        if (php_sapi_name() == "cli") return null;
         return  isset($_SERVER['HTTP_CLIENT_IP'])
             ? $_SERVER['HTTP_CLIENT_IP']
             : (isset($_SERVER['HTTP_X_FORWARDED_FOR'])

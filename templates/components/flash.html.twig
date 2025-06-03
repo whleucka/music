@@ -26,7 +26,11 @@
                 </div>
                 <ul class="p-0 m-0" style="list-style: {% if messages|length > 1 %}square{% else %}none{% endif %};">
                 {% for message in messages %}
-                    <li>{{ message|raw }}</li>
+                    {% if message|length > 1 %}
+                        <li>{{ message[0]|raw }} ({{ message|length }})</li>
+                    {% else %}
+                        <li>{{ message[0]|raw }}</li>
+                    {% endif %}
                 {% endfor %}
                 </ul>
             </div>

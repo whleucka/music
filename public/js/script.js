@@ -8,6 +8,7 @@ htmx.on('htmx:responseError', function (event) {
         case 404:
             break;
         case 500:
+            document.querySelector("html").innerHTML = event.detail.xhr.response;
             break;
     }
 });

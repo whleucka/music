@@ -25,10 +25,7 @@
     ],
     "scripts": {
         "test": "phpunit tests",
-        "clear-cache": "rm -rf templates/.cache/*",
-        "post-install-cmd": [
-            "php -r \"copy('.env.example', '.env');\""
-        ]
+        "clear-cache": "rm -rf templates/.cache/*"
     },
     "minimum-stability": "dev",
     "require": {
@@ -39,7 +36,8 @@
         "maximebf/consolekit": "dev-master",
         "peppeocchi/php-cron-scheduler": "dev-master",
         "james-heinrich/getid3": "^1.9",
-        "php-ffmpeg/php-ffmpeg": "dev-master"
+        "php-ffmpeg/php-ffmpeg": "dev-master",
+        "chillerlan/php-qrcode": "dev-main"
     },
     "require-dev": {
         "phpunit/phpunit": "^12.0@dev"

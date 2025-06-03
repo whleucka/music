@@ -179,7 +179,7 @@ class Migrate extends \ConsoleKit\Command
     }
 
     /**
-     * Run all migration files
+     * Drop database and run all migration files
      * If the database exists, then it will be dropped before creation (be careful)
      */
     public function executeFresh(array $args, array $options = []): void
@@ -200,6 +200,27 @@ class Migrate extends \ConsoleKit\Command
 
             $this->executeStatus([], []);
         }
+    }
+
+    /**
+     * Run all pending migration files
+     */
+    public function executeRun(array $args, array $options = []): void
+    {
+        $this->initMigrations();
+
+        $this->writeln("Running migrations...");
+
+        $migration_files = $this->getMigrationFiles(config("paths.migrations"));
+        foreach ($migration_files as $basename => $file_path) {
+            $hash = md5($file_path);
+            $migration = $this->migrationHashExists($hash);
+            if (!$migration) {
+                $this->migrationUp($file_path);
+            }
+        }
+
+        $this->executeStatus([], []);
     }
 
     /**

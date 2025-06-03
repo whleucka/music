@@ -7,4 +7,5 @@ use PDO;
 interface Connection
 {
     public function getLink(): PDO;
+    public function isConnected(): bool;
 }
