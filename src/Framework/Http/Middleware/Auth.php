@@ -5,6 +5,7 @@ namespace Echo\Framework\Http\Middleware;
 use App\Models\User;
 use Closure;
 use Echo\Framework\Http\Response as HttpResponse;
+use Echo\Framework\Session\Flash;
 use Echo\Interface\Http\{Request, Middleware, Response};
 
 /**
@@ -20,8 +21,12 @@ class Auth implements Middleware
         $user = $uuid ? User::where("uuid", $uuid) : false;
 
         if (in_array('auth', $middleware) && !$user) {
-            $res = new HttpResponse(null, 302);
-            $res->setHeader("Location", uri("auth.sign-in.index"));
+            $res = new HttpResponse('<script>window.location.href="/sign-in";</script>', 200);
+            $res->setHeader("HX-Retarget", "body");
+            if (!$request->isHTMX()) {
+                session()->set("auth_redirect", $_SERVER["REQUEST_URI"]);
+            }
+            Flash::add("warning", "Please sign in to view this page.");
             return $res;
         }
 

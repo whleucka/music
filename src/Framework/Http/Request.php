@@ -35,7 +35,10 @@ class Request implements HttpRequest
 
     public function isHTMX(): bool
     {
-        return $this->headers->has('HX-Request');
+        if ($this->headers->has("Hx-Request")) {
+            return $this->headers->get("Hx-Request");
+        }
+        return false;
     }
 
     public function getUri(): string
