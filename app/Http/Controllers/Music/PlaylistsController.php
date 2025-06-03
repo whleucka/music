@@ -35,7 +35,8 @@ class PlaylistsController extends Controller
     public function playPlaylist(string $uuid): void
     {
         $this->playlist_provider->playPlaylist($this->user->id, $uuid);
-        location("/playlist", select: "#view", target: "#view", swap: "outerHTML");
+        header('HX-Location: {"path":"/playlist", "select":"#view", "target":"#view", "swap":"outerHTML"}');
+        exit;
     }
 
     // Get a list of user playlists
@@ -79,7 +80,7 @@ class PlaylistsController extends Controller
             $this->playlist_provider->createPlaylist($this->user->id, $valid->name);
         }
 
-        $this->htmxTrigger("playlists");
+        $this->hxTrigger("playlists");
     }
 
     // Delete a playlist
@@ -89,7 +90,7 @@ class PlaylistsController extends Controller
         $playlist = $this->playlist_provider->getUserPlaylistFromDB($this->user->id, $uuid);
         if ($playlist) {
             $this->playlist_provider->deletePlaylist($this->user->id, $playlist['id']);
-            $this->htmxTrigger("playlists");
+            $this->hxTrigger("playlists");
         }
     }
 }

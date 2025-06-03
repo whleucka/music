@@ -20,7 +20,8 @@ class TracksController extends Controller
     #[Get("/", "app")]
     public function app(): void
     {
-        redirect("/playlist");
+        header("Location: /playlist");
+        exit;
     }
 
     // Tracks view
@@ -81,9 +82,10 @@ class TracksController extends Controller
             $this->track_provider->setSearchTerm($valid->term);
         }
 
-        $this->htmxTrigger("tracks");
+        $this->hxTrigger("tracks");
         if ($this->request->get->has('redirect')) {
-            location("/tracks", select: "#view", target: "#view", swap: "outerHTML");
+            header('HX-Location: {"path":"/tracks", "select":"#view", "target":"#view", "swap":"outerHTML"}');
+            exit;
         }
         return $this->control();
     }
@@ -94,7 +96,7 @@ class TracksController extends Controller
     {
         $this->track_provider->clearSearchTerm();
 
-        $this->htmxTrigger("tracks");
+        $this->hxTrigger("tracks");
         return $this->control();
     }
 
@@ -104,7 +106,8 @@ class TracksController extends Controller
     {
         $tracks = $this->track_provider->getSearchResultsFromDB($this->user->id);
         $this->playlist_provider->setPlaylistTracks($tracks);
-        location("/playlist", select: "#view", target: "#view", swap: "outerHTML");
+        header('HX-Location: {"path":"/playlist", "select":"#view", "target":"#view", "swap":"outerHTML"}');
+        exit;
     }
 
     // Set the player session and reload the player element
@@ -117,7 +120,7 @@ class TracksController extends Controller
             $meta = $track->meta();
             $this->playlist_provider->setPlayer($hash, "/tracks/stream/$hash", $meta->cover, $meta->artist, $meta->album, $meta->title);
             $this->track_provider->logPlay($this->user->id, $track->id);
-            $this->htmxTrigger("player, recently-played, top-played-user");
+            $this->hxTrigger("player, recently-played, top-played-user");
         }
     }
 

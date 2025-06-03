@@ -43,7 +43,7 @@ class PlaylistController extends Controller
     public function random(): void
     {
         $this->playlist_provider->setRandomPlaylistFromDB($this->user->id);
-        $this->htmxTrigger("playlist");
+        $this->hxTrigger("playlist");
     }
 
     // Generate a random playlist
@@ -52,7 +52,7 @@ class PlaylistController extends Controller
     {
         $tracks = $this->track_like_provider->getUserLikesFromDB($this->user->id);
         $this->playlist_provider->setPlaylistTracks($tracks);
-        $this->htmxTrigger("playlist");
+        $this->hxTrigger("playlist");
     }
 
     // Clear the current playlist
@@ -60,7 +60,7 @@ class PlaylistController extends Controller
     public function clear(): void
     {
         $this->playlist_provider->clearPlaylistTracks();
-        $this->htmxTrigger("playlist");
+        $this->hxTrigger("playlist");
     }
 
     // Play the next track in the playlist
@@ -70,7 +70,7 @@ class PlaylistController extends Controller
         if ($this->playlist_provider->nextTrack()) {
             $track = $this->playlist_provider->getCurrentPlaylistTrack();
             $this->track_provider->logPlay($this->user->id, $track['id']);
-            $this->htmxTrigger("player, recently-played, top-played-user");
+            $this->hxTrigger("player, recently-played, top-played-user");
         }
     }
 
@@ -81,7 +81,7 @@ class PlaylistController extends Controller
         if ($this->playlist_provider->prevTrack()) {
             $track = $this->playlist_provider->getCurrentPlaylistTrack();
             $this->track_provider->logPlay($this->user->id, $track['id']);
-            $this->htmxTrigger("player, recently-played, top-played-user");
+            $this->hxTrigger("player, recently-played, top-played-user");
         }
     }
 
@@ -112,7 +112,7 @@ class PlaylistController extends Controller
             $meta = $track->meta();
             $this->playlist_provider->setPlayer($hash, "/tracks/stream/$hash", $meta->cover, $meta->artist, $meta->album, $meta->title);
             $this->track_provider->logPlay($this->user->id, $track->id);
-            $this->htmxTrigger("player, recently-played, top-played-user");
+            $this->hxTrigger("player, recently-played, top-played-user");
         }
     }
 

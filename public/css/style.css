@@ -5,6 +5,7 @@ body {
     font-weight: 400;
     font-style: normal;
     background-color: #f1f2f6;
+    height: 100%;
 }
 
 #sign-in form, #register form {
@@ -15,7 +16,7 @@ body {
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 }
 
-#content {
+html, body, #content {
     height: 100%;
 }
 
