@@ -22,6 +22,7 @@ class Auth implements Middleware
         if (in_array('auth', $middleware) && !$user) {
             $res = new HttpResponse(null, 302);
             $res->setHeader("Location", uri("auth.sign-in.index"));
+            session()->set("auth_redirect", $_SERVER["REQUEST_URI"]);
             return $res;
         }
 
