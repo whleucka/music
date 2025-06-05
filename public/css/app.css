@@ -74,9 +74,6 @@
 /**
  * Actions
  */
-#actions.bg-white {
-    background-color: #f1f2f6 !important;
-}
 #actions .btn {
     height: 30px;
     white-space: nowrap;
