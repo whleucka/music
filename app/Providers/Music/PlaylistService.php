@@ -216,11 +216,12 @@ class PlaylistService
         if (!$playlist || count($playlist) <= 1) return null;
         if (is_null($index) && !$shuffle) return 0;
 
-        $index = $shuffle
+        $new_index = $shuffle
             ? rand(1, count($playlist) - 1)
             : $index + 1;
+        if ($new_index === $index) return $this->getNextIndex();
 
-        return $index % count($playlist);
+        return $new_index % count($playlist);
     }
 
     public function getPrevIndex(): ?int
@@ -232,11 +233,12 @@ class PlaylistService
         if (!$playlist || count($playlist) <= 1) return null;
         if (is_null($index) && !$shuffle) return 0;
 
-        $index = $shuffle
+        $new_index = $shuffle
             ? rand(1, count($playlist) - 1)
             : $index - 1;
+        if ($new_index === $index) return $this->getPrevIndex();
 
-        return $index % count($playlist);
+        return $new_index % count($playlist);
     }
 
     public function nextTrack(): bool
