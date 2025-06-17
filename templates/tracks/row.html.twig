@@ -1,5 +1,4 @@
 <div tabIndex="-1"
-    onClick="showDotMenu(event)"
     id="{{ track.hash }}"
     class="track-row d-flex align-items-center truncate {% if id == track.hash %}active{% endif %}">
     <span class="liked px-1 {% if track.liked %}active{% endif %} d-flex align-items-center justify-content-center" hx-get="/like/toggle/{{ track.hash }}" hx-swap="outerHTML" hx-trigger="click">
@@ -9,15 +8,15 @@
         <img loading="lazy" title="{{ track.album|raw }}" onError="this.src = '/images/no-album.png'" src="/tracks/cover/{{ track.hash }}/38/38" alt="cover" />
     </span>
     <div class="d-flex align-items-center flex-grow-1 truncate">
-        <div class="d-flex flex-column flex-grow-1 truncate">
+        <div onClick="showDotMenu('{{ track.hash }}')"
+        class="d-flex flex-column flex-grow-1 truncate">
             <span class="title px-1 truncate">{{ track.title|raw }}</span>
             <span class="artist px-1 truncate text-muted">{{ track.artist|raw }}</span>
         </div>
     </div>
     <span class="menu">
         <div class="btn-group dropstart">
-            <button
-                type="button" 
+            <button type="button" 
                 hx-trigger="click" 
                 hx-get="/playlists/list/{{ track.hash }}" 
                 hx-target="next .playlists" 

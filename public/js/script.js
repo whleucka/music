@@ -13,8 +13,8 @@ htmx.on('htmx:responseError', function (event) {
     }
 });
 
-const showDotMenu = (e) => {
-    const button = e.currentTarget.querySelector(".dot-menu");
+const showDotMenu = (hash) => {
+    const button = document.getElementById(hash).querySelector(".dot-menu");
     button.click();
     button.setAttribute("data-bs-auto-close", "false");
     new bootstrap.Dropdown(button).show();
