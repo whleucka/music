@@ -12,3 +12,14 @@ htmx.on('htmx:responseError', function (event) {
             break;
     }
 });
+
+const showDotMenu = (e) => {
+    const button = e.currentTarget.querySelector(".dot-menu");
+    button.click();
+    button.setAttribute("data-bs-auto-close", "false");
+    new bootstrap.Dropdown(button).show();
+    button.removeAttribute("data-bs-auto-close");
+    setTimeout(_ => {
+        new bootstrap.Dropdown(button);
+    }, 10);
+}
