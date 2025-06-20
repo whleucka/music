@@ -90,6 +90,51 @@ class TracksController extends Controller
         return $this->control();
     }
 
+    // Search for a track artist
+    #[Get("/tracks/search/artist/{hash}", "tracks.search_artist", ["auth"])]
+    public function search_artist(string $hash): void
+    {
+        $track = $this->track_provider->getTrackFromHash($hash);
+
+        if ($track) {
+            $this->track_provider->setSearchTerm(':artist ' . $track->meta()->artist);
+
+            $this->hxTrigger("tracks");
+            header('HX-Location: {"path":"/tracks", "select":"#view", "target":"#view", "swap":"outerHTML"}');
+            exit;
+        }
+    }
+
+    // Search for a track album
+    #[Get("/tracks/search/album/{hash}", "tracks.search_album", ["auth"])]
+    public function search_album(string $hash): void
+    {
+        $track = $this->track_provider->getTrackFromHash($hash);
+
+        if ($track) {
+            $this->track_provider->setSearchTerm(':album ' . $track->meta()->album);
+
+            $this->hxTrigger("tracks");
+            header('HX-Location: {"path":"/tracks", "select":"#view", "target":"#view", "swap":"outerHTML"}');
+            exit;
+        }
+    }
+
+    // Search for a track album
+    #[Get("/tracks/search/albumhash/{hash}", "tracks.search_albumhash", ["auth"])]
+    public function search_albumhash(string $hash): void
+    {
+        $track = $this->track_provider->getTrackFromHash($hash);
+
+        if ($track) {
+            $this->track_provider->setSearchTerm(':albumhash ' . $track->hash);
+
+            $this->hxTrigger("tracks");
+            header('HX-Location: {"path":"/tracks", "select":"#view", "target":"#view", "swap":"outerHTML"}');
+            exit;
+        }
+    }
+
     // Clear the track search term and results
     #[Get("/tracks/clear", "tracks.clear", ["auth"])]
     public function clear(): string

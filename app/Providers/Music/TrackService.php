@@ -26,12 +26,52 @@ class TrackService
     {
         $term = $this->getSearchTerm();
         if (!$term) return [];
+        if (preg_match('/(:artist)/', $term)) {
+            $term = str_replace(":artist ", "", $term);
+            return db()->fetchAll("SELECT tracks.hash, track_meta.*, 
+                (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = tracks.id) as liked
+                FROM tracks 
+                INNER JOIN track_meta ON track_meta.track_id = tracks.id
+                WHERE (artist = ?)
+                ORDER BY album, CAST(track_number as UNSIGNED)", [$user_id, $term]) ?? [];
+        } elseif (preg_match('/(:albumhash)/', $term)) {
+            $term = str_replace(":albumhash ", "", $term);
+            $track = $this->getTrackFromHash($term);
+            if ($track) {
+                $path_arr = explode("/", $track->pathname);
+                array_pop($path_arr);
+                $path = implode("/", $path_arr);
+                return db()->fetchAll("SELECT tracks.hash, track_meta.*, 
+                    (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = tracks.id) as liked
+                    FROM tracks 
+                    INNER JOIN track_meta ON track_meta.track_id = tracks.id
+                    WHERE (pathname LIKE ?)
+                    ORDER BY album, CAST(track_number as UNSIGNED)", [$user_id, "$path%"]) ?? [];
+            }
+        } elseif (preg_match('/(:album)/', $term)) {
+            $term = str_replace(":album ", "", $term);
+            return db()->fetchAll("SELECT tracks.hash, track_meta.*, 
+                (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = tracks.id) as liked
+                FROM tracks 
+                INNER JOIN track_meta ON track_meta.track_id = tracks.id
+                WHERE (album = ?)
+                ORDER BY album, CAST(track_number as UNSIGNED)", [$user_id, $term]) ?? [];
+        } elseif (preg_match('/(:genre)/', $term)) {
+            $term = str_replace(":genre ", "", $term);
+            return db()->fetchAll("SELECT tracks.hash, track_meta.*, 
+                (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = tracks.id) as liked
+                FROM tracks 
+                INNER JOIN track_meta ON track_meta.track_id = tracks.id
+                WHERE (genre LIKE ?)
+                ORDER BY album, CAST(track_number as UNSIGNED)", [$user_id, "%$term%"]) ?? [];
+        }
+
         return db()->fetchAll("SELECT tracks.hash, track_meta.*, 
             (SELECT 1 FROM track_likes WHERE user_id = ? AND track_id = tracks.id) as liked
             FROM tracks 
             INNER JOIN track_meta ON track_meta.track_id = tracks.id
-            WHERE (artist LIKE ?) OR (album LIKE ?) OR (title LIKE ?) OR (genre LIKE ?) OR (pathname LIKE ?)
-            ORDER BY album, CAST(track_number as UNSIGNED)", [$user_id, ...array_fill(0, 5, "%$term%")]) ?? [];
+            WHERE (artist LIKE ?) OR (album LIKE ?) OR (title LIKE ?) OR (genre LIKE ?)
+            ORDER BY album, CAST(track_number as UNSIGNED)", [$user_id, ...array_fill(0, 4, "%$term%")]) ?? [];
     }
 
     public function getTrackFromHash(string $hash): ?Track
@@ -63,7 +103,6 @@ class TrackService
     {
         return db()->fetchAll("SELECT tracks.hash,
             ANY_VALUE(track_meta.cover) AS cover,
-            ANY_VALUE(track_meta.artist) AS artist,
             ANY_VALUE(track_meta.album) AS album,
             ANY_VALUE(track_meta.title) AS title,
             ANY_VALUE(track_meta.genre) AS genre,
