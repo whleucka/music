@@ -19,6 +19,12 @@ function brain()
     return container()->get(Brain::class);
 }
 
+function recursiveFiles(string $directory)
+{
+
+    return new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+}
+
 /**
  * Web application
  */

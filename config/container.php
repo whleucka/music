@@ -8,12 +8,6 @@ use Echo\Framework\Routing\Router;
 /**
  * Helpers
  */
-function recursiveFiles(string $directory)
-{
-
-    return new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
-}
-
 function getClasses(string $directory): array
 {
     // Get existing classes before loading new ones
