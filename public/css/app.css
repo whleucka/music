@@ -22,7 +22,7 @@
     position: relative;
 }
 .dropdown-menu .dropdown-item {
-    max-width: 350px;
+    max-width: 320px;
 }
 .dropstart .dropdown-toggle::before {
     content: none;
