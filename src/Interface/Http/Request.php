@@ -11,5 +11,5 @@ interface Request
     public function getAttribute(string $name): mixed;
     public function getAttributes(): array;
     public function getClientIp(): ?string;
-    public function curl(string $url, string $method, array $headers, array|string|null $body, int $timeout): array;
+    public function curl(string $url, string $method = 'GET', array $headers = [], array|string|null $body = null, int $timeout = 10): array;
 }
