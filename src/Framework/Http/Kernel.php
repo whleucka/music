@@ -115,6 +115,8 @@ class Kernel implements HttpKernel
             // Only show api errors when debug is enabled
             if ($api_error && config("app.debug")) {
                 $api_response["error"] = $api_error;
+                $api_response["success"] = false;
+                $api_response["status"] = 400;
             }
             // API response
             $response = new JsonResponse($api_response);
