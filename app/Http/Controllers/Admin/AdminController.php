@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Dashboard;
+namespace App\Http\Controllers\Admin;
 
 use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Route\{Get, Post};
@@ -18,33 +18,36 @@ class AdminController extends Controller
     #[Get("/admin/{module}", "admin.index", ["auth"])] 
     public function index(string $module): string
     {
-        return $this->render("admin/index.html.twig");
+        return $this->render("admin/index.html.twig", $this->module->index());
     }
 
     #[Get("/admin/{module}/create", "admin.create", ["auth"])] 
     public function create(string $module): string
     {
-        return $this->render("admin/index.html.twig");
+        return $this->render("admin/create.html.twig", $this->module->create());
     }
 
-    #[Get("/admin/{id}", "admin.edit", ["auth"])] 
-    public function edit(string $module, string $id): string
+    #[Get("/admin/{module}/{id}", "admin.edit", ["auth"])] 
+    public function edit(string $module, int $id): string
     {
-        return $this->render("admin/index.html.twig");
+        return $this->render("admin/edit.html.twig", $this->module->edit($id));
     }
 
-    #[Post("/admin", "admin.store", ["auth"])]
+    #[Post("/admin/{module}", "admin.store", ["auth"])]
     public function store(string $module)
     {
+        $this->module->store();
     }
 
-    #[Post("/admin/{id}/update", "admin.update", ["auth"])]
-    public function update(string $module, string $id)
+    #[Post("/admin/{module}/{id}/update", "admin.update", ["auth"])]
+    public function update(string $module, int $id)
     {
+        $this->module->update($id);
     }
 
-    #[Post("/admin/{id}/destroy", "admin.destroy", ["auth"])]
-    public function destroy(string $module, string $id)
+    #[Post("/admin/{module}/{id}/destroy", "admin.destroy", ["auth"])]
+    public function destroy(string $module, int $id)
     {
+        $this->module->destroy($id);
     }
 }

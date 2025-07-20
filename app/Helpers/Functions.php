@@ -7,6 +7,7 @@ use Echo\Framework\Container\Container;
 use Echo\Framework\Database\Connection;
 use Echo\Framework\Database\Drivers\MariaDB;
 use Echo\Framework\Database\Drivers\MySQL;
+use Echo\Framework\Database\QueryBuilder;
 use Echo\Framework\Http\Request;
 use Echo\Framework\Routing\Router;
 use Echo\Framework\Session\Session;
@@ -44,6 +45,11 @@ function console(): Application
 function container()
 {
     return Container::getInstance();
+}
+
+function qb()
+{
+    return new QueryBuilder;
 }
 
 function twig()

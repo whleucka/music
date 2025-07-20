@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin\Modules;
 
 use Echo\Framework\Admin\Module;
 
-class Dashboard extends Module
+class Sessions extends Module
 {
-    protected string $module_title = "Dashboard";
+    protected string $module_title = "Sessions";
 }
