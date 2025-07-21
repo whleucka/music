@@ -18,19 +18,25 @@ class AdminController extends Controller
     #[Get("/admin/{module}", "admin.index", ["auth"])] 
     public function index(string $module): string
     {
-        return $this->render("admin/index.html.twig", $this->module->index());
+        return $this->render("admin/module.html.twig", $this->module->index());
     }
 
     #[Get("/admin/{module}/create", "admin.create", ["auth"])] 
     public function create(string $module): string
     {
-        return $this->render("admin/create.html.twig", $this->module->create());
+        return $this->render("admin/form.html.twig", $this->module->create());
     }
 
-    #[Get("/admin/{module}/{id}", "admin.edit", ["auth"])] 
+    #[Get("/admin/{module}/{id}", "admin.show", ["auth"])] 
+    public function show(string $module, int $id): string
+    {
+        return $this->render("admin/form.html.twig", $this->module->show($id));
+    }
+
+    #[Get("/admin/{module}/{id}/edit", "admin.edit", ["auth"])] 
     public function edit(string $module, int $id): string
     {
-        return $this->render("admin/edit.html.twig", $this->module->edit($id));
+        return $this->render("admin/form.html.twig", $this->module->edit($id));
     }
 
     #[Post("/admin/{module}", "admin.store", ["auth"])]

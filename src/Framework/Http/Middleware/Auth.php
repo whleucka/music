@@ -2,7 +2,6 @@
 
 namespace Echo\Framework\Http\Middleware;
 
-use App\Models\User;
 use Closure;
 use Echo\Framework\Http\Response as HttpResponse;
 use Echo\Framework\Session\Flash;
@@ -17,8 +16,7 @@ class Auth implements Middleware
     {
         $route = $request->getAttribute("route");
         $middleware = $route["middleware"];
-        $uuid = session()->get("user_uuid");
-        $user = $uuid ? User::where("uuid", $uuid) : false;
+        $user = user();
 
         if (in_array('auth', $middleware) && !$user) {
             $res = new HttpResponse('<script>window.location.href="/sign-in";</script>', 200);

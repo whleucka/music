@@ -1,0 +1,8 @@
+{% extends "layout/admin.html.twig" %}
+
+{% block title %}{{ parent() }} | Admin > {{ module.title }}{% endblock %}
+
+{% block module %}
+  <h1 id="module-title" class="mt-2 mb-4">{{ module.icon|raw }} {{ module.title }}</h1>
+  {{ content|raw }}
+{% endblock %}

@@ -3,11 +3,10 @@
 namespace Echo\Framework\Admin;
 
 use Echo\Interface\Admin\Module as AdminModule;
-use Echo\Framework\Admin\View\Table\Table;
-use Echo\Framework\Admin\View\Table\Schema as TableSchema;
 
 class Module implements AdminModule
 {
+    protected string $module_icon = '';
     protected string $module_title = '';
 
     /**
@@ -16,19 +15,33 @@ class Module implements AdminModule
     public function index(): array
     {
         return [
+            "user" => $this->getUserData(),
             "module" => $this->getModuleData(),
             "content" => $this->generateContent("index"),
         ];
     }
-    
+
     /**
      * GET create data method
      */
     public function create(): array
     {
         return [
+            "user" => $this->getUserData(),
             "module" => $this->getModuleData(),
             "content" => $this->generateContent("create"),
+        ];
+    }
+
+    /**
+     * GET show data method
+     */
+    public function show(int $id): array
+    {
+        return [
+            "user" => $this->getUserData(),
+            "module" => $this->getModuleData(),
+            "content" => $this->generateContent("show"),
         ];
     }
 
@@ -38,6 +51,7 @@ class Module implements AdminModule
     public function edit(int $id): array
     {
         return [
+            "user" => $this->getUserData(),
             "module" => $this->getModuleData(),
             "content" => $this->generateContent("edit"),
         ];
@@ -68,6 +82,17 @@ class Module implements AdminModule
     {
         return [
             "title" => $this->module_title,
+            "icon" => $this->module_icon,
+        ];
+    }
+
+    private function getUserData() 
+    {
+        $user = user();
+        return [
+            "name" => $user->first_name . " " . $user->last_name,
+            "email" => $user->email,
+            "avatar" => $user->gravatar(38),
         ];
     }
 

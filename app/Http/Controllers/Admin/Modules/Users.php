@@ -8,6 +8,7 @@ use Echo\Framework\Admin\View\Table\Schema as TableSchema;
 
 class Users extends Module
 {
+    protected string $module_icon = '<i class="bi bi-people pe-1"></i>';
     protected string $module_title = "Users";
 
     protected function indexContent(): string

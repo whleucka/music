@@ -1,6 +1,7 @@
 <?php
 
 use App\Application;
+use App\Models\User;
 use App\Http\Kernel as HttpKernel;
 use App\Console\Kernel as ConsoleKernel;
 use Echo\Framework\Container\Container;
@@ -37,6 +38,14 @@ function console(): Application
 {
     $kernel = new ConsoleKernel();
     return new Application($kernel);
+}
+
+function user()
+{
+    $uuid = session()->get("user_uuid");
+    return $uuid 
+        ? User::where("uuid", $uuid)->get()
+        : false;
 }
 
 /**

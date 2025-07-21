@@ -12,12 +12,15 @@
             <link rel="manifest" href="/icons/site.webmanifest">
             <link href="/css/bootstrap.min.css" rel="stylesheet">
             <link href="/css/style.css" rel="stylesheet">
+            {% block head_css %}{% endblock %}
             <script src="/js/htmx.min.js"></script>
+            <script src="/js/head-support.js"></script>
             <script src="/js/script.js"></script>
             <script src="/js/bootstrap.bundle.min.js"></script>
+            {% block head_js %}{% endblock %}
         {% endblock %}
     </head>
-    <body>
+    <body hx-ext="head-support">
         <section id="content">{% block content %}{% endblock %}</section>
         {% block footer %}
         {% endblock %}

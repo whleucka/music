@@ -1,20 +1,39 @@
-<div class="table-responsive">
-  <table class="table table-sm">
-    <thead>
-      <tr>
-        {% for header in headers %}
-        <th scope="col">{{ header }}</th>
+<div id="table" class="bg-white p-2">
+  <div id="table-actions" class="d-flex p-2">
+    <button class="btn btn-sm btn-success"><i class="bi bi-plus-square pe-1"></i> New</button>
+    <button class="btn btn-sm btn-primary ms-1"><i class="bi bi-funnel pe-1"></i> Filter</button>
+    <div class="ms-auto">
+      <button class="btn btn-sm btn-primary ms-1"><i class="bi bi-download pe-1"></i> Export</button>
+    </div>
+  </div>
+  <div class="table-responsive p-2">
+    <table class="table table-hover table-sm">
+      <thead>
+        <tr>
+          <td align="middle"><input id="select-all" type="checkbox" /></td>
+          {% for header in headers %}
+          <th scope="col">{{ header }}</th>
+          {% endfor %}
+          <th class="text-end">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in data %}
+        <tr>
+          <td align="middle"><input type="checkbox" value="" /></td>
+          {% for value in row %}
+          <td>{{ value }}</td>
+          {% endfor %}
+          <td>
+            <div id="row-actions" class="d-flex justify-content-end">
+              <button class="btn btn-sm"><i class="bi bi-eye"></i></button>
+              <button class="btn btn-sm ms-1"><i class="bi bi-pencil"></i></button>
+              <button class="btn btn-sm ms-1"><i class="bi bi-trash"></i></button>
+            </div>
+          </td>
+        </tr>
         {% endfor %}
-      </tr>
-    </thead>
-    <tbody>
-      {% for row in data %}
-      <tr>
-        {% for value in row %}
-        <td>{{ value }}</td>
-        {% endfor %}
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
 </div>
