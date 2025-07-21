@@ -3,24 +3,18 @@
 namespace App\Http\Controllers\Admin\Modules;
 
 use App\Http\Controllers\Admin\AdminController;
-use Echo\Framework\Admin\View\Table\Table;
-use Echo\Framework\Admin\View\Table\Schema as TableSchema;
+use Echo\Framework\Routing\Group;
 
+#[Group("/admin/sessions")]
 class SessionsController extends AdminController
 {
     protected string $module_icon = '<i class="bi bi-person-bounding-box pe-1"></i>';
     protected string $module_title = "Sessions";
-
-    protected function indexContent(string $module): string
-    {
-        return TableSchema::create("sessions", function(Table $table) use ($module) {
-            $table->module = $module;
-            $table->columns = [
-                "ID" => "id",
-                "URI" => "uri",
-                "IP" => "INET_NTOA(ip) as ip",
-                "Created" => "created_at",
-            ];
-        });
-    }
+    protected string $table_name = "sessions";
+    protected array $table_columns = [
+        "ID" => "id",
+        "URI" => "uri",
+        "IP" => "INET_NTOA(ip)",
+        "Created" => "created_at",
+    ];
 }

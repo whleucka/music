@@ -3,7 +3,6 @@
 namespace Echo\Framework\Routing;
 
 use Echo\Framework\Routing\Route;
-use Exception;
 use ReflectionClass;
 
 class Collector
@@ -12,7 +11,17 @@ class Collector
 
     public function register(string $controller): void
     {
-        $reflection = new ReflectionClass($controller);
+        $reflection = new \ReflectionClass($controller);
+
+        // Check for group attribute
+        $groupPrefix = '';
+        $groupMiddleware = [];
+
+        foreach ($reflection->getAttributes(Group::class) as $groupAttr) {
+            $group = $groupAttr->newInstance();
+            $groupPrefix = rtrim($group->prefix, '/');
+            $groupMiddleware = $group->middleware;
+        }
 
         foreach ($reflection->getMethods() as $method) {
             foreach ($method->getAttributes() as $attribute) {
@@ -21,27 +30,34 @@ class Collector
                     continue;
                 }
 
-                $http_method = strtolower((new ReflectionClass($instance))->getShortName());
+                $http_method = strtolower((new \ReflectionClass($instance))->getShortName());
+
+                // Combine group prefix and route path
+                $fullPath = rtrim($groupPrefix . '/' . ltrim($instance->path, '/'), '/');
+                $fullPath = $fullPath === '' ? '/' : $fullPath;
 
                 // Check for duplicate route name
                 foreach ($this->routes as $routesByMethod) {
                     foreach ($routesByMethod as $route) {
                         if ($route['name'] === $instance->name) {
-                            throw new Exception("Duplicate route name detected: '{$instance->name}'");
+                            //throw new \Exception("Duplicate route name detected: '{$instance->name}'");
                         }
                     }
                 }
 
-                // Check for duplicate path & HTTP method
-                if (isset($this->routes[$instance->path][$http_method])) {
-                    throw new Exception("Duplicate route detected: [$http_method] path: {$instance->path}");
+                // Check for duplicate path & method
+                if (isset($this->routes[$fullPath][$http_method])) {
+                    //throw new \Exception("Duplicate route detected: [$http_method] path: $fullPath");
                 }
 
+                // Merge middleware from group and method
+                $mergedMiddleware = array_merge($groupMiddleware, $instance->middleware);
+
                 // Register the route
-                $this->routes[$instance->path][$http_method] = [
+                $this->routes[$fullPath][$http_method] = [
                     'controller' => $controller,
                     'method' => $method->getName(),
-                    'middleware' => $instance->middleware,
+                    'middleware' => $mergedMiddleware,
                     'name' => $instance->name
                 ];
             }

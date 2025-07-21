@@ -4,72 +4,78 @@ namespace App\Http\Controllers\Admin;
 
 use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Route\{Get, Post};
+use Echo\Framework\Routing\Group;
 
+#[Group(middleware: ["auth"])]
 class AdminController extends Controller
 {
-    protected string $module_icon = '';
-    protected string $module_title = '';
+    protected string $module_icon = "";
+    protected string $module_title = "";
 
-    #[Get("/admin/{module}", "admin.index", ["auth"])] 
-    public function index(string $module): string
+    protected string $table_name = "";
+    protected array $table_columns = [];
+
+    #[Get("/", "admin.index")] 
+    public function index(): string
     {
-        return $this->render("admin/module.html.twig", $this->getIndex($module));
+        return $this->render("admin/module.html.twig", $this->getTableData());
     }
 
-    #[Get("/admin/{module}/create", "admin.create", ["auth"])] 
-    public function create(string $module): string
+    #[Get("/create", "admin.create")] 
+    public function create(): string
     {
-        return $this->render("admin/form.html.twig", $this->getCreate($module));
+        return $this->render("admin/form.html.twig", $this->getFormData());
     }
 
-    #[Get("/admin/{module}/{id}", "admin.show", ["auth"])] 
-    public function show(string $module, int $id): string
+    #[Get("/{id}", "admin.show")] 
+    public function show(int $id): string
     {
-        return $this->render("admin/form.html.twig", $this->getShow($module, $id));
+        return $this->render("admin/form.html.twig", $this->getFormData($id));
     }
 
-    #[Get("/admin/{module}/{id}/edit", "admin.edit", ["auth"])] 
-    public function edit(string $module, int $id): string
+    #[Get("/{id}/edit", "admin.edit")] 
+    public function edit(int $id): string
     {
-        return $this->render("admin/form.html.twig", $this->getEdit($module, $id));
+        return $this->render("admin/form.html.twig", $this->getFormData($id));
     }
 
-    #[Post("/admin/{module}", "admin.store", ["auth"])]
-    public function store(string $module)
+    #[Post("/{module}", "admin.store")]
+    public function store()
     {
         dd("WIP");
     }
 
-    #[Post("/admin/{module}/{id}/update", "admin.update", ["auth"])]
+    #[Post("/{id}/update", "admin.update")]
     public function update(string $module, int $id)
     {
         dd("WIP");
     }
 
-    #[Post("/admin/{module}/{id}/destroy", "admin.destroy", ["auth"])]
+    #[Post("/destroy", "admin.destroy")]
     public function destroy(string $module, int $id)
     {
         dd("WIP");
     }
 
-    protected function indexContent(string $module): string
+    protected function renderTable(): string
     {
-        return "";
+        if (empty($this->table_columns)) return '';
+        $data = qb()->select(array_values($this->table_columns))
+            ->from($this->table_name)
+            ->execute();
+        return twig()->render("admin/table.html.twig", [
+            "headers" => array_keys($this->table_columns),
+            "data" => $data,
+        ]);
     }
 
-    protected function showContent(string $module, int $id): string
+    protected function renderForm(?int $id = null, bool $readonly = false): string
     {
-        return "";
-    }
-
-    protected function editContent(string $module, int $id): string
-    {
-        return "";
-    }
-
-    protected function createContent(string $module): string
-    {
-        return "";
+        return twig()->render("admin/form.html.twig", [
+            "id" => $id,
+            "readonly" => $readonly,
+            "data" => [],
+        ]);
     }
 
     private function getModuleData()
@@ -90,51 +96,21 @@ class AdminController extends Controller
         ];
     }
 
-    /**
-     * GET index data method
-     */
-    public function getIndex(string $module): array
+    public function getTableData(): array
     {
         return [
             "user" => $this->getUserData(),
             "module" => $this->getModuleData(),
-            "content" => $this->indexContent($module),
+            "content" => $this->renderTable(),
         ];
     }
 
-    /**
-     * GET create data method
-     */
-    public function getCreate(string $module): array
+    public function getFormData(?int $id = null): array
     {
         return [
             "user" => $this->getUserData(),
             "module" => $this->getModuleData(),
-            "content" => $this->createContent($module),
-        ];
-    }
-
-    /**
-     * GET show data method
-     */
-    public function getShow(string $module, int $id): array
-    {
-        return [
-            "user" => $this->getUserData(),
-            "module" => $this->getModuleData(),
-            "content" => $this->showContent($module, $id),
-        ];
-    }
-
-    /**
-     * GET edit data method
-     */
-    public function getEdit(string $module, int $id): array
-    {
-        return [
-            "user" => $this->getUserData(),
-            "module" => $this->getModuleData(),
-            "content" => $this->editContent($module, $id),
+            "content" => $this->renderForm($id),
         ];
     }
 }
