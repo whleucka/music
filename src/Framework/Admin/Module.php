@@ -90,7 +90,7 @@ class Module implements AdminModule
     {
         $user = user();
         return [
-            "name" => $user->first_name . " " . $user->last_name,
+            "name" => $user->first_name . " " . $user->surname,
             "email" => $user->email,
             "avatar" => $user->gravatar(38),
         ];
