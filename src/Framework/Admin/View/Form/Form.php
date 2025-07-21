@@ -1,8 +1,8 @@
 <?php
 
-namespace Echo\Framework\Admin\View\Table;
+namespace Echo\Framework\Admin\View\Form;
 
-class Table
+class Form
 {
     public string $module = '';
     public array $columns = [];
@@ -21,7 +21,7 @@ class Table
 
     public function render(array $data)
     {
-        return twig()->render("admin/table.html.twig", $data);
+        return twig()->render("admin/form.html.twig", $data);
     }
 
     private function getData()

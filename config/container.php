@@ -4,7 +4,6 @@ use Echo\Framework\Database\Drivers\{ MariaDB, MySQL };
 use Echo\Framework\Http\Request;
 use Echo\Framework\Routing\Collector;
 use Echo\Framework\Routing\Router;
-use Echo\Interface\Admin\Module;
 
 /**
  * Helpers
@@ -30,14 +29,6 @@ function getClasses(string $directory): array
 }
 
 return [
-    Module::class => function(\Psr\Container\ContainerInterface $c) {
-        $params = request()->getAttribute('route')['params'];
-        if (empty($params)) throw new Error("Param does not exist");
-        try {
-            $class = $params[0];
-            return $c->get("App\Http\Controllers\Admin\Modules\\$class");
-        } catch (Throwable $ex) {}
-    },
     Request::class => DI\create()->constructor($_GET, $_POST, $_REQUEST, $_FILES, $_COOKIE, function_exists("getallheaders") ? getallheaders() : []),
     Collector::class => function() {
         // Get web controllers
