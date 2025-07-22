@@ -10,6 +10,8 @@ class UsersController extends AdminController
 {
     protected string $module_icon = '<i class="bi bi-people pe-1"></i>';
     protected string $module_title = "Users";
+    protected string $module_link = "users";
+
     protected string $table_name = "users";
     protected array $table_columns = [
         "ID" => "id",

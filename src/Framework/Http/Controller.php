@@ -38,6 +38,7 @@ class Controller implements HttpController
         "max_length" => "Input is too long",
         "regex" => "Does not match pattern",
     ];
+    private bool $twig_loaded = false;
 
     public function setHeader(string $key, string $value): void
     {
@@ -169,7 +170,10 @@ class Controller implements HttpController
     {
         $twig = twig();
         $data = array_merge($data, $this->getDefaultTemplateData());
-        $twig->addExtension(new TwigExtension);
+        if (!$this->twig_loaded) {
+            $this->twig_loaded = true;
+            $twig->addExtension(new TwigExtension);
+        }
         return $twig->render($template, $data);
     }
 }

@@ -10,10 +10,13 @@ use Echo\Framework\Routing\Group;
 class AdminController extends Controller
 {
     protected string $module_icon = "";
+    protected string $module_link = "";
     protected string $module_title = "";
 
     protected string $table_name = "";
     protected array $table_columns = [];
+
+    protected array $form_columns = [];
 
     #[Get("/", "admin.index")] 
     public function index(): string
@@ -63,7 +66,9 @@ class AdminController extends Controller
         $data = qb()->select(array_values($this->table_columns))
             ->from($this->table_name)
             ->execute();
-        return twig()->render("admin/table.html.twig", [
+        return $this->render("admin/table.html.twig", [
+            "link" => $this->module_link,
+            "caption" => "",
             "headers" => array_keys($this->table_columns),
             "data" => $data,
         ]);
@@ -71,16 +76,30 @@ class AdminController extends Controller
 
     protected function renderForm(?int $id = null, bool $readonly = false): string
     {
-        return twig()->render("admin/form.html.twig", [
+        if (is_null($id)) {
+            $data = qb()->select(array_values($this->table_columns))
+                ->from($this->table_name)
+                ->where(["id = ?"], $id)
+                ->execute();
+            $modal_title = "Edit $id";
+            $submit_title = "Save changes";
+        } else {
+            $data = [];
+            $modal_title = "Create";
+            $submit_title = "Create";
+        }
+        return $this->render("admin/form.html.twig", [
             "id" => $id,
             "readonly" => $readonly,
-            "data" => [],
+            "modal_title" => $modal_title,
+            "submit_title" => $submit_title,
         ]);
     }
 
     private function getModuleData()
     {
         return [
+            "link" => $this->module_link,
             "title" => $this->module_title,
             "icon" => $this->module_icon,
         ];
