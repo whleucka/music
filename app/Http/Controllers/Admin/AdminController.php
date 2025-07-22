@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Route\{Get, Post};
 use Echo\Framework\Routing\Group;
+use Twig\TwigFunction;
 
 #[Group(middleware: ["auth"])]
 class AdminController extends Controller
@@ -29,6 +30,10 @@ class AdminController extends Controller
 
     protected array $form_columns = [];
 
+    protected bool $has_edit = true;
+    protected bool $has_create = true;
+    protected bool $has_delete = true;
+
     protected array $validation_rules = [
         "page" => ["integer"]
     ];
@@ -41,22 +46,22 @@ class AdminController extends Controller
         return $this->renderModule($this->getModuleData());
     }
 
-    #[Get("/create", "admin.create")]
-    public function create(): string
+    #[Get("/modal/create", "admin.create")]
+    public function modal_create(): string
     {
-        return $this->renderModule($this->getFormData(null, false));
+        return $this->renderModule($this->getFormData(null, 'create'));
     }
 
-    #[Get("/{id}", "admin.show")]
-    public function show(int $id): string
+    #[Get("/modal/{id}", "admin.show")]
+    public function modal_show(int $id): string
     {
-        return $this->renderModule($this->getFormData($id, true));
+        return $this->renderModule($this->getFormData($id, 'show'));
     }
 
-    #[Get("/{id}/edit", "admin.edit")]
-    public function edit(int $id): string
+    #[Get("/modal/{id}/edit", "admin.edit")]
+    public function modal_edit(int $id): string
     {
-        return $this->renderModule($this->getFormData($id, false));
+        return $this->renderModule($this->getFormData($id, 'edit'));
     }
 
     #[Post("/{module}", "admin.store")]
@@ -66,13 +71,13 @@ class AdminController extends Controller
     }
 
     #[Post("/{id}/update", "admin.update")]
-    public function update(string $module, int $id)
+    public function update(int $id)
     {
         dd("WIP");
     }
 
     #[Post("/destroy", "admin.destroy")]
-    public function destroy(string $module, int $id)
+    public function destroy(int $id)
     {
         dd("WIP");
     }
@@ -106,16 +111,11 @@ class AdminController extends Controller
         $this->page = $this->getSession("page") ?? 1;
     }
 
-    protected function renderModule(array $data)
-    {
-        return $this->render("admin/module.html.twig", $data);
-    }
-
-    protected function getFormData(?int $id = null, bool $readonly): array
+    protected function getFormData(?int $id, string $type): array
     {
         return [
             ...$this->getCommonData(),
-            "content" => $this->renderForm($id, $readonly),
+            "content" => $this->renderForm($id, $type),
         ];
     }
 
@@ -127,9 +127,35 @@ class AdminController extends Controller
         ];
     }
 
+    protected function hasCreate()
+    {
+        return $this->has_create && !empty($this->form_columns);
+    }
+
+    protected function hasShow(int $id)
+    {
+        return !empty($this->form_columns);
+    }
+
+    protected function hasEdit(int $id)
+    {
+        return $this->has_edit && !empty($this->form_columns);
+    }
+
+    protected function hasDelete(int $id)
+    {
+        return $this->has_delete;
+    }
+
+    protected function renderModule(array $data)
+    {
+        return $this->render("admin/module.html.twig", $data);
+    }
+
     protected function renderTable(): string
     {
         if (empty($this->table_columns) || !$this->table_name) return '';
+
         // Table columns must always contain table_pk
         if (!in_array($this->table_pk, $this->table_columns)) {
             $columns[strtoupper($this->table_pk)] = $this->table_pk;
@@ -143,6 +169,17 @@ class AdminController extends Controller
 
         $start = 1 + ($this->page * $this->per_page) - $this->per_page;
         $end = min($this->page * $this->per_page, $this->total_results);
+
+        // Register methods
+        $has_create = new TwigFunction("has_create", fn() => $this->hasCreate());
+        $has_edit = new TwigFunction("has_edit", fn(int $id) => $this->hasEdit($id));
+        $has_show = new TwigFunction("has_show", fn(int $id) => $this->hasShow($id));
+        $has_delete = new TwigFunction("has_delete", fn(int $id) => $this->hasDelete($id));
+        twig()->addFunction($has_create);
+        twig()->addFunction($has_edit);
+        twig()->addFunction($has_show);
+        twig()->addFunction($has_delete);
+
         return $this->render("admin/table.html.twig", [
             ...$this->getCommonData(),
             "headers" => array_keys($this->table_columns),
@@ -159,27 +196,34 @@ class AdminController extends Controller
         ]);
     }
 
-    protected function renderForm(?int $id, bool $readonly): string
+    protected function renderForm(?int $id, string $type): string
     {
+        $readonly = false;
         if (empty($this->form_columns) || !$this->table_name) return '';
 
-        if ($id && !$readonly) {
+        if ($type === "edit") {
             $title = "Edit $id";
             $button = "Save Changes";
-        } else if ($id && $readonly) {
+        } else if ($type === "show") {
             $title = "View $id";
-        } else {
+            $button = "OK";
+            $readonly = true;
+        } else if ($type === "create") {
             $title = "Create New";
             $button = "Create";
         }
 
         $data = $this->runFormQuery($id);
 
-        return $this->render("admin/form.html.twig", [
+        return $this->render("admin/form-modal.html.twig" , [
             ...$this->getCommonData(),
             "readonly" => $readonly,
+            "type" => $type,
             "id" => $id,
             "title" => $title,
+            "action" => $id 
+                ? "/admin/{$this->module_link}/$id/update" 
+                : "/admin/{$this->module_link}",
             "button" => $button,
             "labels" => array_keys($this->form_columns),
             "data" => is_array($data) ? $data : $data->fetch(),

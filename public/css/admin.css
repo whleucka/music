@@ -35,6 +35,10 @@ html,body {
 .btn-primary:hover {
   background-color: #2b3b4b;
 }
+.form-control:focus, #pagination .page-link {
+  border-color: none;
+  box-shadow: none;
+}
 
 /**
  * Sidebar
@@ -97,6 +101,9 @@ html,body {
   color: #333;
 }
 
+/**
+ * Table
+ */
 #table {
   border-radius: 6px;
 }
@@ -114,7 +121,10 @@ html,body {
   color: #fff;
 }
 
-.form-control:focus, #pagination .page-link {
-  border-color: none;
-  box-shadow: none;
+/**
+ * Forms
+ */
+#form {
+  border-radius: 6px;
 }
+
