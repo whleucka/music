@@ -99,13 +99,6 @@ html,body {
 
 #table {
   border-radius: 6px;
-  width: 100%;
-}
-
-#table .checkbox-cell {
-  width: 30px !important;
-  max-width: 30px !important;
-  min-width: 30px !important;
 }
 
 #table #row-actions {

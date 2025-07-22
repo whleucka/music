@@ -141,9 +141,14 @@ class AdminController extends Controller
 
         $rows = $this->runTableQuery()->fetchAll();
 
+        $start = 1 + ($this->page * $this->per_page) - $this->per_page;
+        $end = min($this->page * $this->per_page, $this->total_results);
         return $this->render("admin/table.html.twig", [
             ...$this->getCommonData(),
             "headers" => array_keys($this->table_columns),
+            "caption" => $this->total_pages > 1 
+                ? "Showing {$start}–{$end} of {$this->total_results} results"
+                : "",
             "data" => [
                 "rows" => $rows,
                 "page" => $this->page,

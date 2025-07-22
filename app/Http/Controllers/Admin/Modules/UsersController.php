@@ -15,7 +15,6 @@ class UsersController extends AdminController
         $this->module_link = "users";
 
         $this->table_name = "users";
-
         $this->table_columns = [
             "ID" => "id",
             "UUID" => "uuid",
@@ -23,6 +22,7 @@ class UsersController extends AdminController
             "Email" => "email",
             "Created" => "created_at",
         ];
+
         $this->form_columns = [
             "First Name" => "first_name",
             "Surname" => "surname",
