@@ -16,8 +16,9 @@ class SessionsController extends AdminController
 
         $this->table_name = "sessions";
         $this->table_columns = [
-            "URI" => "uri",
+            "User" => "(SELECT email FROM users WHERE users.id = user_id) as user",
             "IP" => "INET_NTOA(ip)",
+            "URI" => "uri",
             "Created" => "created_at",
         ];
     }

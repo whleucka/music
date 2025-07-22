@@ -92,8 +92,10 @@ class AdminController extends Controller
 
     protected function processRequest(?object $request)
     {
-        $this->total_results = $this->runTableQuery(false)->rowCount();
-        $this->total_pages = ceil($this->total_results / $this->per_page);
+        if (!empty($this->table_columns) && $this->table_name) {
+            $this->total_results = $this->runTableQuery(false)->rowCount();
+            $this->total_pages = ceil($this->total_results / $this->per_page);
+        }
 
         // Set current page
         if (isset($request->page) && $request->page > 0 && $request->page <= $this->total_pages) {
@@ -127,7 +129,7 @@ class AdminController extends Controller
 
     protected function renderTable(): string
     {
-        if (empty($this->table_columns)) return '';
+        if (empty($this->table_columns) || !$this->table_name) return '';
         // Table columns must always contain table_pk
         if (!in_array($this->table_pk, $this->table_columns)) {
             $columns[strtoupper($this->table_pk)] = $this->table_pk;
@@ -154,9 +156,9 @@ class AdminController extends Controller
 
     protected function renderForm(?int $id, bool $readonly): string
     {
-        if (empty($this->form_columns)) return '';
+        if (empty($this->form_columns) || !$this->table_name) return '';
 
-        if ($id) {
+        if ($id && !$readonly) {
             $title = "Edit $id";
             $button = "Save Changes";
         } else if ($id && $readonly) {

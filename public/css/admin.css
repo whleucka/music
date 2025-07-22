@@ -99,18 +99,17 @@ html,body {
 
 #table {
   border-radius: 6px;
+  width: 100%;
 }
 
-#table .table {
-  table-layout:fixed;
-}
-
-td.checkbox-cell {
-  min-width: 30px !important;
-  max-width: 30px !important;
+#table .checkbox-cell {
   width: 30px !important;
-  padding: 0;
-  margin: 0;
+  max-width: 30px !important;
+  min-width: 30px !important;
+}
+
+#table #row-actions {
+  padding: 0 5px;
 }
 
 #pagination .page-link {
