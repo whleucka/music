@@ -18,28 +18,28 @@ class AdminController extends Controller
 
     protected array $form_columns = [];
 
-    #[Get("/", "admin.index")] 
+    #[Get("/", "admin.index")]
     public function index(): string
     {
-        return $this->render("admin/module.html.twig", $this->getTableData());
+        return $this->renderModule();
     }
 
-    #[Get("/create", "admin.create")] 
+    #[Get("/create", "admin.create")]
     public function create(): string
     {
-        return $this->render("admin/form.html.twig", $this->getFormData());
+        return $this->renderForm();
     }
 
-    #[Get("/{id}", "admin.show")] 
+    #[Get("/{id}", "admin.show")]
     public function show(int $id): string
     {
-        return $this->render("admin/form.html.twig", $this->getFormData($id));
+        return $this->renderForm($id, true);
     }
 
-    #[Get("/{id}/edit", "admin.edit")] 
+    #[Get("/{id}/edit", "admin.edit")]
     public function edit(int $id): string
     {
-        return $this->render("admin/form.html.twig", $this->getFormData($id));
+        return $this->renderForm($id);
     }
 
     #[Post("/{module}", "admin.store")]
@@ -60,6 +60,16 @@ class AdminController extends Controller
         dd("WIP");
     }
 
+    protected function renderModule()
+    {
+        return $this->render("admin/module.html.twig", $this->getModuleData());
+    }
+
+    protected function renderForm(?int $id = null, bool $readonly = false)
+    {
+        return $this->render("admin/form.html.twig", $this->getFormData($id, $readonly));
+    }
+
     protected function renderTable(): string
     {
         if (empty($this->table_columns)) return '';
@@ -74,35 +84,7 @@ class AdminController extends Controller
         ]);
     }
 
-    private function getModuleData()
-    {
-        return [
-            "link" => $this->module_link,
-            "title" => $this->module_title,
-            "icon" => $this->module_icon,
-        ];
-    }
-
-    private function getUserData() 
-    {
-        $user = user();
-        return [
-            "name" => $user->first_name . " " . $user->surname,
-            "email" => $user->email,
-            "avatar" => $user->gravatar(38),
-        ];
-    }
-
-    public function getTableData(): array
-    {
-        return [
-            "user" => $this->getUserData(),
-            "module" => $this->getModuleData(),
-            "content" => $this->renderTable(),
-        ];
-    }
-
-    public function getFormData(?int $id = null): array
+    protected function getFormData(?int $id = null, bool $readonly): array
     {
         if (is_null($id)) {
             $data = [];
@@ -116,13 +98,37 @@ class AdminController extends Controller
                 ->execute()->fetch();
         }
         return [
+            ...$this->getCommonData(),
             "id" => $id,
-            "user" => $this->getUserData(),
-            "module" => $this->getModuleData(),
             "labels" => array_keys($this->form_columns),
+            "readonly" => $readonly,
             "data" => $data,
             "title" => $id ? "Edit $id" : "Create New",
             "button" => $id ? "Save changes" : "Create",
+        ];
+    }
+
+    protected function getModuleData(): array
+    {
+        return [
+            ...$this->getCommonData(),
+            "content" => $this->renderTable(),
+        ];
+    }
+
+    private function getCommonData()
+    {
+        return [
+            "user" => [
+                "name" => $this->user->first_name . " " . $this->user->surname,
+                "email" => $this->user->email,
+                "avatar" => $this->user->gravatar(38),
+            ], 
+            "module" => [
+                "link" => $this->module_link,
+                "title" => $this->module_title,
+                "icon" => $this->module_icon,
+            ]
         ];
     }
 }

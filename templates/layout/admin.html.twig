@@ -24,25 +24,25 @@
         </div>
       </div>
 
-      <div id="sidebar-links" class="p-3" hx-boost="true" hx-select="#module" hx-target="#module" hx-swap="outerHTML">
+      <div id="sidebar-links" class="p-3" hx-boost="true" hx-trigger="click" hx-select="#module" hx-target="#module" hx-swap="outerHTML">
         <ul class="nav nav-pills flex-column mb-auto">
           <li>
-            <a href="/admin/dashboard" class="nav-link link link-light">
+            <a href="/admin/dashboard" class="nav-link link link-light" hx-on::after-request="sidebarLinkActive(event)">
               <i class="bi bi-rocket"></i> <span class="ps-2 desc">Dashboard</span>
             </a>
           </li>
           <li>
-            <a href="/admin/sessions" class="nav-link link link-light">
+            <a href="/admin/sessions" class="nav-link link link-light" hx-on::after-request="sidebarLinkActive(event)">
               <i class="bi bi-person-bounding-box"></i> <span class="ps-2 desc">Sessions</span>
             </a>
           </li>
           <li>
-            <a href="/admin/users" class="nav-link link link-light">
+            <a href="/admin/users" class="nav-link link link-light" hx-on::after-request="sidebarLinkActive(event)">
               <i class="bi bi-people"></i> <span class="ps-2 desc">Users</span>
             </a>
           </li>
           <li>
-            <a href="/sign-out" hx-boost="false" class="nav-link link-light">
+            <a href="/sign-out" hx-boost="false" class="nav-link link-light" hx-on::after-request="sidebarLinkActive(event)">
               <i class="bi bi-door-closed"></i> <span class="ps-2 desc">Sign Out</span>
             </a>
           </li>
