@@ -8,7 +8,10 @@ use Echo\Framework\Routing\Group;
 #[Group("/admin/dashboard")]
 class DashboardController extends AdminController
 {
-    protected string $module_icon = '<i class="bi bi-rocket pe-1"></i>';
-    protected string $module_title = "Dashboard";
-    protected string $module_link = "dashboard";
+    public function __construct()
+    {
+        $this->module_icon = '<i class="bi bi-rocket pe-1"></i>';
+        $this->module_title = "Dashboard";
+        $this->module_link = "dashboard";
+    }
 }

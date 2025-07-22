@@ -101,7 +101,28 @@ html,body {
   border-radius: 6px;
 }
 
-.form-control:focus {
+#table .table {
+  table-layout:fixed;
+}
+
+td.checkbox-cell {
+  min-width: 30px !important;
+  max-width: 30px !important;
+  width: 30px !important;
+  padding: 0;
+  margin: 0;
+}
+
+#pagination .page-link {
+  color: #324554;
+}
+#pagination .page-item.active .page-link {
+  border-color: #324554;
+  background-color: #324554 !important;
+  color: #fff;
+}
+
+.form-control:focus, #pagination .page-link {
   border-color: none;
   box-shadow: none;
 }

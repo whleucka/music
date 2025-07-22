@@ -13,14 +13,31 @@ class AdminController extends Controller
     protected string $module_link = "";
     protected string $module_title = "";
 
+    protected string $table_pk = "id";
     protected string $table_name = "";
     protected array $table_columns = [];
 
+    protected int $per_page = 10;
+    protected int $page = 1;
+    protected int $total_pages = 1;
+    protected int $total_results = 0;
+    protected int $pagination_links = 3;
+
+    protected array $query_where = [];
+    protected array $query_params = [];
+    protected array $query_order_by = ["id DESC"];
+
     protected array $form_columns = [];
+
+    protected array $validation_rules = [
+        "page" => ["integer"]
+    ];
 
     #[Get("/", "admin.index")]
     public function index(): string
     {
+        $valid = $this->validate($this->validation_rules);
+        $this->processRequest($valid);
         return $this->renderModule($this->getModuleData());
     }
 
@@ -60,6 +77,33 @@ class AdminController extends Controller
         dd("WIP");
     }
 
+    private function setSession(string $key, mixed $value)
+    {
+        $data = session()->get($this->module_link);
+        $data[$key] = $value;
+        session()->set($this->module_link, $data);
+    }
+
+    private function getSession(string $key)
+    {
+        $data = session()->get($this->module_link);
+        return $data[$key] ?? null;
+    }
+
+    protected function processRequest(?object $request)
+    {
+        $this->total_results = $this->runTableQuery(false)->rowCount();
+        $this->total_pages = ceil($this->total_results / $this->per_page);
+
+        // Set current page
+        if (isset($request->page) && $request->page > 0 && $request->page <= $this->total_pages) {
+            $this->setSession("page", $request->page);
+        }
+
+        // Assign properties
+        $this->page = $this->getSession("page") ?? 1;
+    }
+
     protected function renderModule(array $data)
     {
         return $this->render("admin/module.html.twig", $data);
@@ -84,33 +128,70 @@ class AdminController extends Controller
     protected function renderTable(): string
     {
         if (empty($this->table_columns)) return '';
+        // Table columns must always contain table_pk
+        if (!in_array($this->table_pk, $this->table_columns)) {
+            $columns[strtoupper($this->table_pk)] = $this->table_pk;
+            $this->table_columns = [
+                ...$columns,
+                ...$this->table_columns,
+            ];
+        }
+
+        $rows = $this->runTableQuery()->fetchAll();
+
         return $this->render("admin/table.html.twig", [
-            "link" => $this->module_link,
-            "caption" => "",
+            ...$this->getCommonData(),
             "headers" => array_keys($this->table_columns),
-            "data" => $this->runTableQuery(),
+            "data" => [
+                "rows" => $rows,
+                "page" => $this->page,
+                "total_pages" => $this->total_pages,
+                "total_results" => $this->total_results,
+                "pagination_links" => $this->pagination_links,
+            ]
         ]);
     }
 
     protected function renderForm(?int $id, bool $readonly): string
     {
         if (empty($this->form_columns)) return '';
+
+        if ($id) {
+            $title = "Edit $id";
+            $button = "Save Changes";
+        } else if ($id && $readonly) {
+            $title = "View $id";
+        } else {
+            $title = "Create New";
+            $button = "Create";
+        }
+
+        $data = $this->runFormQuery($id);
+
         return $this->render("admin/form.html.twig", [
+            ...$this->getCommonData(),
             "readonly" => $readonly,
             "id" => $id,
-            "title" => $id ? "Edit $id" : "Create New",
-            "button" => $id ? "Save changes" : "Create",
+            "title" => $title,
+            "button" => $button,
             "labels" => array_keys($this->form_columns),
-            "data" => $this->runFormQuery($id),
+            "data" => is_array($data) ? $data : $data->fetch(),
         ]);
-
     }
 
-    private function runTableQuery()
+    private function runTableQuery(bool $limit = true)
     {
-        return qb()->select(array_values($this->table_columns))
+        $q = qb()->select(array_values($this->table_columns))
             ->from($this->table_name)
-            ->execute();
+            ->orderBy($this->query_order_by);
+
+        if ($limit) {
+            $limit = $this->per_page;
+            $offset = $this->per_page * ($this->page - 1);
+            $q->limit($limit)->offset($offset);
+        }
+
+        return $q->execute();
     }
 
     private function runFormQuery(?int $id)
@@ -124,8 +205,8 @@ class AdminController extends Controller
         }
         return qb()->select(array_values($this->form_columns))
             ->from($this->table_name)
-            ->where(["id = ?"], $id)
-            ->execute()->fetch();
+            ->where(["$this->table_pk = ?"], $id)
+            ->execute();
     }
 
     private function getCommonData()
