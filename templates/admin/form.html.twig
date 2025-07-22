@@ -9,13 +9,15 @@
       {% for key,value in data %}
       <div>
         <label for="formControlInput" class="form-label">{{ labels[loop.index0] }}</label>
-        <input type="text" class="form-control" id="" placeholder="" value="{{ value }}" />
+        <input type="text" class="form-control" id="" placeholder="" value="{{ value }}" {% if readonly %}readonly="readonly"{% endif %} />
       </div>
       {% endfor %}
     </form>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+    {% if not readonly %}
     <button type="button" class="btn btn-primary">{{ button }}</button>
+    {% endif %}
   </div>
 </div>

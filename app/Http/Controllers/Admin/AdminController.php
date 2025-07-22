@@ -21,25 +21,25 @@ class AdminController extends Controller
     #[Get("/", "admin.index")]
     public function index(): string
     {
-        return $this->renderModule();
+        return $this->renderModule($this->getModuleData());
     }
 
     #[Get("/create", "admin.create")]
     public function create(): string
     {
-        return $this->renderForm();
+        return $this->renderModule($this->getFormData(null, false));
     }
 
     #[Get("/{id}", "admin.show")]
     public function show(int $id): string
     {
-        return $this->renderForm($id, true);
+        return $this->renderModule($this->getFormData($id, true));
     }
 
     #[Get("/{id}/edit", "admin.edit")]
     public function edit(int $id): string
     {
-        return $this->renderForm($id);
+        return $this->renderModule($this->getFormData($id, false));
     }
 
     #[Post("/{module}", "admin.store")]
@@ -60,51 +60,16 @@ class AdminController extends Controller
         dd("WIP");
     }
 
-    protected function renderModule()
+    protected function renderModule(array $data)
     {
-        return $this->render("admin/module.html.twig", $this->getModuleData());
-    }
-
-    protected function renderForm(?int $id = null, bool $readonly = false)
-    {
-        return $this->render("admin/form.html.twig", $this->getFormData($id, $readonly));
-    }
-
-    protected function renderTable(): string
-    {
-        if (empty($this->table_columns)) return '';
-        $data = qb()->select(array_values($this->table_columns))
-            ->from($this->table_name)
-            ->execute();
-        return $this->render("admin/table.html.twig", [
-            "link" => $this->module_link,
-            "caption" => "",
-            "headers" => array_keys($this->table_columns),
-            "data" => $data,
-        ]);
+        return $this->render("admin/module.html.twig", $data);
     }
 
     protected function getFormData(?int $id = null, bool $readonly): array
     {
-        if (is_null($id)) {
-            $data = [];
-            foreach ($this->form_columns as $key => $value) {
-                $data[$key] = null;
-            }
-        } else {
-            $data = qb()->select(array_values($this->form_columns))
-                ->from($this->table_name)
-                ->where(["id = ?"], $id)
-                ->execute()->fetch();
-        }
         return [
             ...$this->getCommonData(),
-            "id" => $id,
-            "labels" => array_keys($this->form_columns),
-            "readonly" => $readonly,
-            "data" => $data,
-            "title" => $id ? "Edit $id" : "Create New",
-            "button" => $id ? "Save changes" : "Create",
+            "content" => $this->renderForm($id, $readonly),
         ];
     }
 
@@ -116,6 +81,53 @@ class AdminController extends Controller
         ];
     }
 
+    protected function renderTable(): string
+    {
+        if (empty($this->table_columns)) return '';
+        return $this->render("admin/table.html.twig", [
+            "link" => $this->module_link,
+            "caption" => "",
+            "headers" => array_keys($this->table_columns),
+            "data" => $this->runTableQuery(),
+        ]);
+    }
+
+    protected function renderForm(?int $id, bool $readonly): string
+    {
+        if (empty($this->form_columns)) return '';
+        return $this->render("admin/form.html.twig", [
+            "readonly" => $readonly,
+            "id" => $id,
+            "title" => $id ? "Edit $id" : "Create New",
+            "button" => $id ? "Save changes" : "Create",
+            "labels" => array_keys($this->form_columns),
+            "data" => $this->runFormQuery($id),
+        ]);
+
+    }
+
+    private function runTableQuery()
+    {
+        return qb()->select(array_values($this->table_columns))
+            ->from($this->table_name)
+            ->execute();
+    }
+
+    private function runFormQuery(?int $id)
+    {
+        if (is_null($id)) {
+            $data = [];
+            foreach ($this->form_columns as $key => $value) {
+                $data[$key] = null;
+            }
+            return $data;
+        }
+        return qb()->select(array_values($this->form_columns))
+            ->from($this->table_name)
+            ->where(["id = ?"], $id)
+            ->execute()->fetch();
+    }
+
     private function getCommonData()
     {
         return [
@@ -123,7 +135,7 @@ class AdminController extends Controller
                 "name" => $this->user->first_name . " " . $this->user->surname,
                 "email" => $this->user->email,
                 "avatar" => $this->user->gravatar(38),
-            ], 
+            ],
             "module" => [
                 "link" => $this->module_link,
                 "title" => $this->module_title,

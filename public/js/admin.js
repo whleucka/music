@@ -12,7 +12,6 @@ const sidebarLinkActive = (e) => {
   const links = document.querySelectorAll('#sidebar-links .link');
   if (links.length) {
     links.forEach((link) => {
-      console.log(link)
       link.classList.remove('active');
     });
     e.preventDefault();
