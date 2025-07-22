@@ -1,7 +1,7 @@
-<div id="table" class="bg-white p-2">
+<div id="table" class="bg-white shad p-2">
   <div id="table-actions" class="d-flex p-2">
     {% if has_create() %}
-    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#module #modal" hx-get="/admin/{{ module.link }}/modal/create" hx-target=".modal-content" hx-select=".modal-content" hx-swap="outerHTML"><i class="bi bi-plus-square pe-1"></i> New</button>
+    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#module #modal" hx-get="/admin/{{ module.link }}/modal/create" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-plus-square pe-1"></i> New</button>
     {% endif %}
     <button class="btn btn-sm btn-primary ms-1"><i class="bi bi-funnel pe-1"></i> Filter</button>
     <div class="ms-auto">
@@ -29,10 +29,10 @@
           <td id="row-actions">
             <div class="d-flex justify-content-end">
               {% if has_show(row.id) %}
-              <button class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#module #modal" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}" hx-target=".modal-content" hx-select=".modal-content" hx-swap="outerHTML"><i class="bi bi-eye"></i></button>
+              <button class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#module #modal" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-eye"></i></button>
               {% endif %}
               {% if has_edit(row.id) %}
-              <button class="btn btn-sm ms-1" data-bs-toggle="modal" data-bs-target="#module #modal" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}/edit" hx-target=".modal-content" hx-select=".modal-content" hx-swap="outerHTML"><i class="bi bi-pencil"></i></button>
+              <button class="btn btn-sm ms-1" data-bs-toggle="modal" data-bs-target="#module #modal" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}/edit" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-pencil"></i></button>
               {% endif %}
               {% if has_delete(row.id) %}
               <button class="btn btn-sm ms-1"><i class="bi bi-trash"></i></button>

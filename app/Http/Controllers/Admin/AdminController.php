@@ -18,7 +18,7 @@ class AdminController extends Controller
     protected string $table_name = "";
     protected array $table_columns = [];
 
-    protected int $per_page = 10;
+    protected int $per_page = 25;
     protected int $page = 1;
     protected int $total_pages = 1;
     protected int $total_results = 0;

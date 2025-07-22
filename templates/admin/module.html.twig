@@ -5,4 +5,8 @@
 {% block module %}
   <h1 id="module-title" class="mt-2 mb-4">{{ module.icon|raw }} {{ module.title }}</h1>
   {{ content|raw }}
+  <div id="modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+    </div>
+  </div>
 {% endblock %}

@@ -25,6 +25,9 @@ html,body {
 /**
  * Utilities
  */
+.shad {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+}
 .btn {
   border: 0;
   font-weight: 700;
@@ -86,6 +89,7 @@ html,body {
 #nav-top {
   height: 45px;
   background-color: #fff;
+  border-bottom: 1px solid #ddd;
 }
 
 #nav-top .avatar {
@@ -98,7 +102,7 @@ html,body {
 
 #module-title {
   font-weight: 800;
-  color: #333;
+  color: #324554;
 }
 
 /**
