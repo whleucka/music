@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", function(event) {
   const links = document.querySelectorAll('#sidebar-links .link');
   links.forEach((link) => {
-    if (link.href === window.location.href) {
+    let path = window.location.href.split('?')[0]
+    if (link.href === path) {
         link.classList.add("active");
     }
   });
