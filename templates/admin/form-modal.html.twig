@@ -1,4 +1,4 @@
-<div class="modal-content">
+<div id="form" class="modal-content">
   <form method="POST" action="{{ action }}">
     <div class="modal-header">
       <h5 class="modal-title">{{ title }}</h5>
@@ -7,9 +7,9 @@
     <div class="modal-body">
         {{ csrf()|raw }}
         {% for key,value in data %}
-        <div>
-          <label for="formControlInput" class="form-label">{{ labels[loop.index0] }}</label>
-          <input type="text" class="form-control" id="" placeholder="" value="{{ value }}" {% if readonly %}readonly="readonly"{% endif %} />
+        <div class="mb-2">
+          <label class="form-label m-0 p-0">{{ labels[loop.index0] }}</label>
+          <input type="text" class="form-control mt-1" id="" placeholder="" value="{{ value }}" {% if readonly %}readonly="readonly"{% endif %} />
         </div>
         {% endfor %}
     </div>

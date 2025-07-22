@@ -16,11 +16,6 @@ html,body {
   height: 100%;
   width: calc(100% - 200px);
 }
-#module {
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-}
 
 /**
  * Utilities
@@ -99,7 +94,14 @@ html,body {
   border: 1px solid #ccc;
 }
 
-
+/**
+ * Module
+ */
+#module {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
 #module-title {
   font-weight: 800;
   color: #324554;
@@ -128,7 +130,7 @@ html,body {
 /**
  * Forms
  */
-#form {
-  border-radius: 6px;
+.form-label {
+  font-weight: 800; 
+  color: #333;
 }
-
