@@ -74,28 +74,6 @@ class AdminController extends Controller
         ]);
     }
 
-    protected function renderForm(?int $id = null, bool $readonly = false): string
-    {
-        if (is_null($id)) {
-            $data = qb()->select(array_values($this->table_columns))
-                ->from($this->table_name)
-                ->where(["id = ?"], $id)
-                ->execute();
-            $modal_title = "Edit $id";
-            $submit_title = "Save changes";
-        } else {
-            $data = [];
-            $modal_title = "Create";
-            $submit_title = "Create";
-        }
-        return $this->render("admin/form.html.twig", [
-            "id" => $id,
-            "readonly" => $readonly,
-            "modal_title" => $modal_title,
-            "submit_title" => $submit_title,
-        ]);
-    }
-
     private function getModuleData()
     {
         return [
@@ -126,10 +104,25 @@ class AdminController extends Controller
 
     public function getFormData(?int $id = null): array
     {
+        if (is_null($id)) {
+            $data = [];
+            foreach ($this->form_columns as $key => $value) {
+                $data[$key] = null;
+            }
+        } else {
+            $data = qb()->select(array_values($this->form_columns))
+                ->from($this->table_name)
+                ->where(["id = ?"], $id)
+                ->execute()->fetch();
+        }
         return [
+            "id" => $id,
             "user" => $this->getUserData(),
             "module" => $this->getModuleData(),
-            "content" => $this->renderForm($id),
+            "labels" => array_keys($this->form_columns),
+            "data" => $data,
+            "title" => $id ? "Edit $id" : "Create New",
+            "button" => $id ? "Save changes" : "Create",
         ];
     }
 }

@@ -20,4 +20,9 @@ class UsersController extends AdminController
         "Email" => "email",
         "Created" => "created_at",
     ];
+    protected array $form_columns = [
+        "First Name" => "first_name",
+        "Surname" => "surname",
+        "Email" => "email",
+    ];
 }

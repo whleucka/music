@@ -1,6 +1,6 @@
 <div id="table" class="bg-white p-2">
   <div id="table-actions" class="d-flex p-2">
-    <button class="btn btn-sm btn-success"><i class="bi bi-plus-square pe-1"></i> New</button>
+    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#module #modal" hx-get="/admin/{{ link }}/create" hx-target="#module .modal .modal-content" hx-swap="outerHTML"><i class="bi bi-plus-square pe-1"></i> New</button>
     <button class="btn btn-sm btn-primary ms-1"><i class="bi bi-funnel pe-1"></i> Filter</button>
     <div class="ms-auto">
       <button class="btn btn-sm btn-primary ms-1"><i class="bi bi-download pe-1"></i> Export</button>
