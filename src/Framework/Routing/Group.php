@@ -8,7 +8,8 @@ use Attribute;
 class Group
 {
     public function __construct(
-        public string $prefix = '',
+        public string $path_prefix = '',
+        public string $name_prefix = '',
         public array $middleware = []
     ) {}
 }

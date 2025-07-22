@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Route\{Get, Post};
-use Echo\Framework\Routing\Group;
 use Twig\TwigFunction;
 
-#[Group(middleware: ["auth"])]
 class AdminController extends Controller
 {
     protected string $module_icon = "";

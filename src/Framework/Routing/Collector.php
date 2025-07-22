@@ -14,12 +14,14 @@ class Collector
         $reflection = new \ReflectionClass($controller);
 
         // Check for group attribute
-        $groupPrefix = '';
+        $groupPathPrefix = '';
+        $groupNamePrefix = '';
         $groupMiddleware = [];
 
         foreach ($reflection->getAttributes(Group::class) as $groupAttr) {
             $group = $groupAttr->newInstance();
-            $groupPrefix = rtrim($group->prefix, '/');
+            $groupPathPrefix = rtrim($group->path_prefix, '/');
+            $groupNamePrefix = $group->name_prefix;
             $groupMiddleware = $group->middleware;
         }
 
@@ -33,21 +35,19 @@ class Collector
                 $http_method = strtolower((new \ReflectionClass($instance))->getShortName());
 
                 // Combine group prefix and route path
-                $fullPath = rtrim($groupPrefix . '/' . ltrim($instance->path, '/'), '/');
+                $fullPath = rtrim($groupPathPrefix . '/' . ltrim($instance->path, '/'), '/');
                 $fullPath = $fullPath === '' ? '/' : $fullPath;
+
+                // Prefix the route name
+                $fullName = $groupNamePrefix ? $groupNamePrefix . '.' . $instance->name : $instance->name;
 
                 // Check for duplicate route name
                 foreach ($this->routes as $routesByMethod) {
                     foreach ($routesByMethod as $route) {
-                        if ($route['name'] === $instance->name) {
-                            //throw new \Exception("Duplicate route name detected: '{$instance->name}'");
+                        if ($route['name'] === $fullName) {
+                            throw new \Exception("Duplicate route name detected: '{$fullName}'");
                         }
                     }
-                }
-
-                // Check for duplicate path & method
-                if (isset($this->routes[$fullPath][$http_method])) {
-                    //throw new \Exception("Duplicate route detected: [$http_method] path: $fullPath");
                 }
 
                 // Merge middleware from group and method
@@ -58,7 +58,7 @@ class Collector
                     'controller' => $controller,
                     'method' => $method->getName(),
                     'middleware' => $mergedMiddleware,
-                    'name' => $instance->name
+                    'name' => $fullName
                 ];
             }
         }
