@@ -3,7 +3,7 @@
 {% block title %}{{ parent() }} | Admin > {{ module.title }}{% endblock %}
 
 {% block module %}
-  <h1 id="module-title" class="mt-2 mb-4">{{ module.icon|raw }} {{ module.title }}</h1>
+  <h1 id="module-title" class="mt-2 mb-4">{% if module.icon %}<i class="bi bi-{{ module.icon }} pe-1"></i>{% endif %} <span>{{ module.title }}</span></h1>
   {{ content|raw }}
   <div id="modal" class="modal fade" tabindex="-1">
     <div class="modal-dialog">

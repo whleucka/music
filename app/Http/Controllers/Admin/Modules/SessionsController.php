@@ -10,9 +10,9 @@ class SessionsController extends AdminController
 {
     public function __construct()
     {
-        $this->has_delete = false;
+        $this->has_edit = $this->has_delete = false;
 
-        $this->module_icon = '<i class="bi bi-person-bounding-box pe-1"></i>';
+        $this->module_icon = "person-bounding-box";
         $this->module_title = "Sessions";
         $this->module_link = "sessions";
 

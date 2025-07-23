@@ -16,7 +16,9 @@
           {% for header in headers %}
           <th>{{ header }}</th>
           {% endfor %}
+          {% if has_row_actions() %}
           <th class="text-end">Actions</th>
+          {% endif %}
         </tr>
       </thead>
       <tbody>
@@ -26,6 +28,7 @@
           {% for value in row %}
           <td>{{ value }}</td>
           {% endfor %}
+          {% if has_row_actions() %}
           <td id="row-actions">
             <div class="d-flex justify-content-end">
               {% if has_show(row.id) %}
@@ -39,6 +42,7 @@
               {% endif %}
             </div>
           </td>
+          {% endif %}
         </tr>
         {% endfor %}
       </tbody>

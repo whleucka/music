@@ -175,10 +175,13 @@ abstract class AdminController extends Controller
         $has_edit = new TwigFunction("has_edit", fn(int $id) => $this->hasEdit($id));
         $has_show = new TwigFunction("has_show", fn(int $id) => $this->hasShow($id));
         $has_delete = new TwigFunction("has_delete", fn(int $id) => $this->hasDelete($id));
+        // TODO what if we have custom actions?
+        $has_row_actions = new TwigFunction("has_row_actions", fn() => $this->has_edit || $this->has_delete);
         twig()->addFunction($has_create);
         twig()->addFunction($has_edit);
         twig()->addFunction($has_show);
         twig()->addFunction($has_delete);
+        twig()->addFunction($has_row_actions);
 
         return $this->render("admin/table.html.twig", [
             ...$this->getCommonData(),

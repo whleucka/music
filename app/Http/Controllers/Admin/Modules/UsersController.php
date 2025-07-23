@@ -10,7 +10,7 @@ class UsersController extends AdminController
 {
     public function __construct()
     {
-        $this->module_icon =  '<i class="bi bi-people pe-1"></i>';
+        $this->module_icon = "people";
         $this->module_title = "Users";
         $this->module_link = "users";
 

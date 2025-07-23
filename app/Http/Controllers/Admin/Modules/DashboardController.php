@@ -10,7 +10,7 @@ class DashboardController extends AdminController
 {
     public function __construct()
     {
-        $this->module_icon = '<i class="bi bi-rocket pe-1"></i>';
+        $this->module_icon = "rocket";
         $this->module_title = "Dashboard";
         $this->module_link = "dashboard";
     }
