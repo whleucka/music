@@ -14,4 +14,12 @@ class DashboardController extends AdminController
         $this->module_title = "Dashboard";
         $this->module_link = "dashboard";
     }
+
+    protected function renderTable(): string
+    {
+        return $this->render("admin/dashboard.html.twig", [
+            ...$this->getCommonData(),
+            "user_count" => 10
+        ]);
+    }
 }

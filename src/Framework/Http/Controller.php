@@ -166,6 +166,14 @@ class Controller implements HttpController
             exit;
     }
 
+    public function permissionDenied()
+    {
+            $content = twig()->render("error/permission-denied.html.twig");
+            $response = new Response($content, 403);
+            $response->send();
+            exit;
+    }
+
     protected function render(string $template, array $data = []): string
     {
         $twig = twig();

@@ -52,7 +52,7 @@ abstract class AdminController extends Controller
     public function create(): string
     {
         if (!$this->hasCreate()) {
-            return false;
+            return $this->permissionDenied();
         }
         return $this->renderModule($this->getFormData(null, 'create'));
     }
@@ -61,7 +61,7 @@ abstract class AdminController extends Controller
     public function show(int $id): string
     {
         if (!$this->hasShow($id)) {
-            return false;
+            return $this->permissionDenied();
         }
         return $this->renderModule($this->getFormData($id, 'show'));
     }
@@ -70,7 +70,7 @@ abstract class AdminController extends Controller
     public function edit(int $id): string
     {
         if (!$this->hasEdit($id)) {
-            return false;
+            return $this->permissionDenied();
         }
         return $this->renderModule($this->getFormData($id, 'edit'));
     }
@@ -79,7 +79,7 @@ abstract class AdminController extends Controller
     public function store()
     {
         if (!$this->hasCreate()) {
-            return false;
+            return $this->permissionDenied();
         }
         $valid = $this->validate($this->validation_rules);
         if ($valid) {
@@ -101,7 +101,7 @@ abstract class AdminController extends Controller
     public function update(int $id)
     {
         if (!$this->hasEdit($id)) {
-            return false;
+            return $this->permissionDenied();
         }
         $valid = $this->validate($this->validation_rules);
         if ($valid) {
@@ -123,7 +123,7 @@ abstract class AdminController extends Controller
     public function destroy(int $id)
     {
         if (!$this->hasDelete($id)) {
-            return false;
+            return $this->permissionDenied();
         }
         $result = $this->handleDestroy($id);
         if ($result) {
@@ -328,7 +328,7 @@ abstract class AdminController extends Controller
         return end($str);
     }
 
-    private function getCommonData()
+    protected function getCommonData()
     {
         return [
             "user" => [
