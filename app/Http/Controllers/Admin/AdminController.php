@@ -39,16 +39,12 @@ abstract class AdminController extends Controller
     protected bool $has_create = true;
     protected bool $has_delete = true;
 
-    protected array $table_validation_rules = [
-        "page" => ["integer"]
-    ];
-    protected array $form_validation_rules = [];
+    protected array $validation_rules = [];
 
     #[Get("/", "admin.index")]
     public function index(): string
     {
-        $valid = $this->validate($this->table_validation_rules);
-        $this->processRequest($valid);
+        $this->processRequest($this->request->request);
         return $this->renderModule($this->getModuleData());
     }
 
@@ -73,7 +69,7 @@ abstract class AdminController extends Controller
     #[Post("/", "admin.store")]
     public function store()
     {
-        $valid = $this->validate($this->form_validation_rules);
+        $valid = $this->validate($this->validation_rules);
         if ($valid) {
             $this->handleStore((array)$valid);
             header("HX-Redirect: /admin/{$this->module_link}");
@@ -89,7 +85,7 @@ abstract class AdminController extends Controller
     #[Post("/{id}/update", "admin.update")]
     public function update(int $id)
     {
-        $valid = $this->validate($this->form_validation_rules);
+        $valid = $this->validate($this->validation_rules);
         if ($valid) {
             $this->handleUpdate($id, (array)$valid);
             header("HX-Redirect: /admin/{$this->module_link}");
@@ -132,8 +128,13 @@ abstract class AdminController extends Controller
             $this->total_pages = ceil($this->total_results / $this->per_page);
         }
 
+        // Sidebar
+        if (isset($request->sidebar)) { 
+            session()->set("toggle_sidebar", !$this->sidebarState());
+        }
+
         // Set current page
-        if (isset($request->page) && $request->page > 0 && $request->page <= $this->total_pages) {
+        if (isset($request->page) && intval($request->page) > 0 && intval($request->page) <= $this->total_pages) {
             $this->setSession("page", $request->page);
         }
 
@@ -154,6 +155,7 @@ abstract class AdminController extends Controller
         return [
             ...$this->getCommonData(),
             "content" => $this->renderTable(),
+            "sidebar_state" => $this->sidebarState(),
         ];
     }
 
@@ -363,5 +365,11 @@ abstract class AdminController extends Controller
             error_log($ex->getMessage());
             Flash::add("danger", "Create failed");
         }
+    }
+
+    private function sidebarState()
+    {
+        $state = session()->get("toggle_sidebar") ?? true;
+        return $state;
     }
 }

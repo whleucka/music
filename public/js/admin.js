@@ -28,10 +28,8 @@ const sidebarToggle = () => {
 
 function sidebarVisibility() {
   const sidebar = document.querySelector("#nav-sidebar");
-  if (window.innerWidth < 700) {
+  if (window.innerWidth < 500) {
     sidebar.classList.add('hide');
-  } else {
-    sidebar.classList.remove('hide');
   }
 }
 window.addEventListener('resize', sidebarVisibility);

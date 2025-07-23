@@ -12,7 +12,7 @@
 {% block content %}
   <section id="admin" class="d-flex">
 
-    <nav id="nav-sidebar" class="text-light">
+    <nav id="nav-sidebar" class="text-light {% if sidebar_state %}hide{% endif %}">
       <header class="d-flex justify-content-center align-items-center p-2">
         <h4 class="m-0"><i class="bi bi-shield-check pe-1"></i> <span class="desc">Admin</span></h4>
       </header>
@@ -52,7 +52,7 @@
 
     <section id="view" class="d-flex flex-column flex-grow-1">
       <nav id="nav-top" class="d-flex">
-        <button onClick="sidebarToggle()" class="btn"><i class="bi bi-list"></i></button>
+        <button hx-get="?sidebar" hx-target="#nav-sidebar" hx-select="#nav-sidebar" hx-swap="outerHTML" class="btn"><i class="bi bi-list"></i></button>
         <div class="d-flex align-items-center ms-auto p-2">
           <img class="avatar" src="{{ user.avatar }}" />
         </div>
