@@ -40,6 +40,12 @@ class UsersController extends AdminController
         ];
     }
 
+    protected function hasDelete(int $id)
+    {
+        if ($id === $this->user->id) return false;
+        return parent::hasDelete($id);
+    }
+
     protected function handleStore(array $request)
     {
         unset($request["password_match"]);

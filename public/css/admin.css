@@ -47,8 +47,8 @@ html,body {
   max-width: 200px;
 }
 #nav-sidebar.hide {
-  min-width: 62px;
-  max-width: 62px;
+  min-width: 67px;
+  max-width: 67px;
 }
 #nav-sidebar .nav-link.active {
   margin-left: -5px;
@@ -114,8 +114,15 @@ html,body {
   border-radius: 6px;
 }
 
+#table .table td {
+  white-space: nowrap;
+}
+
 #table #row-actions {
   padding: 0 5px;
+}
+#table #row-actions i {
+  font-size: 1.2rem;
 }
 
 #pagination .page-link {

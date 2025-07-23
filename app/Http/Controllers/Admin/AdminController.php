@@ -27,7 +27,7 @@ abstract class AdminController extends Controller
     protected int $page = 1;
     protected int $total_pages = 1;
     protected int $total_results = 0;
-    protected int $pagination_links = 3;
+    protected int $pagination_links = 2;
 
     protected array $query_where = [];
     protected array $query_params = [];
@@ -51,24 +51,36 @@ abstract class AdminController extends Controller
     #[Get("/modal/create", "admin.create")]
     public function modal_create(): string
     {
+        if (!$this->hasCreate()) {
+            return false;
+        }
         return $this->renderModule($this->getFormData(null, 'create'));
     }
 
     #[Get("/modal/{id}", "admin.show")]
     public function modal_show(int $id): string
     {
+        if (!$this->hasShow($id)) {
+            return false;
+        }
         return $this->renderModule($this->getFormData($id, 'show'));
     }
 
     #[Get("/modal/{id}/edit", "admin.edit")]
     public function modal_edit(int $id): string
     {
+        if (!$this->hasEdit($id)) {
+            return false;
+        }
         return $this->renderModule($this->getFormData($id, 'edit'));
     }
 
     #[Post("/", "admin.store")]
     public function store()
     {
+        if (!$this->hasCreate()) {
+            return false;
+        }
         $valid = $this->validate($this->validation_rules);
         if ($valid) {
             $this->handleStore((array)$valid);
@@ -85,6 +97,9 @@ abstract class AdminController extends Controller
     #[Post("/{id}/update", "admin.update")]
     public function update(int $id)
     {
+        if (!$this->hasEdit($id)) {
+            return false;
+        }
         $valid = $this->validate($this->validation_rules);
         if ($valid) {
             $this->handleUpdate($id, (array)$valid);
@@ -101,6 +116,9 @@ abstract class AdminController extends Controller
     #[Post("/{id}/destroy", "admin.destroy")]
     public function destroy(int $id)
     {
+        if (!$this->hasDelete($id)) {
+            return false;
+        }
         $this->handleDestroy($id);
         header("HX-Retarget: #module");
         header("HX-Reselect: #module");
@@ -128,9 +146,9 @@ abstract class AdminController extends Controller
             $this->total_pages = ceil($this->total_results / $this->per_page);
         }
 
-        // Sidebar
+        // Sidebar toggle
         if (isset($request->sidebar)) { 
-            session()->set("toggle_sidebar", !$this->sidebarState());
+            session()->set("toggle_sidebar", !$this->getSidebarState());
         }
 
         // Set current page
@@ -155,7 +173,7 @@ abstract class AdminController extends Controller
         return [
             ...$this->getCommonData(),
             "content" => $this->renderTable(),
-            "sidebar_state" => $this->sidebarState(),
+            "sidebar_state" => $this->getSidebarState(),
         ];
     }
 
@@ -367,7 +385,7 @@ abstract class AdminController extends Controller
         }
     }
 
-    private function sidebarState()
+    private function getSidebarState()
     {
         $state = session()->get("toggle_sidebar") ?? true;
         return $state;

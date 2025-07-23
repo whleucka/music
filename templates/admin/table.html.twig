@@ -2,7 +2,7 @@
 <div id="table" class="bg-white shad p-2">
   <div id="table-actions" class="d-flex p-2">
     {% if has_create() %}
-    <button class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#module #modal" hx-get="/admin/{{ module.link }}/modal/create" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-plus-square pe-1"></i> New</button>
+    <button class="btn btn-sm btn-success" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/create" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-plus-square pe-1"></i> New</button>
     {% endif %}
     <button class="btn btn-sm btn-primary ms-1"><i class="bi bi-funnel pe-1"></i> Filter</button>
     <div class="ms-auto">
@@ -33,10 +33,10 @@
           <td id="row-actions">
             <div class="d-flex justify-content-end">
               {% if has_show(row.id) %}
-              <button class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#module #modal" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-eye"></i></button>
+              <button class="btn btn-sm" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-eye"></i></button>
               {% endif %}
               {% if has_edit(row.id) %}
-              <button class="btn btn-sm ms-1" data-bs-toggle="modal" data-bs-target="#module #modal" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}/edit" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-pencil"></i></button>
+              <button class="btn btn-sm ms-1" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}/edit" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-pencil"></i></button>
               {% endif %}
               {% if has_delete(row.id) %}
               <form>
@@ -61,12 +61,12 @@
       {% if data.page != 1 and data.page > data.pagination_links %}
       <li class="page-item">
         <a class="page-link" href="?page=1">
-          <span>First</span>
+          <span><i class="bi bi-chevron-double-left"></i></span>
         </a>
       </li>
       <li class="page-item {% if data.page - 1 <= 0 %}disabled{% endif %}">
         <a class="page-link" href="?page={{ data.page - 1}}">
-          <span>Prev</span>
+          <span><i class="bi bi-chevron-left"></i></span>
         </a>
       </li>
       {% endif %}
@@ -90,12 +90,12 @@
       {% if data.page != data.total_pages and data.page < data.total_pages - data.pagination_links %}
       <li class="page-item">
         <a class="page-link {% if data.page + 1 >= data.total_pages %}disabled{% endif %}" href="?page={{ data.page + 1}}">
-          <span>Next</span>
+          <span><i class="bi bi-chevron-right"></i></span>
         </a>
       </li>
       <li class="page-item">
         <a class="page-link" href="?page={{ data.total_pages }}">
-          <span>Last</span>
+          <span><i class="bi bi-chevron-double-right"></i></span>
         </a>
       </li>
       {% endif %}
