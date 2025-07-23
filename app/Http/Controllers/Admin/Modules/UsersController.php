@@ -46,17 +46,17 @@ class UsersController extends AdminController
         return parent::hasDelete($id);
     }
 
-    protected function handleStore(array $request)
+    protected function handleStore(array $request): mixed
     {
         unset($request["password_match"]);
         $request["password"] = password_hash($request['password'], PASSWORD_ARGON2I);
-        parent::handleStore($request);
+        return parent::handleStore($request);
     }
 
-    protected function handleUpdate(int $id, array $request)
+    protected function handleUpdate(int $id, array $request): bool
     {
         unset($request["password_match"]);
         $request["password"] = password_hash($request['password'], PASSWORD_ARGON2I);
-        parent::handleUpdate($id, $request);
+        return parent::handleUpdate($id, $request);
     }
 }

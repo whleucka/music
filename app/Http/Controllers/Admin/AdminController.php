@@ -49,7 +49,7 @@ abstract class AdminController extends Controller
     }
 
     #[Get("/modal/create", "admin.create")]
-    public function modal_create(): string
+    public function create(): string
     {
         if (!$this->hasCreate()) {
             return false;
@@ -58,7 +58,7 @@ abstract class AdminController extends Controller
     }
 
     #[Get("/modal/{id}", "admin.show")]
-    public function modal_show(int $id): string
+    public function show(int $id): string
     {
         if (!$this->hasShow($id)) {
             return false;
@@ -67,7 +67,7 @@ abstract class AdminController extends Controller
     }
 
     #[Get("/modal/{id}/edit", "admin.edit")]
-    public function modal_edit(int $id): string
+    public function edit(int $id): string
     {
         if (!$this->hasEdit($id)) {
             return false;
@@ -83,15 +83,18 @@ abstract class AdminController extends Controller
         }
         $valid = $this->validate($this->validation_rules);
         if ($valid) {
-            $this->handleStore((array)$valid);
-            header("HX-Redirect: /admin/{$this->module_link}");
-            exit;
+            $result = $this->handleStore((array)$valid);
+            if ($result) {
+                Flash::add("success", "Create successful");
+                header("HX-Redirect: /admin/{$this->module_link}");
+                exit;
+            }
         }
         // Request is invalid
         Flash::add("warning", "Validation error");
         header("HX-Retarget: .modal-dialog");
         header("HX-Reselect: .modal-content");
-        return $this->modal_create();
+        return $this->create();
     }
 
     #[Post("/{id}/update", "admin.update")]
@@ -102,15 +105,18 @@ abstract class AdminController extends Controller
         }
         $valid = $this->validate($this->validation_rules);
         if ($valid) {
-            $this->handleUpdate($id, (array)$valid);
-            header("HX-Redirect: /admin/{$this->module_link}");
-            exit;
+            $result = $this->handleUpdate($id, (array)$valid);
+            if ($result) {
+                Flash::add("success", "Update successful");
+                header("HX-Redirect: /admin/{$this->module_link}");
+                exit;
+            }
         }
         // Request is invalid
         Flash::add("warning", "Validation error");
         header("HX-Retarget: .modal-dialog");
         header("HX-Reselect: .modal-content");
-        return $this->modal_edit($id);
+        return $this->edit($id);
     }
 
     #[Post("/{id}/destroy", "admin.destroy")]
@@ -119,7 +125,10 @@ abstract class AdminController extends Controller
         if (!$this->hasDelete($id)) {
             return false;
         }
-        $this->handleDestroy($id);
+        $result = $this->handleDestroy($id);
+        if ($result) {
+            Flash::add("success", "Delete successful");
+        }
         header("HX-Retarget: #module");
         header("HX-Reselect: #module");
         header("HX-Reswap: outerHTML");
@@ -335,7 +344,7 @@ abstract class AdminController extends Controller
         ];
     }
 
-    protected function handleDestroy(int $id)
+    protected function handleDestroy(int $id): bool
     {
 
         try {
@@ -343,15 +352,18 @@ abstract class AdminController extends Controller
                 ->from($this->table_name)
                 ->where(["{$this->table_pk} = ?"], $id)
                 ->execute();
-            Flash::add("success", "Delete successful");
-            return $result;
+            if ($result) {
+                return true;
+            }
+            return false;
         } catch (Throwable $ex) {
             error_log($ex->getMessage());
-            Flash::add("danger", "Delete failed");
+            Flash::add("danger", "Delete failed. Check logs.");
+            return false;
         }
     }
 
-    protected function handleUpdate(int $id, array $request)
+    protected function handleUpdate(int $id, array $request): bool
     {
         try {
             // Set the params before the where clause
@@ -361,31 +373,36 @@ abstract class AdminController extends Controller
                 ->table($this->table_name)
                 ->where(["{$this->table_pk} = ?"], $id)
                 ->execute();
-            Flash::add("success", "Update successful");
-            return $result;
+            if ($result) {
+                return true;
+            }
+            return false;
         } catch (Throwable $ex) {
             error_log($ex->getMessage());
-            Flash::add("danger", "Update failed");
+            Flash::add("danger", "Update failed. Check logs.");
+            return false;
         }
     }
 
-    protected function handleStore(array $request)
+    protected function handleStore(array $request): mixed
     {
         try {
-            $result = qb()
-                ->insert($request)
+            $result = qb()->insert($request)
                 ->into($this->table_name)
                 ->params(array_values($request))
                 ->execute();
-            Flash::add("success", "Create successful");
-            return $result;
+            if ($result) {
+                return db()->lastInsertId();
+            }
+            return false;
         } catch (Throwable $ex) {
             error_log($ex->getMessage());
-            Flash::add("danger", "Create failed");
+            Flash::add("danger", "Create failed. Check logs.");
+            return false;
         }
     }
 
-    private function getSidebarState()
+    private function getSidebarState(): bool
     {
         $state = session()->get("toggle_sidebar") ?? true;
         return $state;
