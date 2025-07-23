@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\Modules;
 use App\Http\Controllers\Admin\AdminController;
 use Echo\Framework\Routing\Group;
 
-#[Group(path_prefix: "/admin/sessions", name_prefix: "sessions", middleware: ["auth"])]
+#[Group(path_prefix: "/sessions", name_prefix: "sessions")]
 class SessionsController extends AdminController
 {
     public function __construct()

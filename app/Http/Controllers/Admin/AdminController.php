@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use Echo\Framework\Http\Controller;
+use Echo\Framework\Routing\Group;
 use Echo\Framework\Routing\Route\{Get, Post};
 use Twig\TwigFunction;
 
-class AdminController extends Controller
+#[Group(path_prefix: "/admin", middleware: ["auth"])]
+abstract class AdminController extends Controller
 {
     protected string $module_icon = "";
     protected string $module_link = "";

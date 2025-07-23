@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin\Modules;
 use App\Http\Controllers\Admin\AdminController;
 use Echo\Framework\Routing\Group;
 
-#[Group(path_prefix: "/admin/dashboard", name_prefix: "dashboard", middleware: ["auth"])]
+#[Group(path_prefix: "/dashboard", name_prefix: "dashboard")]
 class DashboardController extends AdminController
 {
     public function __construct()
