@@ -1,3 +1,4 @@
+{% include "components/flash.html.twig" %}
 <div id="table" class="bg-white shad p-2">
   <div id="table-actions" class="d-flex p-2">
     {% if has_create() %}
@@ -38,7 +39,10 @@
               <button class="btn btn-sm ms-1" data-bs-toggle="modal" data-bs-target="#module #modal" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}/edit" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-pencil"></i></button>
               {% endif %}
               {% if has_delete(row.id) %}
-              <button class="btn btn-sm ms-1"><i class="bi bi-trash"></i></button>
+              <form>
+              {{ csrf()|raw }}
+              <button class="btn btn-sm ms-1" hx-post="/admin/{{ module.link }}/{{ row.id }}/destroy"><i class="bi bi-trash"></i></button>
+              </form>
               {% endif %}
             </div>
           </td>

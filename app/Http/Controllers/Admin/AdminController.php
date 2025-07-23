@@ -5,11 +5,15 @@ namespace App\Http\Controllers\Admin;
 use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Group;
 use Echo\Framework\Routing\Route\{Get, Post};
+use Echo\Framework\Session\Flash;
+use Throwable;
 use Twig\TwigFunction;
 
 #[Group(path_prefix: "/admin", middleware: ["auth"])]
 abstract class AdminController extends Controller
 {
+    protected array $actions = [];
+
     protected string $module_icon = "";
     protected string $module_link = "";
     protected string $module_title = "";
@@ -17,6 +21,7 @@ abstract class AdminController extends Controller
     protected string $table_pk = "id";
     protected string $table_name = "";
     protected array $table_columns = [];
+    protected array $table_actions = [];
 
     protected int $per_page = 25;
     protected int $page = 1;
@@ -34,14 +39,15 @@ abstract class AdminController extends Controller
     protected bool $has_create = true;
     protected bool $has_delete = true;
 
-    protected array $validation_rules = [
+    protected array $table_validation_rules = [
         "page" => ["integer"]
     ];
+    protected array $form_validation_rules = [];
 
     #[Get("/", "admin.index")]
     public function index(): string
     {
-        $valid = $this->validate($this->validation_rules);
+        $valid = $this->validate($this->table_validation_rules);
         $this->processRequest($valid);
         return $this->renderModule($this->getModuleData());
     }
@@ -64,22 +70,46 @@ abstract class AdminController extends Controller
         return $this->renderModule($this->getFormData($id, 'edit'));
     }
 
-    #[Post("/{module}", "admin.store")]
+    #[Post("/", "admin.store")]
     public function store()
     {
-        dd("WIP");
+        $valid = $this->validate($this->form_validation_rules);
+        if ($valid) {
+            $this->handleStore((array)$valid);
+            header("HX-Redirect: /admin/{$this->module_link}");
+            exit;
+        }
+        // Request is invalid
+        Flash::add("warning", "Validation error");
+        header("HX-Retarget: .modal-dialog");
+        header("HX-Reselect: .modal-content");
+        return $this->modal_create();
     }
 
     #[Post("/{id}/update", "admin.update")]
     public function update(int $id)
     {
-        dd("WIP");
+        $valid = $this->validate($this->form_validation_rules);
+        if ($valid) {
+            $this->handleUpdate($id, (array)$valid);
+            header("HX-Redirect: /admin/{$this->module_link}");
+            exit;
+        }
+        // Request is invalid
+        Flash::add("warning", "Validation error");
+        header("HX-Retarget: .modal-dialog");
+        header("HX-Reselect: .modal-content");
+        return $this->modal_edit($id);
     }
 
-    #[Post("/destroy", "admin.destroy")]
+    #[Post("/{id}/destroy", "admin.destroy")]
     public function destroy(int $id)
     {
-        dd("WIP");
+        $this->handleDestroy($id);
+        header("HX-Retarget: #module");
+        header("HX-Reselect: #module");
+        header("HX-Reswap: outerHTML");
+        return $this->index();
     }
 
     private function setSession(string $key, mixed $value)
@@ -175,8 +205,7 @@ abstract class AdminController extends Controller
         $has_edit = new TwigFunction("has_edit", fn(int $id) => $this->hasEdit($id));
         $has_show = new TwigFunction("has_show", fn(int $id) => $this->hasShow($id));
         $has_delete = new TwigFunction("has_delete", fn(int $id) => $this->hasDelete($id));
-        // TODO what if we have custom actions?
-        $has_row_actions = new TwigFunction("has_row_actions", fn() => $this->has_edit || $this->has_delete);
+        $has_row_actions = new TwigFunction("has_row_actions", fn() => $this->has_edit || $this->has_delete || !empty($this->table_actions));
         twig()->addFunction($has_create);
         twig()->addFunction($has_edit);
         twig()->addFunction($has_show);
@@ -186,7 +215,7 @@ abstract class AdminController extends Controller
         return $this->render("admin/table.html.twig", [
             ...$this->getCommonData(),
             "headers" => array_keys($this->table_columns),
-            "caption" => $this->total_pages > 1 
+            "caption" => $this->total_pages > 1
                 ? "Showing {$start}–{$end} of {$this->total_results} results"
                 : "",
             "data" => [
@@ -218,14 +247,14 @@ abstract class AdminController extends Controller
 
         $data = $this->runFormQuery($id);
 
-        return $this->render("admin/form-modal.html.twig" , [
+        return $this->render("admin/form-modal.html.twig", [
             ...$this->getCommonData(),
             "readonly" => $readonly,
             "type" => $type,
             "id" => $id,
             "title" => $title,
-            "action" => $id 
-                ? "/admin/{$this->module_link}/$id/update" 
+            "post" => $id
+                ? "/admin/{$this->module_link}/$id/update"
                 : "/admin/{$this->module_link}",
             "button" => $button,
             "labels" => array_keys($this->form_columns),
@@ -252,8 +281,9 @@ abstract class AdminController extends Controller
     {
         if (is_null($id)) {
             $data = [];
-            foreach ($this->form_columns as $key => $value) {
-                $data[$key] = null;
+            foreach ($this->form_columns as $value) {
+                $column = $this->removeAlias($value);
+                $data[$column] = null;
             }
             return $data;
         }
@@ -261,6 +291,12 @@ abstract class AdminController extends Controller
             ->from($this->table_name)
             ->where(["$this->table_pk = ?"], $id)
             ->execute();
+    }
+
+    private function removeAlias(string $str)
+    {
+        $str = explode(" as ", $str);
+        return end($str);
     }
 
     private function getCommonData()
@@ -277,5 +313,55 @@ abstract class AdminController extends Controller
                 "icon" => $this->module_icon,
             ]
         ];
+    }
+
+    protected function handleDestroy(int $id)
+    {
+
+        try {
+            $result = qb()->delete()
+                ->from($this->table_name)
+                ->where(["{$this->table_pk} = ?"], $id)
+                ->execute();
+            Flash::add("success", "Delete successful");
+            return $result;
+        } catch (Throwable $ex) {
+            error_log($ex->getMessage());
+            Flash::add("danger", "Delete failed");
+        }
+    }
+
+    protected function handleUpdate(int $id, array $request)
+    {
+        try {
+            // Set the params before the where clause
+            // so that we get the correct query param count
+            $result = qb()->update($request)
+                ->params(array_values($request))
+                ->table($this->table_name)
+                ->where(["{$this->table_pk} = ?"], $id)
+                ->execute();
+            Flash::add("success", "Update successful");
+            return $result;
+        } catch (Throwable $ex) {
+            error_log($ex->getMessage());
+            Flash::add("danger", "Update failed");
+        }
+    }
+
+    protected function handleStore(array $request)
+    {
+        try {
+            $result = qb()
+                ->insert($request)
+                ->into($this->table_name)
+                ->params(array_values($request))
+                ->execute();
+            Flash::add("success", "Create successful");
+            return $result;
+        } catch (Throwable $ex) {
+            error_log($ex->getMessage());
+            Flash::add("danger", "Create failed");
+        }
     }
 }

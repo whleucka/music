@@ -1,15 +1,17 @@
 <div id="form" class="modal-content">
-  <form method="POST" action="{{ action }}">
+  <form method="POST" hx-post="{{ post }}">
     <div class="modal-header">
       <h5 class="modal-title">{{ title }}</h5>
       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     </div>
     <div class="modal-body">
+        {% include "components/flash.html.twig" %}
         {{ csrf()|raw }}
         {% for key,value in data %}
         <div class="mb-2">
           <label class="form-label m-0 p-0">{{ labels[loop.index0] }}</label>
-          <input type="text" class="form-control mt-1" id="" placeholder="" value="{{ value }}" {% if readonly %}readonly="readonly"{% endif %} />
+          <input type="input" class="form-control {% if validation_errors[key] is defined %}is-invalid{% endif %} mt-1" id="{{ key }}" name="{{ key }}" placeholder="" value="{{ old(key, value) }}" {% if readonly %}readonly="readonly"{% endif %} />
+          {% include 'components/validation.html.twig' with {'validate': key} %}
         </div>
         {% endfor %}
     </div>

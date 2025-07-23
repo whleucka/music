@@ -27,6 +27,30 @@ class UsersController extends AdminController
             "First Name" => "first_name",
             "Surname" => "surname",
             "Email" => "email",
+            "Password" => "'' as password",
+            "Password (again)" => "'' as password_match",
         ];
+
+        $this->form_validation_rules = [
+            "first_name" => ["required"],
+            "surname" => ["required"],
+            "email" => ["required", "email", "unique:users"],
+            "password" => ["required", "min_length:10", "regex:^(?=.*[A-Z])(?=.*\W)(?=.*\d).+$"],
+            "password_match" => ["required", "match:password"],
+        ];
+    }
+
+    protected function handleStore(array $request)
+    {
+        unset($request["password_match"]);
+        $request["password"] = password_hash($request['password'], PASSWORD_ARGON2I);
+        parent::handleStore($request);
+    }
+
+    protected function handleUpdate(int $id, array $request)
+    {
+        unset($request["password_match"]);
+        $request["password"] = password_hash($request['password'], PASSWORD_ARGON2I);
+        parent::handleUpdate($id, $request);
     }
 }
