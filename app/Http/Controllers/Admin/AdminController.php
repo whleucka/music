@@ -45,6 +45,7 @@ abstract class AdminController extends Controller
     #[Get("/", "admin.index")]
     public function index(): string
     {
+        $this->processRequest($this->request->request);
         return $this->renderModule($this->getModuleData());
     }
 
@@ -208,7 +209,6 @@ abstract class AdminController extends Controller
 
     protected function renderModule(array $data): string
     {
-        $this->processRequest($this->request->request);
         return $this->render("admin/module.html.twig", $data);
     }
 
