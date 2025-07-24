@@ -6,6 +6,7 @@ use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Group;
 use Echo\Framework\Routing\Route\{Get, Post};
 use Echo\Framework\Session\Flash;
+use PDOStatement;
 use Throwable;
 use Twig\TwigFunction;
 
@@ -44,7 +45,6 @@ abstract class AdminController extends Controller
     #[Get("/", "admin.index")]
     public function index(): string
     {
-        $this->processRequest($this->request->request);
         return $this->renderModule($this->getModuleData());
     }
 
@@ -76,12 +76,12 @@ abstract class AdminController extends Controller
     }
 
     #[Post("/", "admin.store")]
-    public function store()
+    public function store(): string
     {
         if (!$this->hasCreate()) {
             return $this->permissionDenied();
         }
-        $valid = $this->validate($this->validation_rules);
+        $valid = $this->validate($this->validation_rules, "store");
         if ($valid) {
             $result = $this->handleStore((array)$valid);
             if ($result) {
@@ -98,12 +98,12 @@ abstract class AdminController extends Controller
     }
 
     #[Post("/{id}/update", "admin.update")]
-    public function update(int $id)
+    public function update(int $id): string
     {
         if (!$this->hasEdit($id)) {
             return $this->permissionDenied();
         }
-        $valid = $this->validate($this->validation_rules);
+        $valid = $this->validate($this->validation_rules, "update");
         if ($valid) {
             $result = $this->handleUpdate($id, (array)$valid);
             if ($result) {
@@ -120,7 +120,7 @@ abstract class AdminController extends Controller
     }
 
     #[Post("/{id}/destroy", "admin.destroy")]
-    public function destroy(int $id)
+    public function destroy(int $id): string
     {
         if (!$this->hasDelete($id)) {
             return $this->permissionDenied();
@@ -135,20 +135,20 @@ abstract class AdminController extends Controller
         return $this->index();
     }
 
-    private function setSession(string $key, mixed $value)
+    private function setSession(string $key, mixed $value): void
     {
         $data = session()->get($this->module_link);
         $data[$key] = $value;
         session()->set($this->module_link, $data);
     }
 
-    private function getSession(string $key)
+    private function getSession(string $key): mixed
     {
         $data = session()->get($this->module_link);
         return $data[$key] ?? null;
     }
 
-    protected function processRequest(?object $request)
+    protected function processRequest(?object $request): void
     {
         if (!empty($this->table_columns) && $this->table_name) {
             $this->total_results = $this->runTableQuery(false)->rowCount();
@@ -156,7 +156,7 @@ abstract class AdminController extends Controller
         }
 
         // Sidebar toggle
-        if (isset($request->sidebar)) { 
+        if (isset($request->sidebar)) {
             session()->set("toggle_sidebar", !$this->getSidebarState());
         }
 
@@ -186,28 +186,29 @@ abstract class AdminController extends Controller
         ];
     }
 
-    protected function hasCreate()
+    protected function hasCreate(): bool
     {
         return $this->has_create && !empty($this->form_columns);
     }
 
-    protected function hasShow(int $id)
+    protected function hasShow(int $id): bool
     {
         return !empty($this->form_columns);
     }
 
-    protected function hasEdit(int $id)
+    protected function hasEdit(int $id): bool
     {
         return $this->has_edit && !empty($this->form_columns);
     }
 
-    protected function hasDelete(int $id)
+    protected function hasDelete(int $id): bool
     {
         return $this->has_delete;
     }
 
-    protected function renderModule(array $data)
+    protected function renderModule(array $data): string
     {
+        $this->processRequest($this->request->request);
         return $this->render("admin/module.html.twig", $data);
     }
 
@@ -291,7 +292,7 @@ abstract class AdminController extends Controller
         ]);
     }
 
-    private function runTableQuery(bool $limit = true)
+    private function runTableQuery(bool $limit = true): bool|PDOStatement
     {
         $q = qb()->select(array_values($this->table_columns))
             ->from($this->table_name)
@@ -306,7 +307,7 @@ abstract class AdminController extends Controller
         return $q->execute();
     }
 
-    private function runFormQuery(?int $id)
+    private function runFormQuery(?int $id): array|bool|PDOStatement
     {
         if (is_null($id)) {
             $data = [];
@@ -322,13 +323,13 @@ abstract class AdminController extends Controller
             ->execute();
     }
 
-    private function removeAlias(string $str)
+    private function removeAlias(string $str): string
     {
         $str = explode(" as ", $str);
         return end($str);
     }
 
-    protected function getCommonData()
+    protected function getCommonData(): array
     {
         return [
             "user" => [
@@ -406,5 +407,29 @@ abstract class AdminController extends Controller
     {
         $state = session()->get("toggle_sidebar") ?? true;
         return $state;
+    }
+
+    public function addValidationRule(array $rules, string $field, string $rule): array
+    {
+        $rules[$field][] = $rule;
+        return $rules;
+    }
+
+    function removeValidationRule(array $rules, string $field, string $remove): array
+    {
+        if (!isset($rules[$field])) {
+            return $rules;
+        }
+
+        $rules[$field] = array_filter(
+            $rules[$field],
+            fn($rule) => explode(':', $rule, 2)[0] !== explode(':', $remove, 2)[0] || $rule !== $remove
+        );
+
+        if (empty($rules[$field])) {
+            unset($rules[$field]);
+        }
+
+        return $rules;
     }
 }

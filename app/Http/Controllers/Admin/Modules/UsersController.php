@@ -40,7 +40,15 @@ class UsersController extends AdminController
         ];
     }
 
-    protected function hasDelete(int $id)
+    public function validate(array $ruleset, string $tag = ''): ?object
+    {
+        if ($tag === 'update') {
+            $ruleset = $this->removeValidationRule($ruleset, "email", "unique:users");
+        }
+        return parent::validate($ruleset);
+    }
+
+    protected function hasDelete(int $id): bool
     {
         if ($id === $this->user->id) return false;
         return parent::hasDelete($id);
