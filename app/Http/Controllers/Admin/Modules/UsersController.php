@@ -31,6 +31,14 @@ class UsersController extends AdminController
             "Password (again)" => "'' as password_match",
         ];
 
+        $this->form_controls = [
+            "first_name" => "input",
+            "surname" => "input",
+            "email" => "email",
+            "password" => "password",
+            "password_match" => "password",
+        ];
+
         $this->validation_rules = [
             "first_name" => ["required"],
             "surname" => ["required"],

@@ -35,6 +35,9 @@ abstract class AdminController extends Controller
     protected array $query_order_by = ["id DESC"];
 
     protected array $form_columns = [];
+    protected array $form_controls = [];
+    protected array $form_readonly = [];
+    protected array $form_disabled = [];
 
     protected bool $has_edit = true;
     protected bool $has_create = true;
@@ -227,6 +230,7 @@ abstract class AdminController extends Controller
 
         $rows = $this->runTableQuery()->fetchAll();
 
+        // Table caption
         $start = 1 + ($this->page * $this->per_page) - $this->per_page;
         $end = min($this->page * $this->per_page, $this->total_results);
 
@@ -260,35 +264,43 @@ abstract class AdminController extends Controller
 
     protected function renderForm(?int $id, string $type): string
     {
-        $readonly = false;
         if (empty($this->form_columns) || !$this->table_name) return '';
-
-        if ($type === "edit") {
-            $title = "Edit $id";
-            $button = "Save Changes";
-        } else if ($type === "show") {
-            $title = "View $id";
-            $button = "OK";
-            $readonly = true;
-        } else if ($type === "create") {
-            $title = "Create New";
-            $button = "Create";
-        }
 
         $data = $this->runFormQuery($id);
 
+        if ($type === "edit") {
+            $data = $data->fetch();
+            $title = "Edit $id";
+            $submit = "Save Changes";
+        } else if ($type === "show") {
+            $data = $data->fetch();
+            $title = "View $id";
+            foreach ($data as $column => $value) {
+                // All columns are readonly
+                if (!in_array($column, $this->form_readonly)) {
+                    $this->form_readonly[] = $column;
+                }
+            }
+        } else if ($type === "create") {
+            $title = "Create New";
+            $submit = "Create";
+        }
+
+        // Register methods
+        $control = new TwigFunction("control", fn(string $column, ?string $value) => $this->control($column, $value));
+        twig()->addFunction($control);
+
         return $this->render("admin/form-modal.html.twig", [
             ...$this->getCommonData(),
-            "readonly" => $readonly,
             "type" => $type,
             "id" => $id,
             "title" => $title,
             "post" => $id
                 ? "/admin/{$this->module_link}/$id/update"
                 : "/admin/{$this->module_link}",
-            "button" => $button,
+            "submit" => $submit,
             "labels" => array_keys($this->form_columns),
-            "data" => is_array($data) ? $data : $data->fetch(),
+            "data" => $data,
         ]);
     }
 
@@ -431,5 +443,66 @@ abstract class AdminController extends Controller
         }
 
         return $rules;
+    }
+
+    private function control(string $column, ?string $value)
+    {
+        return match($this->form_controls[$column]) {
+            "input" => $this->renderControl("input", $column, $value),
+            "email" => $this->renderControl("input", $column, $value, [
+                "type" => "email",
+                "autocomplete" => "email",
+            ]),
+            "password" => $this->renderControl("input", $column, $value, [
+                "type" => "password",
+                "autocomplete" => "current-password",
+            ]),
+            default => $this->renderControl("text", $column, $value),
+        };
+    }
+
+    private function getClassname(string $column)
+    {
+        $validation_errors = $this->getValiationErrors();
+        $request = $this->request->request;
+        $classname = ["form-control"];
+        if (isset($request->$column)) {
+            $classname[] = isset($validation_errors[$column]) ? 'is-invalid' : 'is-valid';
+        }
+        return implode(" ", $classname);
+    }
+
+    private function renderControl(string $type, string $column, ?string $value, array $data = [])
+    {
+        $default = [
+            "type" => "input",
+            "class" => $this->getClassname($column),
+            "id" => $column,
+            "name" => $column,
+            "title" => array_search($column, $this->form_columns),
+            "value" => $value,
+            "placeholder" => "", 
+            "alt" => null,
+            "minlength" => null,
+            "maxlength" => null,
+            "size" => null,
+            "list" => null,
+            "min" => null,
+            "max" => null,
+            "height" => null,
+            "width" => null,
+            "step" => null,
+            "accpet" => null,
+            "pattern" => null,
+            "dirname" => null,
+            "inputmode" => null,
+            "autocomplete" => null,
+            "checked" => null,
+            "autofocus" => null,
+            "readonly" => in_array($column, $this->form_readonly),
+            "disabled" => in_array($column, $this->form_disabled),
+        ];
+        $template_data = array_merge($default, $data);
+        return $this->render("admin/controls/$type.html.twig", $template_data);
     }
 }

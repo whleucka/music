@@ -12,15 +12,15 @@
         {% for key,value in data %}
         <div class="mb-2">
           <label class="form-label m-0 p-0">{{ labels[loop.index0] }}</label>
-          <input type="input" class="form-control {% if validation_errors[key] is defined %}is-invalid{% endif %} mt-1" id="{{ key }}" name="{{ key }}" placeholder="" value="{{ old(key, value) }}" {% if readonly %}readonly="readonly"{% endif %} />
+          {{ control(key, value)|raw }}
           {% include 'components/validation.html.twig' with {'validate': key} %}
         </div>
         {% endfor %}
     </div>
     <div class="modal-footer">
       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-      {% if not readonly %}
-      <button type="submit" class="btn btn-primary">{{ button }}</button>
+      {% if not readonly and submit %}
+      <button type="submit" class="btn btn-primary">{{ submit }}</button>
       {% endif %}
     </div>
   </form>
