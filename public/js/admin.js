@@ -28,8 +28,9 @@ const sidebarLinkActive = (e) => {
 
 function sidebarVisibility() {
   const sidebar = document.querySelector("#nav-sidebar");
-  if (window.innerWidth < 500) {
-    sidebar.classList.add('hide');
+  const sidebarToggle = document.querySelector("#sidebar-toggle");
+  if (window.innerWidth < 800 && !sidebar.classList.contains("hide")) {
+    sidebarToggle.click();
   }
 }
 window.addEventListener('resize', sidebarVisibility);
