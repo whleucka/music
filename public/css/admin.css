@@ -41,37 +41,37 @@ html,body {
 /**
  * Sidebar
  */
-#nav-sidebar {
+nav#nav-sidebar {
   background-color: #324554;
   min-width: 200px;
   max-width: 200px;
 }
-#nav-sidebar.hide {
+nav#nav-sidebar.hide {
   min-width: 67px;
   max-width: 67px;
 }
-#nav-sidebar .nav-link.active {
+nav#nav-sidebar .nav-link.active {
   margin-left: -5px;
   background-color: #2b3b4b;
   color: #acbfcc;
   font-weight: 800;
   border-left: 5px solid #acbfcc;
 }
-#nav-sidebar.hide .nav-link {
+nav#nav-sidebar.hide .nav-link {
   padding: 8px;
   margin-bottom: 6px;
 }
-#nav-sidebar.hide #sidebar-filter, #nav-sidebar.hide .desc {
+nav#nav-sidebar.hide #sidebar-filter, nav#nav-sidebar.hide .desc {
   display: none;
 }
-#nav-sidebar header {
+nav#nav-sidebar header {
   height: 44px;
   background-color: #2b3b4b;
 }
-#nav-sidebar header h4 {
+nav#nav-sidebar header h4 {
   font-weight: 800;
 }
-#nav-sidebar #sidebar-filter * {
+nav#nav-sidebar #sidebar-filter * {
   color: #ddd;
   border: 0;
   border-radius: 10px;

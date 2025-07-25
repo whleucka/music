@@ -1,0 +1,59 @@
+<nav id="nav-sidebar" class="text-light {% if hide %}hide{% endif %}">
+  <header class="d-flex justify-content-center align-items-center p-2">
+    <h4 class="m-0"><i class="bi bi-shield-check pe-1"></i> <span class="desc">Admin</span></h4>
+  </header>
+
+  <div id="sidebar-filter" class="mt-3 p-2">
+    <div class="input-group">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="form-control" placeholder="">
+    </div>
+  </div>
+
+  <div id="sidebar-links" class="p-3" hx-boost="true" hx-trigger="click" hx-select="#module" hx-target="#module" hx-swap="outerHTML">
+    <ul class="nav nav-pills flex-column mb-auto">
+      {% for link in links %}
+      <li>
+        <a href="{{ link.url }}" class="nav-link link link-light" hx-on::after-request="sidebarLinkActive(event)" {% if link.normal %}hx-boost="false"{% endif %}>
+          <i class="bi bi-{{ link.icon }}"></i> <span class="ps-2 desc">{{ link.title }}</span>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</nav>
+<script>
+const sidebarLinkActiveLoad = () => {
+  const links = document.querySelectorAll('#sidebar-links .link');
+  links.forEach((link) => {
+    link.classList.remove('active');
+    let path = window.location.href.split('?')[0]
+    console.log(path);
+    if (link.href === path) {
+      link.classList.add("active");
+    }
+  });
+}
+
+const sidebarLinkActive = (e) => {
+  const links = document.querySelectorAll('#sidebar-links .link');
+  if (links.length) {
+    links.forEach((link) => {
+      link.classList.remove('active');
+    });
+    e.preventDefault();
+    e.currentTarget.classList.add('active');
+  }
+}
+
+function sidebarVisibility() {
+  const sidebar = document.querySelector("#nav-sidebar");
+  const sidebarToggle = document.querySelector("#sidebar-toggle");
+  if (window.innerWidth < 800 && !sidebar.classList.contains("hide")) {
+    sidebarToggle.click();
+  }
+}
+window.addEventListener('resize', sidebarVisibility);
+sidebarLinkActiveLoad();
+sidebarVisibility();
+</script>

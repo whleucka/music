@@ -159,11 +159,6 @@ abstract class AdminController extends Controller
             $this->total_pages = ceil($this->total_results / $this->per_page);
         }
 
-        // Sidebar toggle
-        if (isset($request->sidebar)) {
-            session()->set("toggle_sidebar", !$this->getSidebarState());
-        }
-
         // Set current page
         if (isset($request->page) && intval($request->page) > 0 && intval($request->page) <= $this->total_pages) {
             $this->setSession("page", $request->page);
@@ -186,7 +181,6 @@ abstract class AdminController extends Controller
         return [
             ...$this->getCommonData(),
             "content" => $this->renderTable(),
-            "sidebar_state" => $this->getSidebarState(),
         ];
     }
 
@@ -413,12 +407,6 @@ abstract class AdminController extends Controller
             Flash::add("danger", "Create failed. Check logs.");
             return false;
         }
-    }
-
-    private function getSidebarState(): bool
-    {
-        $state = session()->get("toggle_sidebar") ?? true;
-        return $state;
     }
 
     public function addValidationRule(array $rules, string $field, string $rule): array
