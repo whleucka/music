@@ -52,7 +52,7 @@
 
     <section id="view" class="d-flex flex-column flex-grow-1">
       <nav id="nav-top" class="d-flex">
-        <button hx-get="?sidebar" hx-target="#nav-sidebar" hx-select="#nav-sidebar" hx-swap="outerHTML" class="btn"><i class="bi bi-list"></i></button>
+        <button hx-get="?sidebar" hx-target="#nav-sidebar" hx-select="#nav-sidebar" hx-swap="outerHTML" hx-on::after-request="sidebarLinkActiveLoad()" class="btn"><i class="bi bi-list"></i></button>
         <div class="d-flex align-items-center ms-auto p-2">
           <img class="avatar" src="{{ user.avatar }}" />
         </div>
