@@ -58,7 +58,14 @@
     </table>
   </div>
   {% if data.total_pages > 1 %}
-  <nav id="pagination" class="mt-2">
+  <nav 
+    id="pagination" 
+    class="mt-2"
+    hx-boost="true"
+    hx-target="#module"
+    hx-select="#module"
+    hx-swap="outerHTML"
+  >
     <ul class="pagination">
       {% if data.page != 1 and data.page > data.pagination_links %}
       <li class="page-item">
