@@ -279,15 +279,6 @@ abstract class AdminController extends Controller
     {
         if (empty($this->table_columns) || !$this->table_name) return '';
 
-        // Table columns must always contain table_pk
-        if (!in_array($this->table_pk, $this->table_columns)) {
-            $columns[strtoupper($this->table_pk)] = $this->table_pk;
-            $this->table_columns = [
-                ...$columns,
-                ...$this->table_columns,
-            ];
-        }
-
         $rows = $this->runTableQuery()->fetchAll();
 
         // Table caption
@@ -357,6 +348,16 @@ abstract class AdminController extends Controller
 
     private function runTableQuery(bool $limit = true): bool|PDOStatement
     {
+
+        // Table columns must always contain table_pk
+        if (!in_array($this->table_pk, $this->table_columns)) {
+            $columns[strtoupper($this->table_pk)] = $this->table_pk;
+            $this->table_columns = [
+                ...$columns,
+                ...$this->table_columns,
+           ];
+        }
+
         $q = qb()->select(array_values($this->table_columns))
             ->from($this->table_name)
             ->orderBy($this->query_order_by);
