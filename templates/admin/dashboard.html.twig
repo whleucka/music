@@ -1,1 +1,32 @@
-Greetings, {{ user.name }}. You are signed in.
+<div id="dashboard" class="bg-white shad rounded p-2">
+  <div id="alerts" class="d-flex justify-content-md-around justify-content-sm-center">
+    <div id="users" class="d-flex align-items-center flex-column rounded top-alert">
+      <div class="text-end count">
+        {{ user_count }}
+      </div>
+      <p>Users</p>
+    </div>
+
+    <div id="sessions" class="d-flex align-items-center flex-column rounded top-alert">
+      <div class="text-end count">
+        {{ session_count }}
+      </div>
+      <p>Sessions</p>
+    </div>
+
+    <div id="modules" class="d-flex align-items-center flex-column rounded top-alert">
+      <div class="text-end count">
+        {{ module_count }}
+      </div>
+      <p>Modules</p>
+    </div>
+
+    <div id="sales" class="d-flex align-items-center flex-column rounded top-alert">
+      <div class="text-end count">
+        ${{ sales }}
+      </div>
+      <p>Sales</p>
+    </div>
+
+  </div>
+</div>

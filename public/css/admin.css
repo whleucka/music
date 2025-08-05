@@ -111,7 +111,6 @@ nav#nav-sidebar #sidebar-filter * {
  * Table
  */
 #table {
-  border-radius: 6px;
 }
 
 #table .table td {
@@ -140,4 +139,55 @@ nav#nav-sidebar #sidebar-filter * {
 .form-label {
   font-weight: 800; 
   color: #333;
+}
+
+/**
+* Dashboard
+*/
+#dashboard .top-alert {
+  width: 100%;
+  max-width: 320px;
+  padding: 10px;
+  margin: 10px;
+}
+#dashboard .top-alert .count {
+  font-size: 2rem;
+  font-weight: 900;
+}
+#dashboard .top-alert p {
+  font-weight: 900;
+}
+#dashboard #users {
+  color: #fff;
+  background-color: #ff5f3d;
+  border-left: 8px solid #fc9f9f;
+}
+#dashboard #sessions {
+  color: #fff;
+  background-color: #5967ff;
+  border-left: 8px solid #96adff;
+}
+#dashboard #modules {
+  color: #fff;
+  background-color: #f56eff;
+  border-left: 8px solid #f599ff;
+}
+#dashboard #sales {
+  color: #fff;
+  background-color: #3a9e46;
+  border-left: 8px solid #b1ff9c;
+}
+/** xs */
+@media (max-width: 575.98px) {
+}
+
+/** sm */
+@media (max-width: 767.98px) {
+  #dashboard .top-alert {
+    width: 100%;
+    max-width: 100%;
+  }
+  #dashboard #alerts {
+    flex-wrap: wrap;
+  }
 }

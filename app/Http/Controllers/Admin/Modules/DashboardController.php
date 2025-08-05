@@ -19,7 +19,11 @@ class DashboardController extends AdminController
     {
         return $this->render("admin/dashboard.html.twig", [
             ...$this->getCommonData(),
-            "user_count" => 10
+            "user_count" => db()->execute("SELECT count(*) FROM users")->fetchColumn(),
+            "session_count" => db()->execute("SELECT count(*) FROM sessions")->fetchColumn(),
+            "module_count" => 2,
+            "sales" => number_format(0, 2),
+            
         ]);
     }
 }
