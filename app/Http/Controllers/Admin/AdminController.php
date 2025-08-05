@@ -6,7 +6,9 @@ use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Group;
 use Echo\Framework\Routing\Route\{Get, Post};
 use Echo\Framework\Session\Flash;
+use PDO;
 use PDOStatement;
+use RuntimeException;
 use Throwable;
 use Twig\TwigFunction;
 
@@ -153,8 +155,49 @@ abstract class AdminController extends Controller
         return $data[$key] ?? null;
     }
 
+    function streamCSV(iterable $rows, array $columns = [], string $filename = 'export.csv')
+    {
+        set_time_limit(0);
+        ini_set('memory_limit', '-1');
+
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $output_handle = fopen('php://output', 'w');
+
+        if ($output_handle === false) {
+            throw new RuntimeException("Unable to open output stream");
+        }
+
+        if (!empty($columns)) {
+            fputcsv($output_handle, array_keys($columns));
+        }
+
+        foreach ($rows as $row) {
+            if (!empty($columns) && array_is_list($row) === false) {
+                $ordered_row = [];
+                foreach ($columns as $title => $subquery) {
+                    $key = $this->removeAlias($subquery);
+                    $ordered_row[] = $row[$key] ?? '';
+                }
+                fputcsv($output_handle, $ordered_row);
+            } else {
+                fputcsv($output_handle, $row);
+            }
+
+            flush(); // Free memory buffer
+        }
+
+        fclose($output_handle);
+        exit;
+    }
+
+
     protected function processRequest(?object $request): void
     {
+        // Calc total results/pages
         if (!empty($this->table_columns) && $this->table_name) {
             $this->total_results = $this->runTableQuery(false)->rowCount();
             $this->total_pages = ceil($this->total_results / $this->per_page);
@@ -163,6 +206,12 @@ abstract class AdminController extends Controller
         // Set current page
         if (isset($request->page) && intval($request->page) > 0 && intval($request->page) <= $this->total_pages) {
             $this->setSession("page", $request->page);
+        }
+
+        // Export CSV
+        if (isset($request->export_csv)) {
+            $rows = $this->runTableQuery()->fetchAll(PDO::FETCH_ASSOC);
+            $this->streamCSV($rows, $this->table_columns, $this->module_link . '_export.csv');
         }
 
         // Assign properties
@@ -443,7 +492,7 @@ abstract class AdminController extends Controller
 
     private function control(string $column, ?string $value)
     {
-        return match($this->form_controls[$column]) {
+        return match ($this->form_controls[$column]) {
             "input" => $this->renderControl("input", $column, $value),
             "email" => $this->renderControl("input", $column, $value, [
                 "type" => "email",
@@ -477,7 +526,7 @@ abstract class AdminController extends Controller
             "name" => $column,
             "title" => array_search($column, $this->form_columns),
             "value" => $value,
-            "placeholder" => "", 
+            "placeholder" => "",
             "alt" => null,
             "minlength" => null,
             "maxlength" => null,

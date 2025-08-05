@@ -9,7 +9,7 @@
     <button class="btn btn-sm btn-primary ms-1"><i class="bi bi-funnel pe-1"></i> Filter</button>
     <div class="ms-auto">
       {% if export_csv() %}
-      <button hx-get="?export_csv" class="btn btn-sm btn-primary ms-1"><i class="bi bi-download pe-1"></i> Export</button>
+      <a href="?export_csv" class="btn btn-sm btn-primary ms-1"><i class="bi bi-download pe-1"></i> Export</a>
       {% endif %}
     </div>
   </div>
