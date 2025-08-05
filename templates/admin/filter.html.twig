@@ -1,0 +1,25 @@
+<div id="form" class="modal-content">
+  <form method="POST" hx-post="{{ post }}">
+    <div class="modal-header">
+      <h5 class="modal-title">Filter</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+      <div class="mb-2">
+        {% include "components/flash.html.twig" %}
+      </div>
+      {{ csrf()|raw }}
+      {% if search.show %}
+      <div> 
+        <label class="fw-bold p-0 mb-1" for="filter-search">Search</label>
+        <input type="search" name="filter_search" id="filter-search" class="form-control" value="{{ search.term }}" />
+      </div>
+      {% endif %}
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      <button type="submit" name="filter_clear" class="btn btn-primary">Clear</button>
+      <button type="submit" class="btn btn-primary">Apply</button>
+    </div>
+  </form>
+</div>
