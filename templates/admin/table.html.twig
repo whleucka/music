@@ -6,12 +6,12 @@
     {% if has_create() %}
     <button class="btn btn-sm btn-success" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/create" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-plus-square pe-1"></i> New</button>
     {% endif %}
-    <button class="btn btn-sm btn-primary ms-1"><i class="bi bi-funnel pe-1"></i> Filter</button>
-    <div class="ms-auto">
-      {% if export_csv() %}
-      <a href="?export_csv" class="btn btn-sm btn-primary ms-1"><i class="bi bi-download pe-1"></i> Export</a>
-      {% endif %}
-    </div>
+    {% if show_filter %}
+    <button class="btn btn-sm btn-primary ms-1" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/filter" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-funnel pe-1"></i> Filter</button>
+    {% endif %}
+    {% if show_export %}
+    <a href="?export_csv" class="btn btn-sm btn-primary ms-1"><i class="bi bi-download pe-1"></i> Export</a>
+    {% endif %}
   </div>
   <div class="table-responsive p-2">
     <table class="table table-hover table-sm m-0">
@@ -44,8 +44,8 @@
               {% endif %}
               {% if has_delete(row.id) %}
               <form>
-              {{ csrf()|raw }}
-              <button class="btn btn-sm ms-1" hx-post="/admin/{{ module.link }}/{{ row.id }}/destroy"><i class="bi bi-trash"></i></button>
+                {{ csrf()|raw }}
+                <button class="btn btn-sm ms-1" hx-post="/admin/{{ module.link }}/{{ row.id }}/destroy"><i class="bi bi-trash"></i></button>
               </form>
               {% endif %}
             </div>

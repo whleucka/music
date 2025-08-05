@@ -23,5 +23,10 @@ class SessionsController extends AdminController
             "URI" => "uri",
             "Created" => "created_at",
         ];
+
+        $this->search_columns = [
+            "URI",
+            "User",
+        ];
     }
 }

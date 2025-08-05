@@ -12,7 +12,7 @@ class QueryBuilder
     private array $insert = [];
     private array $update = [];
     private array $where = [];
-    private array $orWhere = [];
+    private array $or_where = [];
     private array $having = [];
     private array $group_by = [];
     private array $order_by = [];
@@ -105,7 +105,7 @@ class QueryBuilder
 
     public function orWhere(array $clauses, ...$replacements): QueryBuilder
     {
-        $this->orWhere = $clauses;
+        $this->or_where = $clauses;
         $this->addQueryParams($replacements);
         return $this;
     }
@@ -175,7 +175,7 @@ class QueryBuilder
             implode(", ", $this->select),
             $this->table,
             $this->where ? " WHERE " . implode(" AND ", $this->where) : "",
-            $this->orWhere ? " OR " . implode(" OR ", $this->orWhere) : "",
+            $this->or_where ? " OR " . implode(" OR ", $this->or_where) : "",
             $this->group_by
                 ? " GROUP BY " . implode(", ", $this->group_by)
                 : "",

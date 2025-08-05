@@ -41,6 +41,9 @@ abstract class AdminController extends Controller
     protected array $form_readonly = [];
     protected array $form_disabled = [];
 
+    protected array $search_columns = [];
+    protected string $search_term = "";
+
     protected bool $has_edit = true;
     protected bool $has_create = true;
     protected bool $has_delete = true;
@@ -62,6 +65,21 @@ abstract class AdminController extends Controller
             return $this->permissionDenied();
         }
         return $this->renderModule($this->getFormData(null, 'create'));
+    }
+
+    #[Get("/modal/filter", "admin.filters")]
+    public function filters(): string
+    {
+        $this->processRequest($this->request->request);
+        return $this->renderFilter();
+    }
+
+    #[Post("/modal/filter", "admin.set-filters")]
+    public function set_filters(): void
+    {
+        $this->processRequest($this->request->request);
+        header("HX-Redirect: /admin/{$this->module_link}");
+        exit;
     }
 
     #[Get("/modal/{id}", "admin.show")]
@@ -179,7 +197,7 @@ abstract class AdminController extends Controller
             if (!empty($columns) && array_is_list($row) === false) {
                 $ordered_row = [];
                 foreach ($columns as $title => $subquery) {
-                    $key = $this->removeAlias($subquery);
+                    $key = $this->getAlias($subquery);
                     $ordered_row[] = $row[$key] ?? '';
                 }
                 fputcsv($output_handle, $ordered_row);
@@ -197,15 +215,19 @@ abstract class AdminController extends Controller
 
     protected function processRequest(?object $request): void
     {
-        // Calc total results/pages
-        if (!empty($this->table_columns) && $this->table_name) {
-            $this->total_results = $this->runTableQuery(false)->rowCount();
-            $this->total_pages = ceil($this->total_results / $this->per_page);
+        // Set current page
+        if (isset($request->page) && intval($request->page) > 0) {
+            $this->setSession("page", $request->page);
         }
 
-        // Set current page
-        if (isset($request->page) && intval($request->page) > 0 && intval($request->page) <= $this->total_pages) {
-            $this->setSession("page", $request->page);
+        // Search term
+        if (isset($request->filter_clear)) {
+            $this->setSession("search_term", null);
+        } else {
+            if (isset($request->filter_search)) {
+                $this->setSession("search_term", $request->filter_search);
+                $this->setSession("page", 1);
+            }
         }
 
         // Export CSV
@@ -215,7 +237,26 @@ abstract class AdminController extends Controller
         }
 
         // Assign properties
-        $this->page = $this->getSession("page") ?? 1;
+        if (!empty($this->table_columns) && $this->table_name) {
+            $this->page = $this->getSession("page") ?? 1;
+            $this->search_term = $this->getSession("search_term") ?? '';
+            // Set where
+            if ($this->search_term) {
+                $where = [];
+                foreach ($this->search_columns as $title) {
+                    $query = $this->table_columns[$title];
+                    $column = $this->getSubquery($query);
+                    if ($column) {
+                        $where[] = "$column LIKE ?";
+                        $this->query_params[] = "%{$this->search_term}%";
+                    }
+                }
+                $this->query_where[] = implode(" OR ", $where);
+            }
+
+            $this->total_results = $this->runTableQuery(false)->rowCount();
+            $this->total_pages = ceil($this->total_results / $this->per_page);
+        }
     }
 
     protected function getFormData(?int $id, string $type): array
@@ -259,6 +300,17 @@ abstract class AdminController extends Controller
         return $this->render("admin/module.html.twig", $data);
     }
 
+    protected function renderFilter(): string
+    {
+        return $this->render("admin/filter.html.twig", [
+            "post" => "/admin/{$this->module_link}/modal/filter",
+            "search" => [
+                "show" => !empty($this->search_columns),
+                "term" => $this->search_term,
+            ]
+        ]);
+    }
+
     private function registerFunctions()
     {
         $has_create = new TwigFunction("has_create", fn() => $this->hasCreate());
@@ -266,13 +318,13 @@ abstract class AdminController extends Controller
         $has_show = new TwigFunction("has_show", fn(int $id) => $this->hasShow($id));
         $has_delete = new TwigFunction("has_delete", fn(int $id) => $this->hasDelete($id));
         $has_row_actions = new TwigFunction("has_row_actions", fn() => $this->has_edit || $this->has_delete || !empty($this->table_actions));
-        $export_csv = new TwigFunction("export_csv", fn() => $this->export_csv);
+        $control = new TwigFunction("control", fn(string $column, ?string $value) => $this->control($column, $value));
         twig()->addFunction($has_create);
         twig()->addFunction($has_edit);
         twig()->addFunction($has_show);
         twig()->addFunction($has_delete);
         twig()->addFunction($has_row_actions);
-        twig()->addFunction($export_csv);
+        twig()->addFunction($control);
     }
 
     protected function renderTable(): string
@@ -291,6 +343,8 @@ abstract class AdminController extends Controller
         return $this->render("admin/table.html.twig", [
             ...$this->getCommonData(),
             "headers" => array_keys($this->table_columns),
+            "show_filter" => !empty($this->search_columns),
+            "show_export" => $this->export_csv,
             "caption" => $this->total_pages > 1
                 ? "Showing {$start}–{$end} of {$this->total_results} results"
                 : "",
@@ -328,9 +382,8 @@ abstract class AdminController extends Controller
             $submit = "Create";
         }
 
-        // Register methods
-        $control = new TwigFunction("control", fn(string $column, ?string $value) => $this->control($column, $value));
-        twig()->addFunction($control);
+        // Setup functions
+        $this->registerFunctions();
 
         return $this->render("admin/form-modal.html.twig", [
             ...$this->getCommonData(),
@@ -355,11 +408,13 @@ abstract class AdminController extends Controller
             $this->table_columns = [
                 ...$columns,
                 ...$this->table_columns,
-           ];
+            ];
         }
 
         $q = qb()->select(array_values($this->table_columns))
             ->from($this->table_name)
+            ->params($this->query_params)
+            ->where($this->query_where)
             ->orderBy($this->query_order_by);
 
         if ($limit) {
@@ -376,7 +431,7 @@ abstract class AdminController extends Controller
         if (is_null($id)) {
             $data = [];
             foreach ($this->form_columns as $value) {
-                $column = $this->removeAlias($value);
+                $column = $this->getAlias($value);
                 $data[$column] = null;
             }
             return $data;
@@ -387,7 +442,13 @@ abstract class AdminController extends Controller
             ->execute();
     }
 
-    private function removeAlias(string $str): string
+    private function getSubquery(string $str): string
+    {
+        $str = explode(" as ", $str);
+        return $str[0];
+    }
+
+    private function getAlias(string $str): string
     {
         $str = explode(" as ", $str);
         return end($str);

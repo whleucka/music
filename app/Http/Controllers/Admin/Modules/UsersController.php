@@ -39,6 +39,10 @@ class UsersController extends AdminController
             "password_match" => "password",
         ];
 
+        $this->search_columns = [
+            "Email",
+        ];
+
         $this->validation_rules = [
             "first_name" => ["required"],
             "surname" => ["required"],
