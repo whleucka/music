@@ -369,6 +369,7 @@ abstract class AdminController extends Controller
             $title = "Edit $id";
             $submit = "Save Changes";
         } else if ($type === "show") {
+            $submit = false;
             $data = $data->fetch();
             $title = "View $id";
             foreach ($data as $column => $value) {
