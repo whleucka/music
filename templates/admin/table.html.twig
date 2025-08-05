@@ -8,7 +8,9 @@
     {% endif %}
     <button class="btn btn-sm btn-primary ms-1"><i class="bi bi-funnel pe-1"></i> Filter</button>
     <div class="ms-auto">
-      <button class="btn btn-sm btn-primary ms-1"><i class="bi bi-download pe-1"></i> Export</button>
+      {% if export_csv() %}
+      <button hx-get="?export_csv" class="btn btn-sm btn-primary ms-1"><i class="bi bi-download pe-1"></i> Export</button>
+      {% endif %}
     </div>
   </div>
   <div class="table-responsive p-2">

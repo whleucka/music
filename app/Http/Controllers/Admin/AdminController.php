@@ -42,6 +42,7 @@ abstract class AdminController extends Controller
     protected bool $has_edit = true;
     protected bool $has_create = true;
     protected bool $has_delete = true;
+    protected bool $export_csv = true;
 
     protected array $validation_rules = [];
 
@@ -209,6 +210,22 @@ abstract class AdminController extends Controller
         return $this->render("admin/module.html.twig", $data);
     }
 
+    private function registerFunctions()
+    {
+        $has_create = new TwigFunction("has_create", fn() => $this->hasCreate());
+        $has_edit = new TwigFunction("has_edit", fn(int $id) => $this->hasEdit($id));
+        $has_show = new TwigFunction("has_show", fn(int $id) => $this->hasShow($id));
+        $has_delete = new TwigFunction("has_delete", fn(int $id) => $this->hasDelete($id));
+        $has_row_actions = new TwigFunction("has_row_actions", fn() => $this->has_edit || $this->has_delete || !empty($this->table_actions));
+        $export_csv = new TwigFunction("export_csv", fn() => $this->export_csv);
+        twig()->addFunction($has_create);
+        twig()->addFunction($has_edit);
+        twig()->addFunction($has_show);
+        twig()->addFunction($has_delete);
+        twig()->addFunction($has_row_actions);
+        twig()->addFunction($export_csv);
+    }
+
     protected function renderTable(): string
     {
         if (empty($this->table_columns) || !$this->table_name) return '';
@@ -228,17 +245,8 @@ abstract class AdminController extends Controller
         $start = 1 + ($this->page * $this->per_page) - $this->per_page;
         $end = min($this->page * $this->per_page, $this->total_results);
 
-        // Register methods
-        $has_create = new TwigFunction("has_create", fn() => $this->hasCreate());
-        $has_edit = new TwigFunction("has_edit", fn(int $id) => $this->hasEdit($id));
-        $has_show = new TwigFunction("has_show", fn(int $id) => $this->hasShow($id));
-        $has_delete = new TwigFunction("has_delete", fn(int $id) => $this->hasDelete($id));
-        $has_row_actions = new TwigFunction("has_row_actions", fn() => $this->has_edit || $this->has_delete || !empty($this->table_actions));
-        twig()->addFunction($has_create);
-        twig()->addFunction($has_edit);
-        twig()->addFunction($has_show);
-        twig()->addFunction($has_delete);
-        twig()->addFunction($has_row_actions);
+        // Setup functions
+        $this->registerFunctions();
 
         return $this->render("admin/table.html.twig", [
             ...$this->getCommonData(),
