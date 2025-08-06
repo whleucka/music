@@ -1,0 +1,29 @@
+<?php
+
+use Echo\Interface\Database\Migration;
+use Echo\Framework\Database\{Schema, Blueprint};
+
+return new class implements Migration
+{
+    private string $table = "user_permissions";
+
+    public function up(): string
+    {
+         return Schema::create($this->table, function (Blueprint $table) {
+            $table->unsignedBigInteger("module_id");
+            $table->unsignedBigInteger("user_id");
+            $table->unsignedTinyInteger("has_create")->default(0);
+            $table->unsignedTinyInteger("has_edit")->default(0);
+            $table->unsignedTinyInteger("has_delete")->default(0);
+            $table->timestamps();
+            $table->primaryKey("module_id, user_id");
+            $table->foreignKey("module_id")->references("modules", "id");
+            $table->foreignKey("user_id")->references("users", "id");
+        });
+    }
+
+    public function down(): string
+    {
+         return Schema::drop($this->table);
+    }
+};
