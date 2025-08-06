@@ -10,6 +10,8 @@ class UsersController extends AdminController
 {
     public function __construct()
     {
+        $this->roles = ['admin'];
+
         $this->table_columns = [
             "ID" => "id",
             "UUID" => "uuid",

@@ -16,6 +16,10 @@ use Twig\TwigFunction;
 abstract class AdminController extends Controller
 {
     protected array $actions = [];
+    protected array $roles = [
+        'admin',
+        'standard'
+    ];
 
     protected string $module_icon = "";
     protected string $module_link = "";
@@ -601,16 +605,21 @@ abstract class AdminController extends Controller
 
     protected function init()
     {
+
         // Setup module (must exist in DB)
         $link = explode('.', request()->getAttribute("route")["name"])[0];
+        $module = db()->fetch("SELECT * FROM modules WHERE link = ?", [$link]);
         if ($link) {
-            $module = db()->fetch("SELECT * FROM modules WHERE link = ?", [$link]);
-
             $this->module_title = $module['title'];
             $this->module_link = $module['link'];
             $this->module_icon = $module['icon'];
         } else {
             $this->pageNotFound();
+        }
+
+        // Check module roles
+        if (!empty($this->roles) && !in_array(user()->role, explode(",", $module['roles']))) {
+            $this->permissionDenied();
         }
 
         // Assign properties
