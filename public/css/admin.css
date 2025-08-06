@@ -147,8 +147,11 @@ nav#nav-sidebar #sidebar-filter * {
 #dashboard .top-alert {
   width: 100%;
   max-width: 320px;
+  height: 100px;
   padding: 10px;
   margin: 10px;
+  overflow: hidden;
+  position: relative;
 }
 #dashboard .top-alert .count {
   font-size: 2rem;
@@ -176,6 +179,12 @@ nav#nav-sidebar #sidebar-filter * {
   color: #fff;
   background-color: #3a9e46;
   border-left: 8px solid #b1ff9c;
+}
+#dashboard .top-alert .icon {
+  left: 15px;
+  font-size: 4rem;
+  position: absolute;
+  opacity: 0.3;
 }
 /** xs */
 @media (max-width: 575.98px) {
