@@ -15,6 +15,7 @@ return new class implements Migration
             $table->varchar("first_name");
             $table->varchar("surname");
             $table->varchar("email");
+            $table->varchar("role")->default("standard");
             $table->binary("password", 96);
             $table->timestamps();
             $table->unique("email");

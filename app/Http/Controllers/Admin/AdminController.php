@@ -22,7 +22,6 @@ abstract class AdminController extends Controller
     protected string $module_title = "";
 
     protected string $table_pk = "id";
-    protected string $table_name = "";
     protected array $table_columns = [];
     protected array $table_actions = [];
 
@@ -51,10 +50,14 @@ abstract class AdminController extends Controller
 
     protected array $validation_rules = [];
 
+    public function __construct(private ?string $table_name = null)
+    {
+        $this->init();
+    }
+
     #[Get("/", "admin.index")]
     public function index(): string
     {
-        $this->processRequest($this->request->request);
         return $this->renderModule($this->getModuleData());
     }
 
@@ -62,13 +65,13 @@ abstract class AdminController extends Controller
     public function page(int $page): string
     {
         $this->setSession("page", $page);
+        $this->init();
         return $this->index();
     }
 
     #[Get("/export-csv", "admin.export-csv")]
     public function export_csv(): string
     {
-        $this->processRequest($this->request->request);
         $rows = $this->runTableQuery()->fetchAll(PDO::FETCH_ASSOC);
         $this->streamCSV($rows, $this->table_columns, $this->module_link . '_export.csv');
     }
@@ -82,17 +85,16 @@ abstract class AdminController extends Controller
         return $this->renderModule($this->getFormData(null, 'create'));
     }
 
-    #[Get("/modal/filter", "admin.filters")]
-    public function filters(): string
+    #[Get("/modal/filter", "admin.render-filter")]
+    public function render_filter(): string
     {
-        $this->processRequest($this->request->request);
         return $this->renderFilter();
     }
 
-    #[Post("/modal/filter", "admin.set-filters")]
-    public function set_filters(): void
+    #[Post("/modal/filter", "admin.set-filter")]
+    public function set_filter(): void
     {
-        $this->processRequest($this->request->request);
+        $this->setFilters($this->request->request);
         header("HX-Redirect: /admin/{$this->module_link}");
         exit;
     }
@@ -227,10 +229,8 @@ abstract class AdminController extends Controller
         exit;
     }
 
-
-    protected function processRequest(?object $request): void
+    protected function setFilters(?object $request): void
     {
-        // Search term
         if (isset($request->filter_clear)) {
             $this->setSession("search_term", null);
         } else {
@@ -238,28 +238,6 @@ abstract class AdminController extends Controller
                 $this->setSession("search_term", $request->filter_search);
                 $this->setSession("page", 1);
             }
-        }
-
-        // Assign properties
-        if (!empty($this->table_columns) && $this->table_name) {
-            $this->page = $this->getSession("page") ?? 1;
-            $this->search_term = $this->getSession("search_term") ?? '';
-            // Set where
-            if ($this->search_term) {
-                $where = [];
-                foreach ($this->search_columns as $title) {
-                    $query = $this->table_columns[$title];
-                    $column = $this->getSubquery($query);
-                    if ($column) {
-                        $where[] = "$column LIKE ?";
-                        $this->query_params[] = "%{$this->search_term}%";
-                    }
-                }
-                $this->query_where[] = implode(" OR ", $where);
-            }
-
-            $this->total_results = $this->runTableQuery(false)->rowCount();
-            $this->total_pages = ceil($this->total_results / $this->per_page);
         }
     }
 
@@ -406,7 +384,6 @@ abstract class AdminController extends Controller
 
     private function runTableQuery(bool $limit = true): bool|PDOStatement
     {
-
         // Table columns must always contain table_pk
         if (!in_array($this->table_pk, $this->table_columns)) {
             $columns[strtoupper($this->table_pk)] = $this->table_pk;
@@ -577,7 +554,7 @@ abstract class AdminController extends Controller
         };
     }
 
-    private function getClassname(string $column)
+    private function getClassName(string $column)
     {
         $validation_errors = $this->getValiationErrors();
         $request = $this->request->request;
@@ -620,5 +597,41 @@ abstract class AdminController extends Controller
         ];
         $template_data = array_merge($default, $data);
         return $this->render("admin/controls/$type.html.twig", $template_data);
+    }
+
+    protected function init()
+    {
+        // Setup module
+        $link = explode('.', request()->getAttribute("route")["name"])[0];
+        if ($link) {
+            $module = db()->fetch("SELECT * FROM modules WHERE link = ?", [$link]);
+            if ($module) {
+                $this->module_title = $module['title'];
+                $this->module_link = $module['link'];
+                $this->module_icon = $module['icon'];
+            }
+        }
+
+        // Assign properties
+        if ($this->table_name && !empty($this->table_columns)) {
+            $this->page = $this->getSession("page") ?? 1;
+            $this->search_term = $this->getSession("search_term") ?? '';
+            // Set where
+            if ($this->search_term) {
+                $where = [];
+                foreach ($this->search_columns as $title) {
+                    $query = $this->table_columns[$title];
+                    $column = $this->getSubquery($query);
+                    if ($column) {
+                        $where[] = "$column LIKE ?";
+                        $this->query_params[] = "%{$this->search_term}%";
+                    }
+                }
+                $this->query_where[] = implode(" OR ", $where);
+            }
+
+            $this->total_results = $this->runTableQuery(false)->rowCount();
+            $this->total_pages = ceil($this->total_results / $this->per_page);
+        }
     }
 }

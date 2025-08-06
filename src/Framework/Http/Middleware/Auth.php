@@ -19,12 +19,11 @@ class Auth implements Middleware
         $user = user();
 
         if (in_array('auth', $middleware) && !$user) {
-            $res = new HttpResponse('<script>window.location.href="/sign-in";</script>', 200);
-            $res->setHeader("HX-Retarget", "body");
-            if (preg_match("/index/", $route->name)) {
+            if (key_exists('name', $route) && preg_match("/index/", $route['name'])) {
                 session()->set("auth_redirect", $_SERVER["REQUEST_URI"]);
             }
             Flash::add("warning", "Please sign in to view this page.");
+            $res = new HttpResponse("<script>window.location.href = '/sign-in';</script>", 401);
             return $res;
         }
 

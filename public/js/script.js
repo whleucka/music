@@ -3,6 +3,9 @@ htmx.on('htmx:responseError', function (event) {
     switch (event.detail.xhr.status) {
         case 400:
             break;
+        case 401:
+            window.location.href = '/sign-in';
+            break;
         case 403:
             break;
         case 404:

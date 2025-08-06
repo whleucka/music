@@ -10,11 +10,6 @@ class UsersController extends AdminController
 {
     public function __construct()
     {
-        $this->module_icon = "people";
-        $this->module_title = "Users";
-        $this->module_link = "users";
-
-        $this->table_name = "users";
         $this->table_columns = [
             "ID" => "id",
             "UUID" => "uuid",
@@ -50,6 +45,8 @@ class UsersController extends AdminController
             "password" => ["required", "min_length:10", "regex:^(?=.*[A-Z])(?=.*\W)(?=.*\d).+$"],
             "password_match" => ["required", "match:password"],
         ];
+
+        parent::__construct("users");
     }
 
     public function validate(array $ruleset, string $tag = ''): ?object

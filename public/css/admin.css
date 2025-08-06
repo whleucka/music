@@ -147,18 +147,22 @@ nav#nav-sidebar #sidebar-filter * {
 #dashboard .top-alert {
   width: 100%;
   max-width: 320px;
-  height: 100px;
-  padding: 10px;
+  height: 120px;
   margin: 10px;
   overflow: hidden;
   position: relative;
 }
 #dashboard .top-alert .count {
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 900;
+  padding: 0;
+  margin: 0;
 }
 #dashboard .top-alert p {
   font-weight: 900;
+  font-size: 1.5rem;
+  padding: 0;
+  margin: 0;
 }
 #dashboard #users {
   color: #fff;

@@ -12,11 +12,6 @@ class SessionsController extends AdminController
     {
         $this->has_edit = $this->has_delete = false;
 
-        $this->module_icon = "person-bounding-box";
-        $this->module_title = "Sessions";
-        $this->module_link = "sessions";
-
-        $this->table_name = "sessions";
         $this->table_columns = [
             "User" => "(SELECT email FROM users WHERE users.id = user_id) as user",
             "IP" => "INET_NTOA(ip)",
@@ -28,5 +23,7 @@ class SessionsController extends AdminController
             "URI",
             "User",
         ];
+
+        parent::__construct("sessions");
     }
 }
