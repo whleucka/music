@@ -11,7 +11,16 @@
 
 {% block content %}
   <section id="admin" class="d-flex">
-    <div id="nav-sidebar" class="hide" hx-get="/admin/sidebar" hx-trigger="load" hx-swap="outerHTML"></div>
+    <nav id="nav-sidebar" class="text-light {% if sidebar.hide %}hide{% endif %}" hx-get="/admin/sidebar" hx-trigger="load" hx-swap="outerHTML">
+      <header class="d-flex justify-content-center align-items-center p-2">
+        <h4 class="m-0"><i class="bi bi-shield-check pe-1"></i> <span class="desc">Admin</span></h4>
+      </header>
+    <div class="d-flex justify-content-center align-items-center mt-5">
+      <div class="spinner-grow" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+    </nav>
     <section id="view" class="d-flex flex-column flex-grow-1">
       <nav id="nav-top" class="d-flex">
         <button id="sidebar-toggle" hx-get="/admin/sidebar/toggle" hx-target="#nav-sidebar" hx-select="#nav-sidebar" hx-swap="outerHTML" class="btn" hx-on::after-request="sidebarLinkActiveLoad()"><i class="bi bi-list"></i></button>

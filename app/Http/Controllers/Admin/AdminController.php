@@ -58,6 +58,14 @@ abstract class AdminController extends Controller
         return $this->renderModule($this->getModuleData());
     }
 
+    #[Get("/export-csv", "admin.export-csv")]
+    public function export_csv(): string
+    {
+        $this->processRequest($this->request->request);
+        $rows = $this->runTableQuery()->fetchAll(PDO::FETCH_ASSOC);
+        $this->streamCSV($rows, $this->table_columns, $this->module_link . '_export.csv');
+    }
+
     #[Get("/modal/create", "admin.create")]
     public function create(): string
     {
@@ -228,12 +236,6 @@ abstract class AdminController extends Controller
                 $this->setSession("search_term", $request->filter_search);
                 $this->setSession("page", 1);
             }
-        }
-
-        // Export CSV
-        if (isset($request->export_csv)) {
-            $rows = $this->runTableQuery()->fetchAll(PDO::FETCH_ASSOC);
-            $this->streamCSV($rows, $this->table_columns, $this->module_link . '_export.csv');
         }
 
         // Assign properties
@@ -457,7 +459,11 @@ abstract class AdminController extends Controller
 
     protected function getCommonData(): array
     {
+        $sidebar_state = session()->get("sidebar_state");
         return [
+            "sidebar" => [
+                "hide" => $sidebar_state
+            ],
             "user" => [
                 "name" => $this->user->first_name . " " . $this->user->surname,
                 "email" => $this->user->email,
