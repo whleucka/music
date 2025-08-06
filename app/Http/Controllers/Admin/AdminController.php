@@ -601,7 +601,7 @@ abstract class AdminController extends Controller
 
     protected function init()
     {
-        // Setup module
+        // Setup module (must exist in DB)
         $link = explode('.', request()->getAttribute("route")["name"])[0];
         if ($link) {
             $module = db()->fetch("SELECT * FROM modules WHERE link = ?", [$link]);
@@ -609,6 +609,8 @@ abstract class AdminController extends Controller
                 $this->module_title = $module['title'];
                 $this->module_link = $module['link'];
                 $this->module_icon = $module['icon'];
+            } else {
+                $this->pageNotFound();
             }
         }
 

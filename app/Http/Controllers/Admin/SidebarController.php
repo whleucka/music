@@ -15,7 +15,7 @@ class SidebarController extends Controller
         $modules = array_map(function ($module) {
             $module['url'] = "/admin/" . $module["link"];
             return $module;
-        }, db()->fetchAll("SELECT * FROM modules ORDER BY link"));
+        }, db()->fetchAll("SELECT * FROM modules ORDER BY item_order"));
         $modules[] = [
             "url" => "/sign-out",
             "icon" => "door-closed",
