@@ -13,11 +13,11 @@
   <div id="sidebar-links" class="p-3" hx-boost="true" hx-trigger="click" hx-select="#module" hx-target="#module" hx-swap="outerHTML">
     <ul class="nav nav-pills flex-column mb-auto">
       {% for module in modules %}
-      <li>
-        <a href="{{ module.url }}" class="nav-link link link-light" hx-on::after-request="sidebarLinkActive(event)" {% if module.normal %}hx-boost="false"{% endif %}>
-          <i class="bi bi-{{ module.icon }}"></i> <span class="ps-2 desc">{{ module.title }}</span>
-        </a>
-      </li>
+      <a title="{{ module.title }}" href="{{ module.url }}" class="nav-link link link-light" hx-on::after-request="sidebarLinkActive(event)" {% if module.normal %}hx-boost="false"{% endif %}>
+        <li>
+            <i class="bi bi-{{ module.icon }}"></i> <span class="ps-2 desc">{{ module.title }}</span>
+        </li>
+      </a>
       {% endfor %}
     </ul>
   </div>
