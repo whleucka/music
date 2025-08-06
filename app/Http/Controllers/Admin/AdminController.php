@@ -605,13 +605,12 @@ abstract class AdminController extends Controller
         $link = explode('.', request()->getAttribute("route")["name"])[0];
         if ($link) {
             $module = db()->fetch("SELECT * FROM modules WHERE link = ?", [$link]);
-            if ($module) {
-                $this->module_title = $module['title'];
-                $this->module_link = $module['link'];
-                $this->module_icon = $module['icon'];
-            } else {
-                $this->pageNotFound();
-            }
+
+            $this->module_title = $module['title'];
+            $this->module_link = $module['link'];
+            $this->module_icon = $module['icon'];
+        } else {
+            $this->pageNotFound();
         }
 
         // Assign properties
