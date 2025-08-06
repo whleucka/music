@@ -71,12 +71,12 @@
     <ul class="pagination">
       {% if data.page != 1 and data.page > data.pagination_links %}
       <li class="page-item">
-        <a class="page-link" href="?page=1">
+        <a class="page-link" href="/admin/{{ module.link }}/page/1">
           <span><i class="bi bi-chevron-double-left"></i></span>
         </a>
       </li>
       <li class="page-item {% if data.page - 1 <= 0 %}disabled{% endif %}">
-        <a class="page-link" href="?page={{ data.page - 1}}">
+        <a class="page-link" href="/admin/{{ module.link }}/page/{{ data.page - 1}}">
           <span><i class="bi bi-chevron-left"></i></span>
         </a>
       </li>
@@ -84,28 +84,28 @@
       {% for i in data.page - data.pagination_links..data.page - 1 %}
         {% if i >= 1 %}
         <li class="page-item">
-          <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+          <a class="page-link" href="/admin/{{ module.link }}/page/{{ i }}">{{ i }}</a>
         </li>
         {% endif %}
       {% endfor %}
       <li class="page-item active">
-        <a class="page-link" href="?page={{ data.page }}">{{ data.page }}</a>
+        <a class="page-link" href="/admin/{{ module.link }}/page/{{ data.page }}">{{ data.page }}</a>
       </li>
       {% for i in data.page + 1..data.page + data.pagination_links %}
         {% if i <= data.total_pages %}
         <li class="page-item">
-          <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+          <a class="page-link" href="/admin/{{ module.link }}/page/{{ i }}">{{ i }}</a>
         </li>
         {% endif %}
       {% endfor %}
       {% if data.page != data.total_pages and data.page < data.total_pages - data.pagination_links %}
       <li class="page-item">
-        <a class="page-link {% if data.page + 1 >= data.total_pages %}disabled{% endif %}" href="?page={{ data.page + 1}}">
+        <a class="page-link {% if data.page + 1 >= data.total_pages %}disabled{% endif %}" href="/admin/{{ module.link }}/page/{{ data.page + 1 }}">
           <span><i class="bi bi-chevron-right"></i></span>
         </a>
       </li>
       <li class="page-item">
-        <a class="page-link" href="?page={{ data.total_pages }}">
+        <a class="page-link" href="/admin/{{ module.link }}/page/{{ data.total_pages }}">
           <span><i class="bi bi-chevron-double-right"></i></span>
         </a>
       </li>

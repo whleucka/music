@@ -58,6 +58,13 @@ abstract class AdminController extends Controller
         return $this->renderModule($this->getModuleData());
     }
 
+    #[Get("/page/{page}", "admin.page")]
+    public function page(int $page): string
+    {
+        $this->setSession("page", $page);
+        return $this->index();
+    }
+
     #[Get("/export-csv", "admin.export-csv")]
     public function export_csv(): string
     {
@@ -223,11 +230,6 @@ abstract class AdminController extends Controller
 
     protected function processRequest(?object $request): void
     {
-        // Set current page
-        if (isset($request->page) && intval($request->page) > 0) {
-            $this->setSession("page", $request->page);
-        }
-
         // Search term
         if (isset($request->filter_clear)) {
             $this->setSession("search_term", null);
