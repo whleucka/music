@@ -14,9 +14,8 @@ class DashboardController extends AdminController
             ...$this->getCommonData(),
             "user_count" => db()->execute("SELECT count(*) FROM users")->fetchColumn(),
             "session_count" => db()->execute("SELECT count(*) FROM sessions")->fetchColumn(),
-            "module_count" => 2,
+            "module_count" => db()->execute("SELECT count(*) FROM modules")->fetchColumn(),
             "sales" => number_format(0, 2),
-            
         ]);
     }
 }

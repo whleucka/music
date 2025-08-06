@@ -12,34 +12,21 @@ class SidebarController extends Controller
     #[Get("/sidebar", "admin.sidebar.load")]
     public function load(): string
     {
-        $links = [
-            [
-                "url" => "/admin/dashboard",
-                "icon" => "rocket",
-                "title" => "Dashboard",
-            ],
-            [
-                "url" => "/admin/sessions",
-                "icon" => "person-bounding-box",
-                "title" => "Sessions",
-            ],
-            [
-                "url" => "/admin/users",
-                "icon" => "people",
-                "title" => "Users",
-            ],
-            [
-                "url" => "/sign-out",
-                "icon" => "door-closed",
-                "title" => "Sign Out",
-                "normal" => true,
-            ],
+        $modules = array_map(function ($module) {
+            $module['url'] = "/admin/" . $module["link"];
+            return $module;
+        }, db()->fetchAll("SELECT * FROM modules ORDER BY link"));
+        $modules[] = [
+            "url" => "/sign-out",
+            "icon" => "door-closed",
+            "title" => "Sign Out",
+            "normal" => true,
         ];
         return $this->render("admin/sidebar.html.twig", [
             "hide" => $this->getState(),
-            "links" => $links
+            "modules" => $modules
         ]);
-    } 
+    }
 
     #[Get("/sidebar/toggle", "admin.sidebar.toggle")]
     public function toggle(): string
@@ -47,7 +34,7 @@ class SidebarController extends Controller
         $state = $this->getState();
         session()->set("sidebar_state", !$state);
         return $this->load();
-    } 
+    }
 
     private function getState()
     {

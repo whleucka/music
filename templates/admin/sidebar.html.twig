@@ -12,10 +12,10 @@
 
   <div id="sidebar-links" class="p-3" hx-boost="true" hx-trigger="click" hx-select="#module" hx-target="#module" hx-swap="outerHTML">
     <ul class="nav nav-pills flex-column mb-auto">
-      {% for link in links %}
+      {% for module in modules %}
       <li>
-        <a href="{{ link.url }}" class="nav-link link link-light" hx-on::after-request="sidebarLinkActive(event)" {% if link.normal %}hx-boost="false"{% endif %}>
-          <i class="bi bi-{{ link.icon }}"></i> <span class="ps-2 desc">{{ link.title }}</span>
+        <a href="{{ module.url }}" class="nav-link link link-light" hx-on::after-request="sidebarLinkActive(event)" {% if module.normal %}hx-boost="false"{% endif %}>
+          <i class="bi bi-{{ module.icon }}"></i> <span class="ps-2 desc">{{ module.title }}</span>
         </a>
       </li>
       {% endfor %}
