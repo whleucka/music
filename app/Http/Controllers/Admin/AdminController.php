@@ -23,6 +23,7 @@ abstract class AdminController extends Controller
     protected string $table_pk = "id";
     protected array $table_columns = [];
     protected array $table_actions = [];
+    protected array $table_format = [];
 
     protected int $per_page = 25;
     protected int $page = 1;
@@ -189,7 +190,180 @@ abstract class AdminController extends Controller
         return $data[$key] ?? null;
     }
 
-    function streamCSV(iterable $rows, array $columns = [], string $filename = 'export.csv')
+    private function registerFunctions()
+    {
+        $has_create = new TwigFunction("has_create", fn() => $this->hasCreate());
+        $has_edit = new TwigFunction("has_edit", fn(int $id) => $this->hasEdit($id));
+        $has_show = new TwigFunction("has_show", fn(int $id) => $this->hasShow($id));
+        $has_delete = new TwigFunction("has_delete", fn(int $id) => $this->hasDelete($id));
+        $has_row_actions = new TwigFunction("has_row_actions", fn() => $this->has_edit || $this->has_delete || !empty($this->table_actions));
+        $control = new TwigFunction("control", fn(string $column, ?string $value) => $this->control($column, $value));
+        $format = new TwigFunction("format", fn(string $column, ?string $value) => $this->format($column, $value));
+        twig()->addFunction($has_create);
+        twig()->addFunction($has_edit);
+        twig()->addFunction($has_show);
+        twig()->addFunction($has_delete);
+        twig()->addFunction($has_row_actions);
+        twig()->addFunction($control);
+        twig()->addFunction($format);
+    }
+
+    private function runTableQuery(bool $limit = true): bool|PDOStatement
+    {
+        // Table columns must always contain table_pk
+        if (!in_array($this->table_pk, $this->table_columns)) {
+            $columns[strtoupper($this->table_pk)] = $this->table_pk;
+            $this->table_columns = [
+                ...$columns,
+                ...$this->table_columns,
+            ];
+        }
+
+        $q = qb()->select(array_values($this->table_columns))
+            ->from($this->table_name)
+            ->params($this->query_params)
+            ->where($this->query_where)
+            ->orderBy($this->query_order_by);
+
+        if ($limit) {
+            $limit = $this->per_page;
+            $offset = $this->per_page * ($this->page - 1);
+            $q->limit($limit)->offset($offset);
+        }
+
+        return $q->execute();
+    }
+
+    private function runFormQuery(?int $id): array|bool|PDOStatement
+    {
+        if (is_null($id)) {
+            $data = [];
+            foreach ($this->form_columns as $value) {
+                $column = $this->getAlias($value);
+                $data[$column] = null;
+            }
+            return $data;
+        }
+        return qb()->select(array_values($this->form_columns))
+            ->from($this->table_name)
+            ->where(["$this->table_pk = ?"], $id)
+            ->execute();
+    }
+
+    private function getSubquery(string $str): string
+    {
+        $str = explode(" as ", $str);
+        return $str[0];
+    }
+
+    private function getAlias(string $str): string
+    {
+        $str = explode(" as ", $str);
+        return end($str);
+    }
+
+    private function format(string $column, ?string $value)
+    {
+        if (isset($this->table_format[$column])) {
+            $format = $this->table_format[$column];
+            if (is_callable($format)) {
+                return $format($column, $value);
+            }
+            return match ($format) {
+                default => $this->renderFormat("text", $column, $value),
+            };
+        }
+        return $value;
+    }
+
+    private function control(string $column, ?string $value)
+    {
+        if (isset($this->form_controls[$column])) {
+            $control = $this->form_controls[$column];
+            if (is_callable($control)) {
+                return $control($column, $value);
+            }
+            return match ($control) {
+                "input" => $this->renderControl("input", $column, $value),
+                "email" => $this->renderControl("input", $column, $value, [
+                    "type" => "email",
+                    "autocomplete" => "email",
+                ]),
+                "password" => $this->renderControl("input", $column, $value, [
+                    "type" => "password",
+                    "autocomplete" => "current-password",
+                ]),
+                default => $this->renderControl("text", $column, $value),
+            };
+        }
+        return $value;
+    }
+
+    private function getClassName(string $column)
+    {
+        $validation_errors = $this->getValiationErrors();
+        $request = $this->request->request;
+        $classname = ["form-control"];
+        if (isset($request->$column)) {
+            $classname[] = isset($validation_errors[$column]) ? 'is-invalid' : 'is-valid';
+        }
+        return implode(" ", $classname);
+    }
+
+    private function renderFormat(string $type, string $column, ?string $value, array $data = [])
+    {
+        $default = [];
+        $template_data = array_merge($default, $data);
+        return $this->render("admin/filters/$type.html.twig", $template_data);
+    }
+
+    private function renderControl(string $type, string $column, ?string $value, array $data = [])
+    {
+        $default = [
+            "type" => "input",
+            "class" => $this->getClassname($column),
+            "id" => $column,
+            "name" => $column,
+            "title" => array_search($column, $this->form_columns),
+            "value" => $value,
+            "placeholder" => "",
+            "alt" => null,
+            "minlength" => null,
+            "maxlength" => null,
+            "size" => null,
+            "list" => null,
+            "min" => null,
+            "max" => null,
+            "height" => null,
+            "width" => null,
+            "step" => null,
+            "accpet" => null,
+            "pattern" => null,
+            "dirname" => null,
+            "inputmode" => null,
+            "autocomplete" => null,
+            "checked" => null,
+            "autofocus" => null,
+            "readonly" => in_array($column, $this->form_readonly),
+            "disabled" => in_array($column, $this->form_disabled),
+        ];
+        $template_data = array_merge($default, $data);
+        return $this->render("admin/controls/$type.html.twig", $template_data);
+    }
+
+    private function setFilters(?object $request): void
+    {
+        if (isset($request->filter_clear)) {
+            $this->setSession("search_term", null);
+        } else {
+            if (isset($request->filter_search)) {
+                $this->setSession("search_term", $request->filter_search);
+                $this->setSession("page", 1);
+            }
+        }
+    }
+
+    private function streamCSV(iterable $rows, array $columns = [], string $filename = 'export.csv')
     {
         set_time_limit(0);
         ini_set('memory_limit', '-1');
@@ -228,16 +402,69 @@ abstract class AdminController extends Controller
         exit;
     }
 
-    protected function setFilters(?object $request): void
+    private function init()
     {
-        if (isset($request->filter_clear)) {
-            $this->setSession("search_term", null);
+        // Setup module (must exist in DB)
+        $link = explode('.', request()->getAttribute("route")["name"])[0];
+        $module = db()->fetch("SELECT * FROM modules WHERE link = ?", [$link]);
+        if ($link) {
+            $this->module_title = $module['title'];
+            $this->module_link = $module['link'];
+            $this->module_icon = $module['icon'];
         } else {
-            if (isset($request->filter_search)) {
-                $this->setSession("search_term", $request->filter_search);
-                $this->setSession("page", 1);
-            }
+            $this->pageNotFound();
         }
+
+        // Check module roles
+        if (!in_array(user()->role, explode(",", $module['roles']))) {
+            $this->permissionDenied();
+        }
+
+        // Assign properties
+        if ($this->table_name && !empty($this->table_columns)) {
+            $this->page = $this->getSession("page") ?? 1;
+            $this->search_term = $this->getSession("search_term") ?? '';
+            // Set where
+            if ($this->search_term) {
+                $where = [];
+                foreach ($this->search_columns as $title) {
+                    $query = $this->table_columns[$title];
+                    $column = $this->getSubquery($query);
+                    if ($column) {
+                        $where[] = "$column LIKE ?";
+                        $this->query_params[] = "%{$this->search_term}%";
+                    }
+                }
+                $this->query_where[] = implode(" OR ", $where);
+            }
+
+            $this->total_results = $this->runTableQuery(false)->rowCount();
+            $this->total_pages = ceil($this->total_results / $this->per_page);
+        }
+    }
+
+    protected function addValidationRule(array $rules, string $field, string $rule): array
+    {
+        $rules[$field][] = $rule;
+        return $rules;
+    }
+
+    protected function removeValidationRule(array $rules, string $field, string $remove): array
+    {
+        if (!isset($rules[$field])) {
+            return $rules;
+        }
+
+        $rules[$field] = array_filter(
+            $rules[$field],
+            fn($rule) => explode(':', $rule, 2)[0] !== explode(':', $remove, 2)[0] || $rule !== $remove
+        );
+
+        if (empty($rules[$field])) {
+            unset($rules[$field]);
+        }
+
+        return $rules;
     }
 
     protected function getFormData(?int $id, string $type): array
@@ -290,22 +517,6 @@ abstract class AdminController extends Controller
                 "term" => $this->search_term,
             ]
         ]);
-    }
-
-    private function registerFunctions()
-    {
-        $has_create = new TwigFunction("has_create", fn() => $this->hasCreate());
-        $has_edit = new TwigFunction("has_edit", fn(int $id) => $this->hasEdit($id));
-        $has_show = new TwigFunction("has_show", fn(int $id) => $this->hasShow($id));
-        $has_delete = new TwigFunction("has_delete", fn(int $id) => $this->hasDelete($id));
-        $has_row_actions = new TwigFunction("has_row_actions", fn() => $this->has_edit || $this->has_delete || !empty($this->table_actions));
-        $control = new TwigFunction("control", fn(string $column, ?string $value) => $this->control($column, $value));
-        twig()->addFunction($has_create);
-        twig()->addFunction($has_edit);
-        twig()->addFunction($has_show);
-        twig()->addFunction($has_delete);
-        twig()->addFunction($has_row_actions);
-        twig()->addFunction($control);
     }
 
     protected function renderTable(): string
@@ -379,60 +590,6 @@ abstract class AdminController extends Controller
             "labels" => array_keys($this->form_columns),
             "data" => $data,
         ]);
-    }
-
-    private function runTableQuery(bool $limit = true): bool|PDOStatement
-    {
-        // Table columns must always contain table_pk
-        if (!in_array($this->table_pk, $this->table_columns)) {
-            $columns[strtoupper($this->table_pk)] = $this->table_pk;
-            $this->table_columns = [
-                ...$columns,
-                ...$this->table_columns,
-            ];
-        }
-
-        $q = qb()->select(array_values($this->table_columns))
-            ->from($this->table_name)
-            ->params($this->query_params)
-            ->where($this->query_where)
-            ->orderBy($this->query_order_by);
-
-        if ($limit) {
-            $limit = $this->per_page;
-            $offset = $this->per_page * ($this->page - 1);
-            $q->limit($limit)->offset($offset);
-        }
-
-        return $q->execute();
-    }
-
-    private function runFormQuery(?int $id): array|bool|PDOStatement
-    {
-        if (is_null($id)) {
-            $data = [];
-            foreach ($this->form_columns as $value) {
-                $column = $this->getAlias($value);
-                $data[$column] = null;
-            }
-            return $data;
-        }
-        return qb()->select(array_values($this->form_columns))
-            ->from($this->table_name)
-            ->where(["$this->table_pk = ?"], $id)
-            ->execute();
-    }
-
-    private function getSubquery(string $str): string
-    {
-        $str = explode(" as ", $str);
-        return $str[0];
-    }
-
-    private function getAlias(string $str): string
-    {
-        $str = explode(" as ", $str);
-        return end($str);
     }
 
     protected function getCommonData(): array
@@ -510,139 +667,6 @@ abstract class AdminController extends Controller
             error_log($ex->getMessage());
             Flash::add("danger", "Create failed. Check logs.");
             return false;
-        }
-    }
-
-    public function addValidationRule(array $rules, string $field, string $rule): array
-    {
-        $rules[$field][] = $rule;
-        return $rules;
-    }
-
-    function removeValidationRule(array $rules, string $field, string $remove): array
-    {
-        if (!isset($rules[$field])) {
-            return $rules;
-        }
-
-        $rules[$field] = array_filter(
-            $rules[$field],
-            fn($rule) => explode(':', $rule, 2)[0] !== explode(':', $remove, 2)[0] || $rule !== $remove
-        );
-
-        if (empty($rules[$field])) {
-            unset($rules[$field]);
-        }
-
-        return $rules;
-    }
-
-    private function control(string $column, ?string $value)
-    {
-        if (isset($this->form_controls[$column])) {
-            $control = $this->form_controls[$column];
-            if (is_callable($control)) {
-                return $control($column, $value);
-            }
-            return match ($control) {
-                "input" => $this->renderControl("input", $column, $value),
-                "email" => $this->renderControl("input", $column, $value, [
-                    "type" => "email",
-                    "autocomplete" => "email",
-                ]),
-                "password" => $this->renderControl("input", $column, $value, [
-                    "type" => "password",
-                    "autocomplete" => "current-password",
-                ]),
-                default => $this->renderControl("text", $column, $value),
-            };
-        }
-        return null;
-    }
-
-    private function getClassName(string $column)
-    {
-        $validation_errors = $this->getValiationErrors();
-        $request = $this->request->request;
-        $classname = ["form-control"];
-        if (isset($request->$column)) {
-            $classname[] = isset($validation_errors[$column]) ? 'is-invalid' : 'is-valid';
-        }
-        return implode(" ", $classname);
-    }
-
-    private function renderControl(string $type, string $column, ?string $value, array $data = [])
-    {
-        $default = [
-            "type" => "input",
-            "class" => $this->getClassname($column),
-            "id" => $column,
-            "name" => $column,
-            "title" => array_search($column, $this->form_columns),
-            "value" => $value,
-            "placeholder" => "",
-            "alt" => null,
-            "minlength" => null,
-            "maxlength" => null,
-            "size" => null,
-            "list" => null,
-            "min" => null,
-            "max" => null,
-            "height" => null,
-            "width" => null,
-            "step" => null,
-            "accpet" => null,
-            "pattern" => null,
-            "dirname" => null,
-            "inputmode" => null,
-            "autocomplete" => null,
-            "checked" => null,
-            "autofocus" => null,
-            "readonly" => in_array($column, $this->form_readonly),
-            "disabled" => in_array($column, $this->form_disabled),
-        ];
-        $template_data = array_merge($default, $data);
-        return $this->render("admin/controls/$type.html.twig", $template_data);
-    }
-
-    protected function init()
-    {
-        // Setup module (must exist in DB)
-        $link = explode('.', request()->getAttribute("route")["name"])[0];
-        $module = db()->fetch("SELECT * FROM modules WHERE link = ?", [$link]);
-        if ($link) {
-            $this->module_title = $module['title'];
-            $this->module_link = $module['link'];
-            $this->module_icon = $module['icon'];
-        } else {
-            $this->pageNotFound();
-        }
-
-        // Check module roles
-        if (!in_array(user()->role, explode(",", $module['roles']))) {
-            $this->permissionDenied();
-        }
-
-        // Assign properties
-        if ($this->table_name && !empty($this->table_columns)) {
-            $this->page = $this->getSession("page") ?? 1;
-            $this->search_term = $this->getSession("search_term") ?? '';
-            // Set where
-            if ($this->search_term) {
-                $where = [];
-                foreach ($this->search_columns as $title) {
-                    $query = $this->table_columns[$title];
-                    $column = $this->getSubquery($query);
-                    if ($column) {
-                        $where[] = "$column LIKE ?";
-                        $this->query_params[] = "%{$this->search_term}%";
-                    }
-                }
-                $this->query_where[] = implode(" OR ", $where);
-            }
-
-            $this->total_results = $this->runTableQuery(false)->rowCount();
-            $this->total_pages = ceil($this->total_results / $this->per_page);
         }
     }
 }

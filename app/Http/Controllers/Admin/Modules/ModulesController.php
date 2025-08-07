@@ -20,6 +20,10 @@ class ModulesController extends AdminController
             "Created" => "created_at",
         ];
 
+        $this->table_format = [
+            "icon" => fn($column, $value) => "<i class='bi bi-$value' />",
+        ];
+
         $this->form_columns = [
             "Link" => "link",
             "Title" => "title",

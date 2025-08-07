@@ -30,8 +30,8 @@
         {% for row in data.rows %}
         <tr>
           <td class="checkbox-cell"><input type="checkbox" id="select_{{ row.id }}" value="{{ row.id }}" /></td>
-          {% for value in row %}
-          <td>{{ value }}</td>
+          {% for key,value in row %}
+          <td>{{ format(key, value)|raw }}</td>
           {% endfor %}
           {% if has_row_actions() %}
           <td id="row-actions">
