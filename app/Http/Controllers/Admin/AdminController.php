@@ -16,11 +16,6 @@ use Twig\TwigFunction;
 abstract class AdminController extends Controller
 {
     protected array $actions = [];
-    protected array $roles = [
-        'admin',
-        'standard'
-    ];
-
     protected string $module_icon = "";
     protected string $module_link = "";
     protected string $module_title = "";
@@ -544,18 +539,25 @@ abstract class AdminController extends Controller
 
     private function control(string $column, ?string $value)
     {
-        return match ($this->form_controls[$column]) {
-            "input" => $this->renderControl("input", $column, $value),
-            "email" => $this->renderControl("input", $column, $value, [
-                "type" => "email",
-                "autocomplete" => "email",
-            ]),
-            "password" => $this->renderControl("input", $column, $value, [
-                "type" => "password",
-                "autocomplete" => "current-password",
-            ]),
-            default => $this->renderControl("text", $column, $value),
-        };
+        if (isset($this->form_controls[$column])) {
+            $control = $this->form_controls[$column];
+            if (is_callable($control)) {
+                return $control($column, $value);
+            }
+            return match ($control) {
+                "input" => $this->renderControl("input", $column, $value),
+                "email" => $this->renderControl("input", $column, $value, [
+                    "type" => "email",
+                    "autocomplete" => "email",
+                ]),
+                "password" => $this->renderControl("input", $column, $value, [
+                    "type" => "password",
+                    "autocomplete" => "current-password",
+                ]),
+                default => $this->renderControl("text", $column, $value),
+            };
+        }
+        return null;
     }
 
     private function getClassName(string $column)
@@ -605,7 +607,6 @@ abstract class AdminController extends Controller
 
     protected function init()
     {
-
         // Setup module (must exist in DB)
         $link = explode('.', request()->getAttribute("route")["name"])[0];
         $module = db()->fetch("SELECT * FROM modules WHERE link = ?", [$link]);
@@ -618,7 +619,7 @@ abstract class AdminController extends Controller
         }
 
         // Check module roles
-        if (!empty($this->roles) && !in_array(user()->role, explode(",", $module['roles']))) {
+        if (!in_array(user()->role, explode(",", $module['roles']))) {
             $this->permissionDenied();
         }
 

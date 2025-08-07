@@ -8,8 +8,9 @@ return new class implements Migration
     {
         return "INSERT INTO modules (link, title, icon, roles, item_order) VALUES 
             ('dashboard', 'Dashboard', 'rocket', 'admin,standard', 0),
-            ('users', 'Users', 'people', 'admin', 10),
-            ('sessions', 'Sessions', 'person-bounding-box', 'admin', 20)";
+            ('modules', 'Modules', 'box', 'admin', 10),
+            ('users', 'Users', 'people', 'admin', 20),
+            ('sessions', 'Sessions', 'person-bounding-box', 'admin', 30)";
     }
 
     public function down(): string

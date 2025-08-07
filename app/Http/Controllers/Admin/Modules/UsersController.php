@@ -10,17 +10,17 @@ class UsersController extends AdminController
 {
     public function __construct()
     {
-        $this->roles = ['admin'];
-
         $this->table_columns = [
             "ID" => "id",
             "UUID" => "uuid",
+            "Role" => "role",
             "Name" => "CONCAT(first_name, ' ', surname) as name",
             "Email" => "email",
             "Created" => "created_at",
         ];
 
         $this->form_columns = [
+            "Role" => "role",
             "First Name" => "first_name",
             "Surname" => "surname",
             "Email" => "email",
@@ -29,6 +29,7 @@ class UsersController extends AdminController
         ];
 
         $this->form_controls = [
+            "role" => "input",
             "first_name" => "input",
             "surname" => "input",
             "email" => "email",
@@ -41,6 +42,7 @@ class UsersController extends AdminController
         ];
 
         $this->validation_rules = [
+            "role" => ["required"],
             "first_name" => ["required"],
             "surname" => ["required"],
             "email" => ["required", "email", "unique:users"],

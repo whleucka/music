@@ -10,7 +10,6 @@ class SessionsController extends AdminController
 {
     public function __construct()
     {
-        $this->roles = ['admin'];
         $this->has_edit = $this->has_delete = false;
 
         $this->table_columns = [
