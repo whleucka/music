@@ -39,6 +39,7 @@ abstract class AdminController extends Controller
     protected array $form_controls = [];
     protected array $form_readonly = [];
     protected array $form_disabled = [];
+    protected array $dropdowns = [];
 
     protected array $search_columns = [];
     protected string $search_term = "";
@@ -125,7 +126,7 @@ abstract class AdminController extends Controller
         }
         $valid = $this->validate($this->validation_rules, "store");
         if ($valid) {
-            $result = $this->handleStore((array)$valid);
+            $result = $this->handleStore($this->handleRequest((array)$valid));
             if ($result) {
                 Flash::add("success", "Create successful");
                 header("HX-Redirect: /admin/{$this->module_link}");
@@ -147,7 +148,7 @@ abstract class AdminController extends Controller
         }
         $valid = $this->validate($this->validation_rules, "update");
         if ($valid) {
-            $result = $this->handleUpdate($id, (array)$valid);
+            $result = $this->handleUpdate($id, $this->handleRequest((array)$valid));
             if ($result) {
                 Flash::add("success", "Update successful");
                 header("HX-Redirect: /admin/{$this->module_link}");
@@ -175,6 +176,17 @@ abstract class AdminController extends Controller
         header("HX-Reselect: #module");
         header("HX-Reswap: outerHTML");
         return $this->index();
+    }
+
+    private function handleRequest(array $request): array
+    {
+        foreach ($request as $key => $value) {
+            // Handle checkboxes
+            if (isset($this->form_controls[$key]) && $this->form_controls[$key] == "checkbox") {
+                $request[$key] = $value ? 1 : 0;
+            }
+        }
+        return $request;
     }
 
     private function setSession(string $key, mixed $value): void
@@ -270,6 +282,7 @@ abstract class AdminController extends Controller
                 return $format($column, $value);
             }
             return match ($format) {
+                "check" => $this->renderFormat("check", $column, $value),
                 default => $this->renderFormat("text", $column, $value),
             };
         }
@@ -285,6 +298,12 @@ abstract class AdminController extends Controller
             }
             return match ($control) {
                 "input" => $this->renderControl("input", $column, $value),
+                "checkbox" => $this->renderControl("input", $column, $value, [
+                    "value" => 1,
+                    "type" => "checkbox",
+                    "class" => "form-check-input ms-1",
+                    "checked" => $value != false
+                ]),
                 "email" => $this->renderControl("input", $column, $value, [
                     "type" => "email",
                     "autocomplete" => "email",
@@ -293,17 +312,22 @@ abstract class AdminController extends Controller
                     "type" => "password",
                     "autocomplete" => "current-password",
                 ]),
+                "dropdown" => $this->renderControl("dropdown", $column, $value, [
+                    "options" => key_exists($column, $this->dropdowns)
+                        ? db()->fetchAll($this->dropdowns[$column])
+                        : [],
+                ]),
                 default => $this->renderControl("text", $column, $value),
             };
         }
         return $value;
     }
 
-    private function getClassName(string $column)
+    private function getClassName(string $column, $default = 'form-control')
     {
         $validation_errors = $this->getValiationErrors();
         $request = $this->request->request;
-        $classname = ["form-control"];
+        $classname = [$default];
         if (isset($request->$column)) {
             $classname[] = isset($validation_errors[$column]) ? 'is-invalid' : 'is-valid';
         }
@@ -312,9 +336,14 @@ abstract class AdminController extends Controller
 
     private function renderFormat(string $type, string $column, ?string $value, array $data = [])
     {
-        $default = [];
+        $default = [
+            "class" => $this->getClassname($column, 'table-format'),
+            "id" => $column,
+            "title" => array_search($column, $this->table_columns),
+            "value" => $value,
+        ];
         $template_data = array_merge($default, $data);
-        return $this->render("admin/filters/$type.html.twig", $template_data);
+        return $this->render("admin/format/$type.html.twig", $template_data);
     }
 
     private function renderControl(string $type, string $column, ?string $value, array $data = [])
@@ -404,9 +433,11 @@ abstract class AdminController extends Controller
 
     private function init()
     {
-        // Setup module (must exist in DB)
+        // Check if module exists
         $link = explode('.', request()->getAttribute("route")["name"])[0];
-        $module = db()->fetch("SELECT * FROM modules WHERE link = ?", [$link]);
+        $module = db()->fetch("SELECT * 
+            FROM modules 
+            WHERE link = ?", [$link]);
         if ($link) {
             $this->module_title = $module['title'];
             $this->module_link = $module['link'];
@@ -415,12 +446,18 @@ abstract class AdminController extends Controller
             $this->pageNotFound();
         }
 
-        // Check module roles
-        if (!in_array(user()->role, explode(",", $module['roles']))) {
-            $this->permissionDenied();
+        // Check module permission
+        if (user()->role !== 'admin') {
+            // Maybe permission is granted to them
+            $permission = db()->fetch("SELECT * 
+                FROM user_permissions 
+                WHERE user_id = ? AND module_id = ?", [user()->id, $module['id']]);
+            if (!$permission) {
+                $this->permissionDenied();
+            }
         }
 
-        // Assign properties
+        // Assign module properties
         if ($this->table_name && !empty($this->table_columns)) {
             $this->page = $this->getSession("page") ?? 1;
             $this->search_term = $this->getSession("search_term") ?? '';

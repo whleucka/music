@@ -29,12 +29,17 @@ class UsersController extends AdminController
         ];
 
         $this->form_controls = [
-            "role" => "input",
+            "role" => "dropdown",
             "first_name" => "input",
             "surname" => "input",
             "email" => "email",
             "password" => "password",
             "password_match" => "password",
+        ];
+
+        $this->dropdowns = [
+            "role" => "SELECT 'standard' as value, 'Standard' as label UNION 
+                SELECT 'admin' as value, 'Admin' as label",
         ];
 
         $this->search_columns = [

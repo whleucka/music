@@ -14,7 +14,6 @@ return new class implements Migration
             $table->varchar("link");
             $table->varchar("title");
             $table->varchar("icon");
-            $table->varchar("roles");
             $table->unsignedSmallInteger("item_order")->default(0);
             $table->unsignedBigInteger("parent_id")->nullable();
             $table->timestamps();

@@ -12,13 +12,19 @@ class SidebarController extends Controller
     #[Get("/sidebar", "admin.sidebar.load")]
     public function load(): string
     {
-        $modules = array_map(function ($module) {
-            $module['url'] = "/admin/" . $module["link"];
-            return $module;
-        }, db()->fetchAll("SELECT * 
+        // Non-admin users must be granted permission
+        if (user()->role === 'admin') {
+            $modules = db()->fetchAll("SELECT *, CONCAT('/admin/', link) as url
                 FROM modules 
-                WHERE roles LIKE ?
-                ORDER BY item_order", ["%".user()->role."%"]));
+                ORDER BY item_order");
+        } else {
+            $modules = db()->fetchAll("SELECT *, CONCAT('/admin/', link) as url
+                FROM modules 
+                WHERE EXISTS (SELECT * 
+                    FROM user_permissions 
+                    WHERE user_id = ? AND module_id = modules.id)
+                ORDER BY item_order", [user()->id]);
+        }
         $modules[] = [
             "url" => "/sign-out",
             "icon" => "door-closed",

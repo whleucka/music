@@ -93,6 +93,9 @@ class Controller implements HttpController
         $data = [];
 
         foreach ($ruleset as $field => $set) {
+            if (empty($set)) {
+                $data[$field] = $request[$field] || null;
+            }
             foreach ($set as $rule) {
                 $r = explode(":", $rule);
                 $rule = $r[0];

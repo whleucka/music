@@ -1,10 +1,10 @@
 <input 
   type="{{ type }}" 
   class="{{ class }}" 
-  id="{{ key }}" 
+  id="{{ id }}" 
   name="{{ name }}" 
-  title="{{ title }}"
-  value="{{ value }}"
+  value="{{ old(name, value) }}"
+  {% if title %}title="{{ title }}"{% endif %}
   {% if placeholder %}placeholder="{{ placeholder }}"{% endif %}
   {% if minlength %}minlength="{{ minlength }}"{% endif %}
   {% if maxlength %}maxlength="{{ maxlength }}"{% endif %}
@@ -23,6 +23,5 @@
   {% if type == 'checkbox' %}{%if checked %}checked{% endif %}{% endif %}
   {% if type == 'file' and multiple %}multiple{% endif %}
   {% if autofocus %}autofocus{% endif %}
-  {% if readonly %}readonly{% endif %}
-  {% if disabled %}disabled{% endif %}
+  {% if readonly or disabled %}disabled{% endif %}
 />

@@ -15,7 +15,6 @@ class ModulesController extends AdminController
             "Link" => "link",
             "Title" => "title",
             "Icon" => "icon",
-            "Roles" => "roles",
             "Updated" => "updated_at",
             "Created" => "created_at",
         ];
@@ -28,18 +27,15 @@ class ModulesController extends AdminController
             "Link" => "link",
             "Title" => "title",
             "Icon" => "icon",
-            "Roles" => "roles",
         ];
 
         $this->form_controls = [
             "link" => "input",
             "title" => "input",
             "icon" => "input",
-            "roles" => "input",
         ];
 
         $this->search_columns = [
-            "Roles",
             "Title",
         ];
 
@@ -47,7 +43,6 @@ class ModulesController extends AdminController
             "link" => ["required"],
             "title" => ["required"],
             "icon" => ["required"],
-            "roles" => ["required"],
         ];
 
         parent::__construct("modules");
