@@ -16,6 +16,7 @@ return new class implements Migration
             $table->unsignedTinyInteger("has_create")->default(0);
             $table->unsignedTinyInteger("has_edit")->default(0);
             $table->unsignedTinyInteger("has_delete")->default(0);
+            $table->unsignedTinyInteger("has_export")->default(0);
             $table->timestamps();
             $table->primaryKey("id");
             $table->unique("module_id, user_id");

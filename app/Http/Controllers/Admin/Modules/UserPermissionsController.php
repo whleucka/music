@@ -16,12 +16,14 @@ class UserPermissionsController extends AdminController
             "Create" => "has_create",
             "Edit" => "has_edit",
             "Delete" => "has_delete",
+            "Export CSV" => "has_export",
         ];
 
         $this->table_format = [
             "has_create" => "check",
             "has_edit" => "check",
             "has_delete" => "check",
+            "has_export" => "check",
         ];
 
         $this->form_columns = [
@@ -30,6 +32,7 @@ class UserPermissionsController extends AdminController
             "Create" => "has_create",
             "Edit" => "has_edit",
             "Delete" => "has_delete",
+            "Export CSV" => "has_export",
         ];
 
         $this->form_controls = [
@@ -38,6 +41,7 @@ class UserPermissionsController extends AdminController
             "has_create" => "checkbox",
             "has_edit" => "checkbox",
             "has_delete" => "checkbox",
+            "has_export" => "checkbox",
         ];
 
         $this->validation_rules = [
@@ -46,11 +50,12 @@ class UserPermissionsController extends AdminController
             "has_create" => [],
             "has_edit" => [],
             "has_delete" => [],
+            "has_export" => [],
         ];
 
         $this->dropdowns = [
             "module_id" => "SELECT id as value, title as label FROM modules ORDER BY title",
-            "user_id" => "SELECT id as value, CONCAT(first_name, ' ', surname) as label FROM users ORDER BY label",
+            "user_id" => "SELECT id as value, CONCAT(first_name, ' ', surname) as label FROM users WHERE role != 'admin' ORDER BY label",
         ];
 
         parent::__construct("user_permissions");

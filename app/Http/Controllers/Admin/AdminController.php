@@ -6,7 +6,6 @@ use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Group;
 use Echo\Framework\Routing\Route\{Get, Post};
 use Echo\Framework\Session\Flash;
-use PDO;
 use PDOStatement;
 use RuntimeException;
 use Throwable;
@@ -25,7 +24,7 @@ abstract class AdminController extends Controller
     protected array $table_actions = [];
     protected array $table_format = [];
 
-    protected int $per_page = 25;
+    protected int $per_page = 20;
     protected int $page = 1;
     protected int $total_pages = 1;
     protected int $total_results = 0;
@@ -47,7 +46,7 @@ abstract class AdminController extends Controller
     protected bool $has_edit = true;
     protected bool $has_create = true;
     protected bool $has_delete = true;
-    protected bool $export_csv = true;
+    protected bool $has_export = true;
 
     protected array $validation_rules = [];
 
@@ -73,7 +72,10 @@ abstract class AdminController extends Controller
     #[Get("/export-csv", "admin.export-csv")]
     public function export_csv(): string
     {
-        $rows = $this->runTableQuery()->fetchAll(PDO::FETCH_ASSOC);
+        if (!$this->hasExport()) {
+            return $this->permissionDenied();
+        }
+        $rows = $this->runTableQuery()->fetchAll();
         $this->streamCSV($rows, $this->table_columns, $this->module_link . '_export.csv');
     }
 
@@ -126,7 +128,7 @@ abstract class AdminController extends Controller
         }
         $valid = $this->validate($this->validation_rules, "store");
         if ($valid) {
-            $result = $this->handleStore($this->handleRequest((array)$valid));
+            $result = $this->handleStore($this->massageRequest((array)$valid));
             if ($result) {
                 Flash::add("success", "Create successful");
                 header("HX-Redirect: /admin/{$this->module_link}");
@@ -148,7 +150,7 @@ abstract class AdminController extends Controller
         }
         $valid = $this->validate($this->validation_rules, "update");
         if ($valid) {
-            $result = $this->handleUpdate($id, $this->handleRequest((array)$valid));
+            $result = $this->handleUpdate($id, $this->massageRequest((array)$valid));
             if ($result) {
                 Flash::add("success", "Update successful");
                 header("HX-Redirect: /admin/{$this->module_link}");
@@ -178,7 +180,7 @@ abstract class AdminController extends Controller
         return $this->index();
     }
 
-    private function handleRequest(array $request): array
+    private function massageRequest(array $request): array
     {
         foreach ($request as $key => $value) {
             // Handle checkboxes
@@ -202,8 +204,16 @@ abstract class AdminController extends Controller
         return $data[$key] ?? null;
     }
 
+    private function removeSession(string $key): void
+    {
+        $data = session()->get($this->module_link);
+        unset($data[$key]);
+        session()->set($this->module_link, $data);
+    }
+
     private function registerFunctions()
     {
+        $has_export = new TwigFunction("has_export", fn() => $this->hasExport());
         $has_create = new TwigFunction("has_create", fn() => $this->hasCreate());
         $has_edit = new TwigFunction("has_edit", fn(int $id) => $this->hasEdit($id));
         $has_show = new TwigFunction("has_show", fn(int $id) => $this->hasShow($id));
@@ -211,6 +221,7 @@ abstract class AdminController extends Controller
         $has_row_actions = new TwigFunction("has_row_actions", fn() => $this->has_edit || $this->has_delete || !empty($this->table_actions));
         $control = new TwigFunction("control", fn(string $column, ?string $value) => $this->control($column, $value));
         $format = new TwigFunction("format", fn(string $column, ?string $value) => $this->format($column, $value));
+        twig()->addFunction($has_export);
         twig()->addFunction($has_create);
         twig()->addFunction($has_edit);
         twig()->addFunction($has_show);
@@ -320,7 +331,8 @@ abstract class AdminController extends Controller
                 default => $this->renderControl("text", $column, $value),
             };
         }
-        return $value;
+        // No control output
+        return null;
     }
 
     private function getClassName(string $column, $default = 'form-control')
@@ -329,7 +341,9 @@ abstract class AdminController extends Controller
         $request = $this->request->request;
         $classname = [$default];
         if (isset($request->$column)) {
-            $classname[] = isset($validation_errors[$column]) ? 'is-invalid' : 'is-valid';
+            $classname[] = isset($validation_errors[$column])
+                ? 'is-invalid'
+                : 'is-valid';
         }
         return implode(" ", $classname);
     }
@@ -413,6 +427,7 @@ abstract class AdminController extends Controller
         }
 
         foreach ($rows as $row) {
+            $row = $this->exportOverride($row);
             if (!empty($columns) && array_is_list($row) === false) {
                 $ordered_row = [];
                 foreach ($columns as $title => $subquery) {
@@ -431,30 +446,26 @@ abstract class AdminController extends Controller
         exit;
     }
 
-    private function init()
+    private function getModule()
     {
-        // Check if module exists
         $link = explode('.', request()->getAttribute("route")["name"])[0];
-        $module = db()->fetch("SELECT * 
+        return db()->fetch("SELECT * 
             FROM modules 
             WHERE link = ?", [$link]);
-        if ($link) {
+    }
+
+    private function init()
+    {
+        $this->hasPermission();
+
+        $module = $this->getModule();
+        // Check if module exists
+        if ($module) {
             $this->module_title = $module['title'];
             $this->module_link = $module['link'];
             $this->module_icon = $module['icon'];
         } else {
             $this->pageNotFound();
-        }
-
-        // Check module permission
-        if (user()->role !== 'admin') {
-            // Maybe permission is granted to them
-            $permission = db()->fetch("SELECT * 
-                FROM user_permissions 
-                WHERE user_id = ? AND module_id = ?", [user()->id, $module['id']]);
-            if (!$permission) {
-                $this->permissionDenied();
-            }
         }
 
         // Assign module properties
@@ -478,6 +489,21 @@ abstract class AdminController extends Controller
             $this->total_results = $this->runTableQuery(false)->rowCount();
             $this->total_pages = ceil($this->total_results / $this->per_page);
         }
+    }
+
+    protected function exportOverride(array $row): array
+    {
+        return $row;
+    }
+
+    protected function tableOverride(array $row): array
+    {
+        return $row;
+    }
+
+    protected function formOverride(int $id, object $form): object
+    {
+        return $form;
     }
 
     protected function addValidationRule(array $rules, string $field, string $rule): array
@@ -520,9 +546,44 @@ abstract class AdminController extends Controller
         ];
     }
 
+    protected function hasPermission()
+    {
+        $module = $this->getModule();
+        // Check module permission
+        if (user()->role !== 'admin') {
+            // Maybe permission is granted to them
+            $permission = db()->fetch("SELECT * 
+                FROM user_permissions 
+                WHERE user_id = ? AND module_id = ?", [user()->id, $module['id']]);
+            if (!$permission) {
+                $this->permissionDenied();
+            }
+        }
+        return true;
+    }
+
+    protected function checkPermission(string $permission)
+    {
+        $module = $this->getModule();
+        // Check module (create,edit,delete) permission
+        if (user()->role !== 'admin') {
+            // Maybe permission is granted to them
+            $permission = db()->fetch("SELECT * 
+                FROM user_permissions 
+                WHERE user_id = ? AND module_id = ? AND $permission = 1", [user()->id, $module['id']]);
+            return $permission;
+        }
+        return true;
+    }
+
+    protected function hasExport(): bool
+    {
+        return $this->checkPermission('has_export') && $this->has_export && !empty($this->table_columns);
+    }
+
     protected function hasCreate(): bool
     {
-        return $this->has_create && !empty($this->form_columns);
+        return $this->checkPermission('has_create') && $this->has_create && !empty($this->form_columns);
     }
 
     protected function hasShow(int $id): bool
@@ -532,12 +593,12 @@ abstract class AdminController extends Controller
 
     protected function hasEdit(int $id): bool
     {
-        return $this->has_edit && !empty($this->form_columns);
+        return $this->checkPermission('has_edit') && $this->has_edit && !empty($this->form_columns);
     }
 
     protected function hasDelete(int $id): bool
     {
-        return $this->has_delete;
+        return $this->checkPermission('has_delete') && $this->has_delete;
     }
 
     protected function renderModule(array $data): string
@@ -562,6 +623,10 @@ abstract class AdminController extends Controller
 
         $rows = $this->runTableQuery()->fetchAll();
 
+        foreach ($rows as $i => $row) {
+            $rows[$i] = $this->tableOverride($row);
+        }
+
         // Table caption
         $start = 1 + ($this->page * $this->per_page) - $this->per_page;
         $end = min($this->page * $this->per_page, $this->total_results);
@@ -573,7 +638,6 @@ abstract class AdminController extends Controller
             ...$this->getCommonData(),
             "headers" => array_keys($this->table_columns),
             "show_filter" => !empty($this->search_columns),
-            "show_export" => $this->export_csv,
             "caption" => $this->total_pages > 1
                 ? "Showing {$start}–{$end} of {$this->total_results} results"
                 : "",
@@ -591,7 +655,8 @@ abstract class AdminController extends Controller
     {
         if (empty($this->form_columns) || !$this->table_name) return '';
 
-        $data = $this->runFormQuery($id);
+        $form = $this->runFormQuery($id);
+        $data = $this->formOverride($id, $form);
 
         if ($type === "edit") {
             $data = $data->fetch();
@@ -697,6 +762,7 @@ abstract class AdminController extends Controller
                 ->params(array_values($request))
                 ->execute();
             if ($result) {
+                // Returns the inserted ID
                 return db()->lastInsertId();
             }
             return false;

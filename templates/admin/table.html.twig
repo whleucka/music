@@ -9,7 +9,7 @@
     {% if show_filter %}
     <button class="btn btn-sm btn-primary ms-1" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/filter" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-funnel pe-1"></i> Filter</button>
     {% endif %}
-    {% if show_export %}
+    {% if has_export() %}
     <a href="/admin/{{ module.link }}/export-csv" class="btn btn-sm btn-primary ms-1"><i class="bi bi-download pe-1"></i> Export</a>
     {% endif %}
   </div>
