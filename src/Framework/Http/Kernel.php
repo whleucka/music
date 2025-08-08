@@ -10,6 +10,7 @@ use Echo\Interface\Http\Request;
 use Echo\Interface\Http\Response;
 use Error;
 use Exception;
+use PDOException;
 
 class Kernel implements HttpKernel
 {
@@ -68,6 +69,26 @@ class Kernel implements HttpKernel
 
             // Set the content from the controller endpoint
             $content = $controller->$method(...$params);
+        } catch (PDOException $ex) {
+            // Handle exception
+            if (in_array("api", $middleware)) {
+                $api_error = $ex->getMessage();
+            } else {
+                $debug = db()->debug();
+                $extra = "<strong>SQL</strong><pre>" . $debug['sql'] . "</pre>";
+                $extra .= "<strong>Params</strong><pre>" . print_r($debug['params'], true) . "</pre>";
+                $content = twig()->render("error/blue-screen.html.twig", [
+                    "message" => "An database error has occurred.",
+                    "extra" => $extra,
+                    "debug" => config("app.debug"),
+                    "request_id" => $request_id,
+                    "e" => $ex,
+                    "qr" => (new QRCode)->render($request_id),
+                    "is_logged" => session()->get("user_uuid"),
+                ]);
+                $response = new HttpResponse($content, 500);
+                return $response;
+            }
         } catch (Exception $ex) {
             // Handle exception
             if (in_array("api", $middleware)) {

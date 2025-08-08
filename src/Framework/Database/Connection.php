@@ -8,6 +8,7 @@ use Echo\Interface\Database\Driver;
 use Echo\Traits\Creational\Singleton;
 use PDO;
 use PDOException;
+use PDOStatement;
 
 final class Connection implements DatabaseConnection
 {
@@ -16,6 +17,8 @@ final class Connection implements DatabaseConnection
     private bool $connected = false;
     private ?PDO $link = null;
     private Driver $driver;
+    private PDOStatement $stmt;
+    private array $debug = [];
 
     public function __construct(Driver $driver)
     {
@@ -83,8 +86,13 @@ final class Connection implements DatabaseConnection
     public function execute(string $sql, array $params = []): mixed
     {
         if (!$this->connected) return null;
+        $this->debug = [
+            'sql' => $sql,
+            'params' => $params,
+        ];
         $stmt = $this->link->prepare($sql);
         $stmt->execute($params);
+        $this->stmt = $stmt;
         return $stmt;
     }
 
@@ -101,6 +109,21 @@ final class Connection implements DatabaseConnection
     public function lastInsertId(): string
     {
         return $this->link->lastInsertId();
+    }
+
+    public function errorInfo(): array
+    {
+        return $this->link->errorInfo();
+    }
+
+    public function errorCode(): ?string
+    {
+        return $this->link->errorCode();
+    }
+
+    public function debug(): array
+    {
+        return $this->debug;
     }
 
     public function beginTransaction(): bool
