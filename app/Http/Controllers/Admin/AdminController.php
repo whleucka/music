@@ -324,6 +324,7 @@ abstract class AdminController extends Controller
                     "autocomplete" => "current-password",
                 ]),
                 "dropdown" => $this->renderControl("dropdown", $column, $value, [
+                    "class" => "form-select",
                     "options" => key_exists($column, $this->dropdowns)
                         ? db()->fetchAll($this->dropdowns[$column])
                         : [],
@@ -501,7 +502,7 @@ abstract class AdminController extends Controller
         return $row;
     }
 
-    protected function formOverride(int $id, object $form): object
+    protected function formOverride(?int $id, array $form): array
     {
         return $form;
     }

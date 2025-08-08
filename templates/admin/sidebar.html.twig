@@ -28,7 +28,6 @@ const sidebarLinkActiveLoad = () => {
   links.forEach((link) => {
     link.classList.remove('active');
     let path = window.location.href.split('?')[0]
-    console.log(path);
     if (link.href === path) {
       link.classList.add("active");
     }
