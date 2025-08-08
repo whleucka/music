@@ -25,12 +25,6 @@ class SidebarController extends Controller
                     WHERE user_id = ? AND module_id = modules.id)
                 ORDER BY item_order", [user()->id]);
         }
-        $modules[] = [
-            "url" => "/sign-out",
-            "icon" => "door-closed",
-            "title" => "Sign Out",
-            "normal" => true,
-        ];
         return $this->render("admin/sidebar.html.twig", [
             "hide" => $this->getState(),
             "modules" => $modules

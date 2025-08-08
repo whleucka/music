@@ -25,7 +25,18 @@
       <nav id="nav-top" class="d-flex">
         <button id="sidebar-toggle" hx-get="/admin/sidebar/toggle" hx-target="#nav-sidebar" hx-select="#nav-sidebar" hx-swap="outerHTML" class="btn" hx-on::after-request="sidebarLinkActiveLoad()"><i class="bi bi-list"></i></button>
         <div class="d-flex align-items-center ms-auto p-2">
-          <img class="avatar" src="{{ user.avatar }}" />
+        <div class="dropdown">
+          <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <img class="avatar" src="{{ user.avatar }}" />
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="/sign-out">
+                <span class="bi bi-door-closed"></span> <span class="ps-2">Sign Out</span>
+              </a>
+            </li>
+          </ul>
+        </div> 
         </div>
       </nav>
       <section id="module" class="flex-grow-1 p-3">
