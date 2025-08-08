@@ -622,10 +622,10 @@ abstract class AdminController extends Controller
     {
         if (empty($this->table_columns) || !$this->table_name) return '';
 
-        $rows = $this->runTableQuery()->fetchAll();
+        $data = $this->runTableQuery()->fetchAll();
 
-        foreach ($rows as $i => $row) {
-            $rows[$i] = $this->tableOverride($row);
+        foreach ($data as $i => $row) {
+            $data[$i] = $this->tableOverride($row);
         }
 
         // Table caption
@@ -643,7 +643,7 @@ abstract class AdminController extends Controller
                 ? "Showing {$start}–{$end} of {$this->total_results} results"
                 : "",
             "data" => [
-                "rows" => $rows,
+                "rows" => $data,
                 "page" => $this->page,
                 "total_pages" => $this->total_pages,
                 "total_results" => $this->total_results,
@@ -656,11 +656,11 @@ abstract class AdminController extends Controller
     {
         if (empty($this->form_columns) || !$this->table_name) return '';
 
-        $form = $this->runFormQuery($id);
-        $data = $this->formOverride($id, $form);
+        $data = $this->runFormQuery($id);
 
         if ($type === "edit") {
             $data = $data->fetch();
+            $data = $this->formOverride($id, $data);
             $title = "Edit $id";
             $submit = "Save Changes";
         } else if ($type === "show") {

@@ -43,8 +43,8 @@ html,body {
  */
 nav#nav-sidebar {
   background-color: #324554;
-  min-width: 200px;
-  max-width: 200px;
+  min-width: 230px;
+  max-width: 230px;
 }
 nav#nav-sidebar.hide {
   min-width: 67px;
