@@ -340,11 +340,11 @@ abstract class AdminController extends Controller
         return null;
     }
 
-    private function getClassName(string $column, $default = 'form-control')
+    private function getValidationClass(string $column)
     {
         $validation_errors = $this->getValiationErrors();
         $request = $this->request->request;
-        $classname = [$default];
+        $classname = [];
         if (isset($request->$column)) {
             $classname[] = isset($validation_errors[$column])
                 ? 'is-invalid'
@@ -356,7 +356,7 @@ abstract class AdminController extends Controller
     private function renderFormat(string $type, string $column, ?string $value, array $data = [])
     {
         $default = [
-            "class" => $this->getClassname($column, 'table-format'),
+            "class" => $this->getValidationClass($column, 'table-format'),
             "id" => $column,
             "title" => array_search($column, $this->table_columns),
             "value" => $value,
@@ -369,7 +369,8 @@ abstract class AdminController extends Controller
     {
         $default = [
             "type" => "input",
-            "class" => $this->getClassname($column),
+            "class" => "form-control",
+            "v_class" => $this->getValidationClass($column),
             "id" => $column,
             "name" => $column,
             "title" => array_search($column, $this->form_columns),
