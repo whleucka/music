@@ -66,12 +66,6 @@ class UsersController extends AdminController
         return parent::validate($ruleset);
     }
 
-    protected function tableOverride(array $row): array
-    {
-        $row['uuid'] = 'tabarnak';
-        return $row;
-    }
-
     protected function hasDelete(int $id): bool
     {
         if ($id === $this->user->id) return false;

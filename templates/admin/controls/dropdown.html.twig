@@ -1,4 +1,5 @@
 <select id="{{ id }}" class="{{ class }}" name="{{ name }}" {% if readonly or disabled %}disabled{% endif %}>
+  <option selected disabled>Select an option</option>
   {% for option in options %} 
   <option value="{{ option.value }}" {% if value == option.value %}selected{% endif %}>{{ option.label }}</option>
   {% endfor %}

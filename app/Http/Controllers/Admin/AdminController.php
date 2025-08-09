@@ -131,8 +131,10 @@ abstract class AdminController extends Controller
             $result = $this->handleStore($this->massageRequest((array)$valid));
             if ($result) {
                 Flash::add("success", "Create successful");
-                header("HX-Redirect: /admin/{$this->module_link}");
-                exit;
+                header("HX-Retarget: #module");
+                header("HX-Reselect: #module");
+                header("HX-Reswap: outerHTML");
+                return $this->index();
             }
         }
         // Request is invalid
@@ -153,8 +155,10 @@ abstract class AdminController extends Controller
             $result = $this->handleUpdate($id, $this->massageRequest((array)$valid));
             if ($result) {
                 Flash::add("success", "Update successful");
-                header("HX-Redirect: /admin/{$this->module_link}");
-                exit;
+                header("HX-Retarget: #module");
+                header("HX-Reselect: #module");
+                header("HX-Reswap: outerHTML");
+                return $this->index();
             }
         }
         // Request is invalid
@@ -579,7 +583,7 @@ abstract class AdminController extends Controller
 
     protected function hasExport(): bool
     {
-        return $this->checkPermission('has_export') && $this->has_export && !empty($this->table_columns);
+        return $this->checkPermission('has_export') && $this->has_export && $this->total_results > 0;
     }
 
     protected function hasCreate(): bool
@@ -674,7 +678,7 @@ abstract class AdminController extends Controller
                 }
             }
         } else if ($type === "create") {
-            $title = "Create New";
+            $title = "Create";
             $submit = "Create";
         }
 

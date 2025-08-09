@@ -9,4 +9,12 @@
     <div class="modal-dialog">
     </div>
   </div>
+  <script>
+    setTimeout(() => {
+      const backdrop = document.querySelector(".modal-backdrop");
+      if (backdrop) {
+        backdrop.remove()
+      }
+    });
+  </script>
 {% endblock %}
