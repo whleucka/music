@@ -68,8 +68,6 @@ abstract class AdminController extends Controller
     public function page(int $page): string
     {
         $this->setSession("page", $page);
-        $this->processSession();
-        $this->props();
         return $this->index();
     }
 
@@ -97,8 +95,6 @@ abstract class AdminController extends Controller
     #[Get("/modal/filter", "admin.render-filter")]
     public function render_filter(): string
     {
-        $this->processSession();
-        $this->props();
         return $this->renderFilter();
     }
 
@@ -677,6 +673,11 @@ abstract class AdminController extends Controller
 
     protected function renderFilter(): string
     {
+        if (empty($this->table_columns) || !$this->table_name) return '';
+
+        $this->processSession();
+        $this->props();
+
         return $this->render("admin/filter.html.twig", [
             "post" => "/admin/{$this->module_link}/modal/filter",
             "search" => [

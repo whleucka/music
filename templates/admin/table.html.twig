@@ -4,20 +4,20 @@
 <div id="table" class="bg-white shad rounded p-2">
   <div id="table-actions" class="d-flex p-2">
     {% if has_create() %}
-    <button class="btn btn-sm btn-success" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/create" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-plus-square pe-1"></i> New</button>
+    <button class="btn btn-sm btn-success me-2" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/create" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-plus-square pe-1"></i> New</button>
     {% endif %}
     {% if filters.show %}
-    <button class="btn btn-sm btn-primary ms-1" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/filter" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-funnel pe-1"></i> Filter</button>
+    <button class="btn btn-sm btn-primary me-2" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/filter" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-funnel pe-1"></i> Filter</button>
     {% endif %}
     {% if has_export() %}
-    <a href="/admin/{{ module.link }}/export-csv" class="btn btn-sm btn-primary ms-1"><i class="bi bi-download pe-1"></i> Export</a>
+    <a href="/admin/{{ module.link }}/export-csv" class="btn btn-sm btn-primary me-2"><i class="bi bi-download pe-1"></i> Export</a>
     {% endif %}
   </div>
   {% if filters.filter_links.show %}
     <div id="filter-links" class="d-flex p-2">
     {% for link in filters.filter_links.links %}
       <button hx-get="/admin/{{ module.link }}/filter/link/{{ loop.index0 }}" hx-swap="outerHTML" hx-target="#table" hx-select="#table" class="btn btn-primary btn-sm text-light filter-link {% if filters.filter_links.active == loop.index0 %}active{% endif %} me-2">{{ link }} 
-        <span class="link-count badge bg-light text-dark ms-2">--</span>
+        <span class="link-count badge bg-light text-dark ms-1">--</span>
       </button>
       <span hx-get="/admin/{{ module.link }}/filter/count/{{ loop.index0 }}" hx-trigger="load" hx-swap="textContent" hx-target="previous .link-count"></span>
     {% endfor %}

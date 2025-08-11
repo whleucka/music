@@ -20,7 +20,6 @@ class SessionsController extends AdminController
         ];
 
         $this->filter_links = [
-            "All" => "1=1",
             "Me" => "user_id = " . user()->id,
             "Others" => "user_id != " . user()->id,
         ];
