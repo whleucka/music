@@ -11,12 +11,13 @@ return new class implements Migration
     {
          return Schema::create($this->table, function (Blueprint $table) {
             $table->id();
-            $table->varchar("link");
+            $table->varchar("link")->nullable();
             $table->varchar("title");
-            $table->varchar("icon");
+            $table->varchar("icon")->nullable();
             $table->unsignedSmallInteger("item_order")->default(0);
             $table->unsignedBigInteger("parent_id")->nullable();
             $table->timestamps();
+            $table->unique("title");
             $table->primaryKey("id");
             $table->foreignKey("parent_id")->references("modules", "id")->onDelete("SET NULL");
         });

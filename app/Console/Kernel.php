@@ -11,5 +11,6 @@ class Kernel extends ConsoleKernel
         'version' => \Echo\Framework\Console\Commands\Version::class,
         'migrate' => \Echo\Framework\Console\Commands\Migrate::class,
         'server' => \Echo\Framework\Console\Commands\Server::class,
+        'admin' => \Echo\Framework\Console\Commands\Admin::class,
     ];
 }

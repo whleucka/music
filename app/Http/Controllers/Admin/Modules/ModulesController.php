@@ -40,9 +40,9 @@ class ModulesController extends AdminController
         ];
 
         $this->validation_rules = [
-            "link" => ["required"],
+            "link" => [],
             "title" => ["required"],
-            "icon" => ["required"],
+            "icon" => [],
         ];
 
         parent::__construct("modules");

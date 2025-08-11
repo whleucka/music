@@ -7,9 +7,9 @@ return new class implements Migration
     public function up(): string
     {
         return "INSERT INTO modules (link, title, icon, item_order, parent_id) VALUES 
-            ('', 'Overview', '', 10, null),
-            ('', 'Management', '', 20, null),
-            ('', 'Monitoring', '', 30, null),
+            (null, 'Overview', null, 10, null),
+            (null, 'Management', null, 20, null),
+            (null, 'Monitoring', null, 30, null),
             ('dashboard', 'Dashboard', 'speedometer2', 0, 1),
             ('modules', 'Modules', 'puzzle', 10, 2),
             ('users', 'Users', 'people', 20, 2),
