@@ -6,63 +6,73 @@
     {% if has_create() %}
     <button class="btn btn-sm btn-success" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/create" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-plus-square pe-1"></i> New</button>
     {% endif %}
-    {% if show_filter %}
+    {% if filters.show %}
     <button class="btn btn-sm btn-primary ms-1" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/filter" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-funnel pe-1"></i> Filter</button>
     {% endif %}
     {% if has_export() %}
     <a href="/admin/{{ module.link }}/export-csv" class="btn btn-sm btn-primary ms-1"><i class="bi bi-download pe-1"></i> Export</a>
     {% endif %}
   </div>
+  {% if filters.filter_links.show %}
+    <div id="filter-links" class="d-flex p-2">
+    {% for link in filters.filter_links.links %}
+      <button hx-get="/admin/{{ module.link }}/filter/link/{{ loop.index0 }}" hx-swap="outerHTML" hx-target="#table" hx-select="#table" class="btn btn-primary btn-sm text-light filter-link {% if filters.filter_links.active == loop.index0 %}active{% endif %} me-2">{{ link }} 
+        <span class="link-count badge bg-light text-dark ms-2">--</span>
+      </button>
+      <span hx-get="/admin/{{ module.link }}/filter/count/{{ loop.index0 }}" hx-trigger="load" hx-swap="textContent" hx-target="previous .link-count"></span>
+    {% endfor %}
+    </div>
+  {% endif %}
   <div class="table-responsive p-2">
     {% if data.rows|length > 0 %}
-    <table class="table table-hover table-sm m-0">
-      <thead>
-        <tr>
-          <th class="checkbox-cell"><input id="select-all" type="checkbox" /></th>
-          {% for header in headers %}
-          <th>{{ header }}</th>
+      <table class="table table-hover table-sm m-0">
+        <thead>
+          <tr>
+            <th class="checkbox-cell"><input id="select-all" type="checkbox" /></th>
+            {% for header in headers %}
+            <th>{{ header }}</th>
+            {% endfor %}
+            {% if has_row_actions() %}
+            <th class="text-end">Actions</th>
+            {% endif %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in data.rows %}
+          <tr>
+            <td class="checkbox-cell"><input type="checkbox" id="select_{{ row.id }}" value="{{ row.id }}" /></td>
+            {% for key,value in row %}
+            <td>{{ format(key, value)|raw }}</td>
+            {% endfor %}
+            {% if has_row_actions() %}
+            <td id="row-actions">
+              <div class="d-flex justify-content-end">
+                {% if has_show(row.id) %}
+                <button class="btn btn-sm" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-eye"></i></button>
+                {% endif %}
+                {% if has_edit(row.id) %}
+                <button class="btn btn-sm ms-1" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}/edit" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-pencil"></i></button>
+                {% endif %}
+                {% if has_delete(row.id) %}
+                <form>
+                  {{ csrf()|raw }}
+                  <button class="btn btn-sm ms-1" hx-confirm="Please confirm deletion" hx-post="/admin/{{ module.link }}/{{ row.id }}/destroy"><i class="bi bi-trash"></i></button>
+                </form>
+                {% endif %}
+              </div>
+            </td>
+            {% endif %}
+          </tr>
           {% endfor %}
-          {% if has_row_actions() %}
-          <th class="text-end">Actions</th>
-          {% endif %}
-        </tr>
-      </thead>
-      <tbody>
-        {% for row in data.rows %}
-        <tr>
-          <td class="checkbox-cell"><input type="checkbox" id="select_{{ row.id }}" value="{{ row.id }}" /></td>
-          {% for key,value in row %}
-          <td>{{ format(key, value)|raw }}</td>
-          {% endfor %}
-          {% if has_row_actions() %}
-          <td id="row-actions">
-            <div class="d-flex justify-content-end">
-              {% if has_show(row.id) %}
-              <button class="btn btn-sm" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-eye"></i></button>
-              {% endif %}
-              {% if has_edit(row.id) %}
-              <button class="btn btn-sm ms-1" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}/edit" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-pencil"></i></button>
-              {% endif %}
-              {% if has_delete(row.id) %}
-              <form>
-                {{ csrf()|raw }}
-                <button class="btn btn-sm ms-1" hx-confirm="Please confirm deletion" hx-post="/admin/{{ module.link }}/{{ row.id }}/destroy"><i class="bi bi-trash"></i></button>
-              </form>
-              {% endif %}
-            </div>
-          </td>
-          {% endif %}
-        </tr>
-        {% endfor %}
-      </tbody>
-      <caption>
-        {{ caption }}
-      </caption>
-    </table>
+        </tbody>
+        <caption>
+          {{ caption }}
+        </caption>
+      </table>
     {% else %}
-    <div class="text-center p-2">
-        <p><em>No data available.</em><p>
-    </div>
+      <div class="text-center p-1">
+          <strong>No data available</strong>
+      </div>
     {% endif %}
   </div>
   {% if data.total_pages > 1 %}

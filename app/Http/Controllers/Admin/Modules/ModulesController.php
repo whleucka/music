@@ -27,16 +27,27 @@ class ModulesController extends AdminController
             "Link" => "link",
             "Title" => "title",
             "Icon" => "icon",
+            "Order" => "item_order",
         ];
 
         $this->form_controls = [
             "link" => "input",
             "title" => "input",
             "icon" => "input",
+            "item_order" => "number",
+        ];
+
+        $this->query_order_by = [
+            "item_order ASC",
         ];
 
         $this->search_columns = [
             "Title",
+        ];
+
+        $this->filter_links = [
+            "Root Nodes" => "parent_id IS NULL",
+            "Leaf Nodes" => "parent_id IS NOT NULL",
         ];
 
         $this->validation_rules = [

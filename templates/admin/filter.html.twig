@@ -12,7 +12,8 @@
       {% if search.show %}
       <div> 
         <label class="form-label p-0 mb-1" for="filter-search">Search</label>
-        <input type="search" name="filter_search" id="filter-search" class="form-control" value="{{ search.term }}" />
+        <input type="search" name="filter_search" id="filter-search" class="form-control {% if validation_errors.filter_search is defined %}is-invalid{% endif %}" value="{{ search.term }}" />
+        {% include 'components/validation.html.twig' with {'validate': 'filter_search'} %}
       </div>
       {% endif %}
     </div>

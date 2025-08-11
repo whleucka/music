@@ -89,6 +89,19 @@ nav#nav-sidebar #sidebar-filter * {
 }
 
 /**
+* Filters
+*/
+#filter-links .filter-link {
+  text-decoration: none;
+  opacity: 0.7;
+}
+#filter-links .filter-link.active {
+  font-weight: 800;
+  opacity: 1;
+  background-color: #314555;
+}
+
+/**
  * Nav top
  */
 #nav-top {

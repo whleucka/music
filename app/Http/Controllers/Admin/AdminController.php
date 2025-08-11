@@ -38,10 +38,13 @@ abstract class AdminController extends Controller
     protected array $form_controls = [];
     protected array $form_readonly = [];
     protected array $form_disabled = [];
-    protected array $dropdowns = [];
 
+
+    protected array $dropdowns = [];
     protected array $search_columns = [];
     protected string $search_term = "";
+    protected array $filter_links = [];
+    protected int $active_filter_link = 0;
 
     protected bool $has_edit = true;
     protected bool $has_create = true;
@@ -65,7 +68,8 @@ abstract class AdminController extends Controller
     public function page(int $page): string
     {
         $this->setSession("page", $page);
-        $this->init();
+        $this->processSession();
+        $this->props();
         return $this->index();
     }
 
@@ -75,7 +79,9 @@ abstract class AdminController extends Controller
         if (!$this->hasExport()) {
             return $this->permissionDenied();
         }
-        $rows = $this->runTableQuery()->fetchAll();
+        $this->processSession();
+        $this->props();
+        $rows = $this->runTableQuery(false)->fetchAll();
         $this->streamCSV($rows, $this->table_columns, $this->module_link . '_export.csv');
     }
 
@@ -91,15 +97,54 @@ abstract class AdminController extends Controller
     #[Get("/modal/filter", "admin.render-filter")]
     public function render_filter(): string
     {
+        $this->processSession();
+        $this->props();
         return $this->renderFilter();
     }
 
-    #[Post("/modal/filter", "admin.set-filter")]
-    public function set_filter(): void
+    #[Get("/filter/link/{index}", "admin.filter-link")]
+    public function filter_link(int $index): string
     {
-        $this->setFilters($this->request->request);
-        header("HX-Redirect: /admin/{$this->module_link}");
-        exit;
+        $this->setSession("filter_link", $index);
+        $this->setSession("page", 1);
+        return $this->index();
+    }
+
+    #[Get("/filter/count/{index}", "admin.filter-count")]
+    public function filter_count(int $index)
+    {
+        $filters = array_values($this->filter_links);
+        $filter_where = $filters[$index];
+        $this->query_where[] = $filter_where;
+        $this->processSession();
+        $this->props(false);
+        return $this->runTableQuery(false)->rowCount();
+    }
+
+    #[Post("/modal/filter", "admin.set-filter")]
+    public function set_filter(): string
+    {
+        $clear = isset($this->request->request->filter_clear);
+        $valid = $this->validate([
+            "filter_search" => ["string"],
+            "filter_clear" => [],
+        ]);
+        if ($valid) {
+            if ($clear) {
+                $this->clearFilters();
+            } else {
+                $this->setFilters($valid);
+            }
+            header("HX-Retarget: #module");
+            header("HX-Reselect: #module");
+            header("HX-Reswap: outerHTML");
+            return $this->index();
+        }
+        // Request is invalid
+        Flash::add("warning", "Validation error");
+        header("HX-Retarget: .modal-dialog");
+        header("HX-Reselect: .modal-content");
+        return $this->render_filter();
     }
 
     #[Get("/modal/{id}", "admin.show")]
@@ -237,6 +282,7 @@ abstract class AdminController extends Controller
 
     private function runTableQuery(bool $limit = true): bool|PDOStatement
     {
+
         // Table columns must always contain table_pk
         if (!in_array($this->table_pk, $this->table_columns)) {
             $columns[strtoupper($this->table_pk)] = $this->table_pk;
@@ -313,6 +359,9 @@ abstract class AdminController extends Controller
             }
             return match ($control) {
                 "input" => $this->renderControl("input", $column, $value),
+                "number" => $this->renderControl("input", $column, $value, [
+                    "type" => "number",
+                ]),
                 "checkbox" => $this->renderControl("input", $column, $value, [
                     "value" => 1,
                     "type" => "checkbox",
@@ -402,14 +451,16 @@ abstract class AdminController extends Controller
 
     private function setFilters(?object $request): void
     {
-        if (isset($request->filter_clear)) {
-            $this->setSession("search_term", null);
-        } else {
-            if (isset($request->filter_search)) {
-                $this->setSession("search_term", $request->filter_search);
-                $this->setSession("page", 1);
-            }
+        if (isset($request->filter_search)) {
+            $this->setSession("search_term", $request->filter_search);
+            $this->setSession("page", 1);
         }
+    }
+
+    private function clearFilters(): void
+    {
+        $this->setSession("search_term", null);
+        $this->setSession("page", 1);
     }
 
     private function streamCSV(iterable $rows, array $columns = [], string $filename = 'export.csv')
@@ -463,8 +514,8 @@ abstract class AdminController extends Controller
     private function init()
     {
         $this->hasPermission();
-
         $module = $this->getModule();
+
         // Check if module exists
         if ($module) {
             $this->module_title = $module['title'];
@@ -473,27 +524,39 @@ abstract class AdminController extends Controller
         } else {
             $this->pageNotFound();
         }
+    }
 
+    protected function processSession()
+    {
         // Assign module properties
         if ($this->table_name && !empty($this->table_columns)) {
+            $this->active_filter_link = $this->getSession("filter_link") ?? 0;
             $this->page = $this->getSession("page") ?? 1;
             $this->search_term = $this->getSession("search_term") ?? '';
-            // Set where
-            if ($this->search_term) {
-                $where = [];
-                foreach ($this->search_columns as $title) {
-                    $query = $this->table_columns[$title];
-                    $column = $this->getSubquery($query);
-                    if ($column) {
-                        $where[] = "$column LIKE ?";
-                        $this->query_params[] = "%{$this->search_term}%";
-                    }
-                }
-                $this->query_where[] = implode(" OR ", $where);
-            }
+        }
+    }
 
-            $this->total_results = $this->runTableQuery(false)->rowCount();
-            $this->total_pages = ceil($this->total_results / $this->per_page);
+    protected function props(bool $filter_links = true)
+    {
+        // Filter links
+        if ($filter_links && !empty($this->filter_links)) {
+            $filters = array_values($this->filter_links);
+            $filter_where = $filters[$this->active_filter_link];
+            $this->query_where[] = $filter_where;
+        }
+
+        // Search
+        if ($this->search_term) {
+            $where = [];
+            foreach ($this->search_columns as $title) {
+                $query = $this->table_columns[$title];
+                $column = $this->getSubquery($query);
+                if ($column) {
+                    $where[] = "$column LIKE ?";
+                    $this->query_params[] = "%{$this->search_term}%";
+                }
+            }
+            $this->query_where[] = implode(" OR ", $where);
         }
     }
 
@@ -584,7 +647,7 @@ abstract class AdminController extends Controller
 
     protected function hasExport(): bool
     {
-        return $this->checkPermission('has_export') && $this->has_export && $this->total_results > 0;
+        return $this->checkPermission('has_export') && $this->has_export;
     }
 
     protected function hasCreate(): bool
@@ -627,6 +690,13 @@ abstract class AdminController extends Controller
     {
         if (empty($this->table_columns) || !$this->table_name) return '';
 
+        $this->processSession();
+        $this->props();
+
+        // Total results
+        $this->total_results = $this->runTableQuery(false)->rowCount();
+        $this->total_pages = ceil($this->total_results / $this->per_page);
+
         $data = $this->runTableQuery()->fetchAll();
 
         foreach ($data as $i => $row) {
@@ -643,7 +713,14 @@ abstract class AdminController extends Controller
         return $this->render("admin/table.html.twig", [
             ...$this->getCommonData(),
             "headers" => array_keys($this->table_columns),
-            "show_filter" => !empty($this->search_columns),
+            "filters" => [
+                "show" => !empty($this->search_columns),
+                "filter_links" => [
+                    "show" => !empty($this->filter_links),
+                    "active" => $this->active_filter_link,
+                    "links" => array_keys($this->filter_links),
+                ],
+            ],
             "caption" => $this->total_pages > 1
                 ? "Showing {$start}–{$end} of {$this->total_results} results"
                 : "",

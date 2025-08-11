@@ -19,6 +19,12 @@ class SessionsController extends AdminController
             "Created" => "created_at",
         ];
 
+        $this->filter_links = [
+            "All" => "1=1",
+            "Me" => "user_id = " . user()->id,
+            "Others" => "user_id != " . user()->id,
+        ];
+
         $this->search_columns = [
             "URI",
             "User",

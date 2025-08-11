@@ -19,6 +19,11 @@ class UsersController extends AdminController
             "Created" => "created_at",
         ];
 
+        $this->filter_links = [
+            "Me" => "id = " . user()->id,
+            "Others" => "id != " . user()->id,
+        ];
+
         $this->form_columns = [
             "Role" => "role",
             "First Name" => "first_name",
