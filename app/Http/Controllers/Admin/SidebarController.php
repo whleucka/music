@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\User;
 use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Group;
 use Echo\Framework\Routing\Route\Get;
@@ -9,25 +10,49 @@ use Echo\Framework\Routing\Route\Get;
 #[Group(path_prefix: "/admin", middleware: ["auth"])]
 class SidebarController extends Controller
 {
+    private function getLinks(array $nodes = [], array $modules = [], User $user)
+    {
+        if (empty($nodes)) {
+            $nodes = db()->fetchAll("SELECT * 
+                FROM modules 
+                WHERE parent_id IS NULL
+                ORDER BY item_order");
+        }
+        foreach ($nodes as $node) {
+            if ($user->role === 'admin') {
+            $children = db()->fetchAll("SELECT *, CONCAT('/admin/', link) as url
+                FROM modules 
+                WHERE parent_id = ?
+                ORDER BY item_order", [$node['id']]);
+            } else {
+                $children = db()->fetchAll("SELECT *, CONCAT('/admin/', link) as url
+                    FROM modules 
+                    WHERE parent_id = ? AND
+                    EXISTS (SELECT * 
+                        FROM user_permissions 
+                        WHERE user_id = ? AND module_id = modules.id)
+                    ORDER BY item_order
+                    ", [
+                    $node['id'],
+                    $user->id
+                ]);
+            }
+            if ($children) {
+                $node['children'] = $this->getLinks($children, [], $user);
+            }
+            $modules[] = $node;
+        } 
+        return $modules;
+    }
+
     #[Get("/sidebar", "admin.sidebar.load")]
     public function load(): string
     {
+        $links = $this->getLinks([], [], user());
         // Non-admin users must be granted permission
-        if (user()->role === 'admin') {
-            $modules = db()->fetchAll("SELECT *, CONCAT('/admin/', link) as url
-                FROM modules 
-                ORDER BY item_order");
-        } else {
-            $modules = db()->fetchAll("SELECT *, CONCAT('/admin/', link) as url
-                FROM modules 
-                WHERE EXISTS (SELECT * 
-                    FROM user_permissions 
-                    WHERE user_id = ? AND module_id = modules.id)
-                ORDER BY item_order", [user()->id]);
-        }
         return $this->render("admin/sidebar.html.twig", [
             "hide" => $this->getState(),
-            "modules" => $modules
+            "links" => $links
         ]);
     }
 

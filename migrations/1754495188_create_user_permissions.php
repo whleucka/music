@@ -20,7 +20,7 @@ return new class implements Migration
             $table->timestamps();
             $table->primaryKey("id");
             $table->unique("module_id, user_id");
-            $table->foreignKey("module_id")->references("modules", "id");
+            $table->foreignKey("module_id")->references("modules", "id")->onDelete("CASCADE");
             $table->foreignKey("user_id")->references("users", "id");
         });
     }

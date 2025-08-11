@@ -6,22 +6,19 @@ return new class implements Migration
 {
     public function up(): string
     {
-        return "INSERT INTO modules (link, title, icon, item_order) VALUES 
-            ('dashboard', 'Dashboard', 'rocket', 0),
-            ('modules', 'Modules', 'box', 10),
-            ('users', 'Users', 'people', 20),
-            ('user-permissions', 'User Permissions', 'shield-check', 30),
-            ('sessions', 'Sessions', 'person-bounding-box', 40)";
+        return "INSERT INTO modules (link, title, icon, item_order, parent_id) VALUES 
+            ('', 'Overview', '', 10, null),
+            ('', 'Management', '', 20, null),
+            ('', 'Monitoring', '', 30, null),
+            ('dashboard', 'Dashboard', 'speedometer2', 0, 1),
+            ('modules', 'Modules', 'puzzle', 10, 2),
+            ('users', 'Users', 'people', 20, 2),
+            ('user-permissions', 'User Permissions', 'shield-lock', 30, 2),
+            ('sessions', 'Sessions', 'activity', 40, 3)";
     }
 
     public function down(): string
     {
-        return "DELETE FROM modules WHERE link IN (
-            'dashboard', 
-            'modules', 
-            'users', 
-            'user-permissions', 
-            'sessions'
-        )";
+        return "DELETE FROM modules";
     }
 };
