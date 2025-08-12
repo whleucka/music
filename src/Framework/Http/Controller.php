@@ -94,7 +94,7 @@ class Controller implements HttpController
 
         foreach ($ruleset as $field => $set) {
             if (empty($set)) {
-                $data[$field] = $request[$field] || null;
+                $data[$field] = $request[$field] ?? null;
             }
             foreach ($set as $rule) {
                 $r = explode(":", $rule);
@@ -106,7 +106,7 @@ class Controller implements HttpController
                     'unique' => count(db()->fetch("SELECT 1 FROM $rule_val WHERE $field = ?", [$request_value])) === 0,
                     'min_length' => strlen($request_value) >= $rule_val,
                     'max_length' => strlen($request_value) <= $rule_val,
-                    'required' => !is_null($request_value) && $request_value !== '',
+                    'required' => !is_null($request_value) && $request_value !== '' && $request_value !== "NULL",
                     'string' => is_string($request_value),
                     'array' => is_array($request_value),
                     'date' => strtotime($request_value) !== false,

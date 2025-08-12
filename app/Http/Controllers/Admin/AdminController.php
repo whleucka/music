@@ -228,6 +228,8 @@ abstract class AdminController extends Controller
     private function massageRequest(array $request): array
     {
         foreach ($request as $key => $value) {
+            // Handle null
+            if ($value === "NULL") $request[$key] = null;
             // Handle checkboxes
             if (isset($this->form_controls[$key]) && $this->form_controls[$key] == "checkbox") {
                 $request[$key] = $value ? 1 : 0;
@@ -353,6 +355,9 @@ abstract class AdminController extends Controller
             if (is_callable($control)) {
                 return $control($column, $value);
             }
+            if (isset($this->validation_rules[$column])) {
+                $nullable = !in_array("required", $this->validation_rules[$column]);
+            }
             return match ($control) {
                 "input" => $this->renderControl("input", $column, $value),
                 "number" => $this->renderControl("input", $column, $value, [
@@ -374,6 +379,7 @@ abstract class AdminController extends Controller
                 ]),
                 "dropdown" => $this->renderControl("dropdown", $column, $value, [
                     "class" => "form-select",
+                    "nullable" => $nullable,
                     "options" => key_exists($column, $this->dropdowns)
                         ? db()->fetchAll($this->dropdowns[$column])
                         : [],
