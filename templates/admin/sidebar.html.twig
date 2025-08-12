@@ -3,13 +3,6 @@
     <h4 class="m-0"><i class="bi bi-shield-check pe-1"></i> <span class="desc">Admin</span></h4>
   </header>
 
-  <div id="sidebar-filter" class="mt-3 p-2">
-    <div class="input-group">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="form-control" placeholder="">
-    </div>
-  </div>
-
   <div id="sidebar-links" class="p-3" hx-boost="true" hx-trigger="click" hx-select="#module" hx-target="#module" hx-swap="outerHTML">
     <ul class="nav nav-pills flex-column mb-auto">
       {% for link in links %}

@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin\Modules;
 use App\Http\Controllers\Admin\AdminController;
 use Echo\Framework\Routing\Group;
 
-#[Group(path_prefix: "/sessions", name_prefix: "sessions")]
-class SessionsController extends AdminController
+#[Group(path_prefix: "/activity", name_prefix: "activity")]
+class ActivityController extends AdminController
 {
     public function __construct()
     {

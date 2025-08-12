@@ -2,32 +2,40 @@
   <div id="alerts" class="bg-white shad rounded p-2 d-flex justify-content-md-around justify-content-sm-center align-items-center">
     <div id="users" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
       <i class="bi bi-people icon"></i>
-      <div class="text-end count">
-        {{ user_count }}
+      <div class="text-end count" hx-get="/admin/dashboard/user/count" hx-swap="textContent" hx-trigger="load">
+        --
       </div>
       <p>Users</p>
     </div>
 
-    <div id="sessions" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
-      <i class="bi bi-person-bounding-box icon"></i>
-      <div class="text-end count">
-        {{ session_count }}
-      </div>
-      <p>Sessions</p>
-    </div>
-
     <div id="modules" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
       <i class="bi bi-box icon"></i>
-      <div class="text-end count">
-        {{ module_count }}
+      <div class="text-end count" hx-get="/admin/dashboard/module/count" hx-swap="textContent" hx-trigger="load">
+        --
       </div>
       <p>Modules</p>
     </div>
 
+    <div id="requests" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+      <i class="bi bi-graph-up icon"></i>
+      <div class="text-end count" hx-get="/admin/dashboard/requests/all-time" hx-swap="textContent" hx-trigger="load">
+        --
+      </div>
+      <p>Total Requests</p>
+    </div>
+
+    <div id="requests-today" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+      <i class="bi bi-clock icon"></i>
+      <div class="text-end count" hx-get="/admin/dashboard/requests/today" hx-swap="textContent" hx-trigger="load">
+        --
+      </div>
+      <p>Today's Requests</p>
+    </div>
+
     <div id="sales" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
       <i class="bi bi-cash-coin icon"></i>
-      <div class="text-end count">
-        ${{ sales }}
+      <div class="text-end count" hx-get="/admin/dashboard/sales" hx-swap="textContent" hx-trigger="load">
+        --
       </div>
       <p>Sales</p>
     </div>

@@ -643,7 +643,7 @@ abstract class AdminController extends Controller
 
     protected function hasExport(): bool
     {
-        return $this->checkPermission('has_export') && $this->has_export;
+        return $this->checkPermission('has_export') && $this->has_export && $this->total_results > 0;
     }
 
     protected function hasCreate(): bool

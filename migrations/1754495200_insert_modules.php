@@ -14,7 +14,7 @@ return new class implements Migration
             ('modules', 'Modules', 'puzzle', 10, 2),
             ('users', 'Users', 'people', 20, 2),
             ('user-permissions', 'User Permissions', 'shield-lock', 30, 2),
-            ('sessions', 'Sessions', 'activity', 40, 3)";
+            ('activity', 'Activity', 'activity', 40, 3)";
     }
 
     public function down(): string
