@@ -549,6 +549,52 @@ abstract class AdminController extends Controller
         return false;
     }
 
+    private function getFormData(?int $id, string $type): array
+    {
+        return [
+            ...$this->getCommonData(),
+            "content" => $this->renderForm($id, $type),
+        ];
+    }
+
+    private function getModuleData(): array
+    {
+        return [
+            ...$this->getCommonData(),
+            "content" => $this->renderTable(),
+        ];
+    }
+
+    private function hasPermission()
+    {
+        $module = $this->getModule();
+        // Check module permission
+        if (user()->role !== 'admin') {
+            // Maybe permission is granted to them
+            $permission = db()->fetch("SELECT * 
+                FROM user_permissions 
+                WHERE user_id = ? AND module_id = ?", [user()->id, $module['id']]);
+            if (!$permission) {
+                $this->permissionDenied();
+            }
+        }
+        return true;
+    }
+
+    private function checkPermission(string $permission)
+    {
+        $module = $this->getModule();
+        // Check module (create,edit,delete) permission
+        if (user()->role !== 'admin') {
+            // Maybe permission is granted to them
+            $permission = db()->fetch("SELECT * 
+                FROM user_permissions 
+                WHERE user_id = ? AND module_id = ? AND $permission = 1", [user()->id, $module['id']]);
+            return $permission;
+        }
+        return true;
+    }
+
     protected function processSession()
     {
         // Assign module properties
@@ -579,17 +625,23 @@ abstract class AdminController extends Controller
                 $query = $this->table_columns[$title];
                 $column = $this->getSubquery($query);
                 if ($column) {
-                    $where[] = "$column LIKE ?";
+                    $where[] = "($column LIKE ?)";
                     $this->query_params[] = "%{$this->search_term}%";
                 }
             }
-            $this->query_where[] = implode(" OR ", $where);
+            $this->query_where[] = '('.implode(" OR ", $where).')';
         }
 
         // Datetime filter
         if ($this->filter_date_column && $this->filter_date_start && $this->filter_date_end) {
-            $this->query_where[] = sprintf("(%s BETWEEN ? AND ?)", $this->filter_date_column); 
+            $this->query_where[] = sprintf("%s BETWEEN ? AND ?", $this->filter_date_column); 
             $this->query_params[] = $this->filter_date_start;
+            $this->query_params[] = $this->filter_date_end;
+        } else if ($this->filter_date_column && $this->filter_date_start && !$this->filter_date_end) {
+            $this->query_where[] = sprintf("%s >= ?", $this->filter_date_column); 
+            $this->query_params[] = $this->filter_date_start;
+        } else if ($this->filter_date_column && !$this->filter_date_start && $this->filter_date_end) {
+            $this->query_where[] = sprintf("%s <= ?", $this->filter_date_column); 
             $this->query_params[] = $this->filter_date_end;
         }
     }
@@ -631,52 +683,6 @@ abstract class AdminController extends Controller
         }
 
         return $rules;
-    }
-
-    protected function getFormData(?int $id, string $type): array
-    {
-        return [
-            ...$this->getCommonData(),
-            "content" => $this->renderForm($id, $type),
-        ];
-    }
-
-    protected function getModuleData(): array
-    {
-        return [
-            ...$this->getCommonData(),
-            "content" => $this->renderTable(),
-        ];
-    }
-
-    protected function hasPermission()
-    {
-        $module = $this->getModule();
-        // Check module permission
-        if (user()->role !== 'admin') {
-            // Maybe permission is granted to them
-            $permission = db()->fetch("SELECT * 
-                FROM user_permissions 
-                WHERE user_id = ? AND module_id = ?", [user()->id, $module['id']]);
-            if (!$permission) {
-                $this->permissionDenied();
-            }
-        }
-        return true;
-    }
-
-    protected function checkPermission(string $permission)
-    {
-        $module = $this->getModule();
-        // Check module (create,edit,delete) permission
-        if (user()->role !== 'admin') {
-            // Maybe permission is granted to them
-            $permission = db()->fetch("SELECT * 
-                FROM user_permissions 
-                WHERE user_id = ? AND module_id = ? AND $permission = 1", [user()->id, $module['id']]);
-            return $permission;
-        }
-        return true;
     }
 
     protected function hasExport(): bool
