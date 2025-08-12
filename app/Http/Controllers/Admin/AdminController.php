@@ -355,9 +355,6 @@ abstract class AdminController extends Controller
             if (is_callable($control)) {
                 return $control($column, $value);
             }
-            if (isset($this->validation_rules[$column])) {
-                $nullable = !in_array("required", $this->validation_rules[$column]);
-            }
             return match ($control) {
                 "input" => $this->renderControl("input", $column, $value),
                 "number" => $this->renderControl("input", $column, $value, [
@@ -379,7 +376,6 @@ abstract class AdminController extends Controller
                 ]),
                 "dropdown" => $this->renderControl("dropdown", $column, $value, [
                     "class" => "form-select",
-                    "nullable" => $nullable,
                     "options" => key_exists($column, $this->dropdowns)
                         ? db()->fetchAll($this->dropdowns[$column])
                         : [],
@@ -418,6 +414,9 @@ abstract class AdminController extends Controller
 
     private function renderControl(string $type, string $column, ?string $value, array $data = [])
     {
+        if (isset($this->validation_rules[$column])) {
+            $required = in_array("required", $this->validation_rules[$column]);
+        }
         $default = [
             "type" => "input",
             "class" => "form-control",
@@ -444,6 +443,7 @@ abstract class AdminController extends Controller
             "autocomplete" => null,
             "checked" => null,
             "autofocus" => null,
+            "required" => $required,
             "readonly" => in_array($column, $this->form_readonly),
             "disabled" => in_array($column, $this->form_disabled),
         ];
