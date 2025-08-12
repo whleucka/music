@@ -174,12 +174,12 @@ class QueryBuilder
             "SELECT %s FROM `%s`%s%s%s%s%s%s",
             implode(", ", $this->select),
             $this->table,
-            $this->where ? " WHERE " . implode(" AND ", $this->where) : "",
-            $this->or_where ? " OR " . implode(" OR ", $this->or_where) : "",
+            $this->where ? " WHERE " . '('.implode(") AND (", $this->where).')' : "",
+            $this->or_where ? " OR " . '('.implode(") OR (", $this->or_where).')' : "",
             $this->group_by
                 ? " GROUP BY " . implode(", ", $this->group_by)
                 : "",
-            $this->having ? " HAVING " . implode(" AND ", $this->having) : "",
+            $this->having ? " HAVING " . '('.implode(") AND (", $this->having).')' : "",
             $this->order_by
                 ? " ORDER BY " . implode(", ", $this->order_by)
                 : "",
@@ -211,7 +211,7 @@ class QueryBuilder
                     array_keys($this->update)
                 )
             ),
-            $this->where ? " WHERE " . implode(" AND ", $this->where) : ""
+            $this->where ? " WHERE " . '('.implode(") AND (", $this->where).')' : ""
         );
         return trim($sql);
     }
@@ -221,7 +221,7 @@ class QueryBuilder
         $sql = sprintf(
             "DELETE FROM `%s`%s",
             $this->table,
-            $this->where ? " WHERE " . implode(" AND ", $this->where) : ""
+            $this->where ? " WHERE " . '('.implode(") AND (", $this->where).')' : ""
         );
         return trim($sql);
     }

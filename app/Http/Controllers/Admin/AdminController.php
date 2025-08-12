@@ -36,14 +36,17 @@ abstract class AdminController extends Controller
 
     protected array $form_columns = [];
     protected array $form_controls = [];
+    protected array $dropdowns = [];
     protected array $form_readonly = [];
     protected array $form_disabled = [];
 
-
-    protected array $dropdowns = [];
+    protected string $filter_date_column = "created_at";
+    protected string $filter_date_start = "";
+    protected string $filter_date_end = "";
+    protected array $filter_dropdowns = [];
+    protected array $filter_links = [];
     protected array $search_columns = [];
     protected string $search_term = "";
-    protected array $filter_links = [];
     protected int $active_filter_link = 0;
 
     protected bool $has_edit = true;
@@ -72,15 +75,16 @@ abstract class AdminController extends Controller
     }
 
     #[Get("/export-csv", "admin.export-csv")]
-    public function export_csv(): string
+    public function export_csv(): mixed
     {
         if (!$this->hasExport()) {
             return $this->permissionDenied();
         }
-        $this->processSession();
         $this->props();
+
         $rows = $this->runTableQuery(false)->fetchAll();
-        $this->streamCSV($rows, $this->table_columns, $this->module_link . '_export.csv');
+        if ($rows) $this->streamCSV($rows, $this->table_columns, $this->module_link . '_export.csv');
+        return null;
     }
 
     #[Get("/modal/create", "admin.create")]
@@ -112,7 +116,6 @@ abstract class AdminController extends Controller
         $filters = array_values($this->filter_links);
         $filter_where = $filters[$index];
         $this->query_where[] = $filter_where;
-        $this->processSession();
         $this->props(false);
         return $this->runTableQuery(false)->rowCount();
     }
@@ -123,6 +126,8 @@ abstract class AdminController extends Controller
         $clear = isset($this->request->request->filter_clear);
         $valid = $this->validate([
             "filter_search" => ["string"],
+            "filter_date_start" => ["string"],
+            "filter_date_end" => ["string"],
             "filter_clear" => [],
         ]);
         if ($valid) {
@@ -453,6 +458,11 @@ abstract class AdminController extends Controller
 
     private function setFilters(?object $request): void
     {
+        if (isset($request->filter_date_start) && isset($request->filter_date_end)) {
+            $this->setSession("filter_date_start", $request->filter_date_start);
+            $this->setSession("filter_date_end", $request->filter_date_end);
+            $this->setSession("page", 1);
+        }
         if (isset($request->filter_search)) {
             $this->setSession("search_term", $request->filter_search);
             $this->setSession("page", 1);
@@ -461,8 +471,10 @@ abstract class AdminController extends Controller
 
     private function clearFilters(): void
     {
-        $this->setSession("search_term", null);
         $this->setSession("page", 1);
+        $this->removeSession("search_term");
+        $this->removeSession("filter_date_start");
+        $this->removeSession("filter_date_end");
     }
 
     private function streamCSV(iterable $rows, array $columns = [], string $filename = 'export.csv')
@@ -528,6 +540,15 @@ abstract class AdminController extends Controller
         }
     }
 
+    private function columnExists(string $needle, array $haystack): bool
+    {
+        foreach ($haystack as $one) {
+            $column = $this->getAlias($one);
+            if ($needle == $column) return true;
+        }
+        return false;
+    }
+
     protected function processSession()
     {
         // Assign module properties
@@ -535,11 +556,15 @@ abstract class AdminController extends Controller
             $this->active_filter_link = $this->getSession("filter_link") ?? 0;
             $this->page = $this->getSession("page") ?? 1;
             $this->search_term = $this->getSession("search_term") ?? '';
+            $this->filter_date_start = $this->getSession("filter_date_start") ?? '';
+            $this->filter_date_end = $this->getSession("filter_date_end") ?? '';
         }
     }
 
     protected function props(bool $filter_links = true)
     {
+        $this->processSession();
+        
         // Filter links
         if ($filter_links && !empty($this->filter_links)) {
             $filters = array_values($this->filter_links);
@@ -547,7 +572,7 @@ abstract class AdminController extends Controller
             $this->query_where[] = $filter_where;
         }
 
-        // Search
+        // Search filter
         if ($this->search_term) {
             $where = [];
             foreach ($this->search_columns as $title) {
@@ -559,6 +584,13 @@ abstract class AdminController extends Controller
                 }
             }
             $this->query_where[] = implode(" OR ", $where);
+        }
+
+        // Datetime filter
+        if ($this->filter_date_column && $this->filter_date_start && $this->filter_date_end) {
+            $this->query_where[] = sprintf("(%s BETWEEN ? AND ?)", $this->filter_date_column); 
+            $this->query_params[] = $this->filter_date_start;
+            $this->query_params[] = $this->filter_date_end;
         }
     }
 
@@ -649,7 +681,7 @@ abstract class AdminController extends Controller
 
     protected function hasExport(): bool
     {
-        return $this->checkPermission('has_export') && $this->has_export && $this->total_results > 0;
+        return $this->checkPermission('has_export') && $this->has_export;
     }
 
     protected function hasCreate(): bool
@@ -681,15 +713,19 @@ abstract class AdminController extends Controller
     {
         if (empty($this->table_columns) || !$this->table_name) return '';
 
-        $this->processSession();
         $this->props();
 
         return $this->render("admin/filter.html.twig", [
             "post" => "/admin/{$this->module_link}/modal/filter",
+            "date_filter" => [
+                "show" => $this->filter_date_column && $this->columnExists($this->filter_date_column, $this->table_columns),
+                "start" => $this->filter_date_start,
+                "end" => $this->filter_date_end,
+            ],
             "search" => [
                 "show" => !empty($this->search_columns),
                 "term" => $this->search_term,
-            ]
+            ],
         ]);
     }
 
@@ -697,13 +733,11 @@ abstract class AdminController extends Controller
     {
         if (empty($this->table_columns) || !$this->table_name) return '';
 
-        $this->processSession();
         $this->props();
 
         // Total results
         $this->total_results = $this->runTableQuery(false)->rowCount();
         $this->total_pages = ceil($this->total_results / $this->per_page);
-
         $data = $this->runTableQuery()->fetchAll();
 
         foreach ($data as $i => $row) {

@@ -10,7 +10,7 @@ class ActivityController extends AdminController
 {
     public function __construct()
     {
-        $this->has_edit = $this->has_delete = false;
+        $this->has_create = $this->has_edit = $this->has_delete = false;
 
         $this->table_columns = [
             "User" => "(SELECT email FROM users WHERE users.id = user_id) as user",

@@ -4,13 +4,13 @@
 <div id="table" class="bg-white shad rounded p-2">
   <div id="table-actions" class="d-flex p-2">
     {% if has_create() %}
-    <button class="btn btn-sm btn-success me-2" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/create" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-plus-square pe-1"></i> New</button>
+      <button class="btn btn-sm btn-success me-2" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/create" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-plus-square pe-1"></i> New</button>
     {% endif %}
     {% if filters.show %}
-    <button class="btn btn-sm btn-primary me-2" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/filter" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-funnel pe-1"></i> Filter</button>
+      <button class="btn btn-sm btn-primary me-2" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/filter" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-funnel pe-1"></i> Filter</button>
     {% endif %}
-    {% if has_export() %}
-    <a href="/admin/{{ module.link }}/export-csv" class="btn btn-sm btn-primary me-2"><i class="bi bi-download pe-1"></i> Export</a>
+    {% if has_export() and data.rows %}
+      <a href="/admin/{{ module.link }}/export-csv" class="btn btn-sm btn-primary me-2"><i class="bi bi-download pe-1"></i> Export</a>
     {% endif %}
   </div>
   {% if filters.filter_links.show %}
@@ -76,57 +76,56 @@
     {% endif %}
   </div>
   {% if data.total_pages > 1 %}
-  <nav 
-    id="pagination" 
-    class="mt-2"
-    hx-boost="true"
-    hx-target="#module"
-    hx-select="#module"
-    hx-swap="outerHTML"
-  >
-    <ul class="pagination">
-      {% if data.page != 1 and data.page > data.pagination_links %}
-      <li class="page-item">
-        <a class="page-link" href="/admin/{{ module.link }}/page/1">
-          <span><i class="bi bi-chevron-double-left"></i></span>
-        </a>
-      </li>
-      <li class="page-item {% if data.page - 1 <= 0 %}disabled{% endif %}">
-        <a class="page-link" href="/admin/{{ module.link }}/page/{{ data.page - 1}}">
-          <span><i class="bi bi-chevron-left"></i></span>
-        </a>
-      </li>
-      {% endif %}
-      {% for i in data.page - data.pagination_links..data.page - 1 %}
-        {% if i >= 1 %}
+    <nav 
+      id="pagination" 
+      class="mt-2"
+      hx-boost="true"
+      hx-target="#module"
+      hx-select="#module"
+      hx-swap="outerHTML">
+      <ul class="pagination">
+        {% if data.page != 1 and data.page > data.pagination_links %}
         <li class="page-item">
-          <a class="page-link" href="/admin/{{ module.link }}/page/{{ i }}">{{ i }}</a>
+          <a class="page-link" href="/admin/{{ module.link }}/page/1">
+            <span><i class="bi bi-chevron-double-left"></i></span>
+          </a>
+        </li>
+        <li class="page-item {% if data.page - 1 <= 0 %}disabled{% endif %}">
+          <a class="page-link" href="/admin/{{ module.link }}/page/{{ data.page - 1}}">
+            <span><i class="bi bi-chevron-left"></i></span>
+          </a>
         </li>
         {% endif %}
-      {% endfor %}
-      <li class="page-item active">
-        <a class="page-link" href="/admin/{{ module.link }}/page/{{ data.page }}">{{ data.page }}</a>
-      </li>
-      {% for i in data.page + 1..data.page + data.pagination_links %}
-        {% if i <= data.total_pages %}
+        {% for i in data.page - data.pagination_links..data.page - 1 %}
+          {% if i >= 1 %}
+          <li class="page-item">
+            <a class="page-link" href="/admin/{{ module.link }}/page/{{ i }}">{{ i }}</a>
+          </li>
+          {% endif %}
+        {% endfor %}
+        <li class="page-item active">
+          <a class="page-link" href="/admin/{{ module.link }}/page/{{ data.page }}">{{ data.page }}</a>
+        </li>
+        {% for i in data.page + 1..data.page + data.pagination_links %}
+          {% if i <= data.total_pages %}
+          <li class="page-item">
+            <a class="page-link" href="/admin/{{ module.link }}/page/{{ i }}">{{ i }}</a>
+          </li>
+          {% endif %}
+        {% endfor %}
+        {% if data.page != data.total_pages and data.page < data.total_pages - data.pagination_links %}
         <li class="page-item">
-          <a class="page-link" href="/admin/{{ module.link }}/page/{{ i }}">{{ i }}</a>
+          <a class="page-link {% if data.page + 1 >= data.total_pages %}disabled{% endif %}" href="/admin/{{ module.link }}/page/{{ data.page + 1 }}">
+            <span><i class="bi bi-chevron-right"></i></span>
+          </a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="/admin/{{ module.link }}/page/{{ data.total_pages }}">
+            <span><i class="bi bi-chevron-double-right"></i></span>
+          </a>
         </li>
         {% endif %}
-      {% endfor %}
-      {% if data.page != data.total_pages and data.page < data.total_pages - data.pagination_links %}
-      <li class="page-item">
-        <a class="page-link {% if data.page + 1 >= data.total_pages %}disabled{% endif %}" href="/admin/{{ module.link }}/page/{{ data.page + 1 }}">
-          <span><i class="bi bi-chevron-right"></i></span>
-        </a>
-      </li>
-      <li class="page-item">
-        <a class="page-link" href="/admin/{{ module.link }}/page/{{ data.total_pages }}">
-          <span><i class="bi bi-chevron-double-right"></i></span>
-        </a>
-      </li>
-      {% endif %}
-    </ul>
-  </nav>
+      </ul>
+    </nav>
   {% endif %}
 </div>

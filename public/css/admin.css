@@ -86,7 +86,7 @@ nav#nav-sidebar header h4 {
 */
 #filter-links .filter-link {
   text-decoration: none;
-  opacity: 0.7;
+  opacity: 0.5;
 }
 #filter-links .filter-link.active {
   font-weight: 800;
