@@ -6,10 +6,12 @@
   <div id="sidebar-links" class="p-3" hx-boost="true" hx-trigger="click" hx-select="#module" hx-target="#module" hx-swap="outerHTML">
     <ul class="nav nav-pills flex-column mb-auto">
       {% for link in links %}
+        {% if link['children'] %}
         <h4 class="category">{{ link.title }}</h4>
         {% for module in link['children'] %}
           {% include "admin/sidebar-links.html.twig" with {'module': module, 'depth': 0 } only %} 
         {% endfor %}
+        {% endif %}
       {% endfor %}
     </ul>
   </div>
