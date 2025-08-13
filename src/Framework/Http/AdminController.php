@@ -453,7 +453,7 @@ abstract class AdminController extends Controller
             "title" => array_search($column, $this->form_columns),
             "value" => $value,
             "placeholder" => "",
-            "datalist" => $this->form_datalist[$column],
+            "datalist" => $this->form_datalist[$column] ?? [],
             "alt" => null,
             "minlength" => null,
             "maxlength" => null,
