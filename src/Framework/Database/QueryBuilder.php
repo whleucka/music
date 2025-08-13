@@ -78,6 +78,14 @@ class QueryBuilder
         return $this->params;
     }
 
+    public function dump()
+    {
+        return [
+            "query" => $this->getQuery(),
+            "params" => $this->getQueryParams(),
+        ];
+    }
+
     public function from(string $table): QueryBuilder
     {
         $this->table = $table;

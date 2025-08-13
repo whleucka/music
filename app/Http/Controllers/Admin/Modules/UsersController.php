@@ -24,6 +24,11 @@ class UsersController extends AdminController
             "Others" => "id != " . user()->id,
         ];
 
+        $this->filter_dropdowns = [
+            "role" => "SELECT 'standard' as value, 'Standard' as label UNION
+                SELECT 'admin' as value, 'Admin' as label",
+        ];
+
         $this->form_columns = [
             "Role" => "role",
             "First Name" => "first_name",
@@ -42,7 +47,7 @@ class UsersController extends AdminController
             "password_match" => "password",
         ];
 
-        $this->dropdowns = [
+        $this->form_dropdowns = [
             "role" => "SELECT 'standard' as value, 'Standard' as label UNION 
                 SELECT 'admin' as value, 'Admin' as label",
         ];

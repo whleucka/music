@@ -11,8 +11,8 @@ class UserPermissionsController extends AdminController
     public function __construct()
     {
         $this->table_columns = [
-            "Module" => "(SELECT title FROM modules WHERE modules.id = module_id) as module",
-            "User" => "(SELECT CONCAT(first_name, ' ', surname) FROM users WHERE users.id = user_id) as user",
+            "Module" => "(SELECT title FROM modules WHERE modules.id = module_id) as module_id",
+            "User" => "(SELECT CONCAT(first_name, ' ', surname) FROM users WHERE users.id = user_id) as user_id",
             "Create" => "has_create",
             "Edit" => "has_edit",
             "Delete" => "has_delete",
@@ -24,6 +24,11 @@ class UserPermissionsController extends AdminController
             "has_edit" => "check",
             "has_delete" => "check",
             "has_export" => "check",
+        ];
+
+        $this->filter_dropdowns = [
+            "module_id" => "SELECT id as value, title as label FROM modules ORDER BY label",
+            "user_id" => "SELECT id as value, CONCAT(first_name, ' ', surname) as label FROM users WHERE role != 'admin' ORDER BY label",
         ];
 
         $this->form_columns = [
@@ -53,8 +58,8 @@ class UserPermissionsController extends AdminController
             "has_export" => [],
         ];
 
-        $this->dropdowns = [
-            "module_id" => "SELECT id as value, title as label FROM modules ORDER BY title",
+        $this->form_dropdowns = [
+            "module_id" => "SELECT id as value, title as label FROM modules WHERE parent_id IS NOT NULL ORDER BY title",
             "user_id" => "SELECT id as value, CONCAT(first_name, ' ', surname) as label FROM users WHERE role != 'admin' ORDER BY label",
         ];
 

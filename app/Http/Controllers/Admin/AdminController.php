@@ -36,7 +36,7 @@ abstract class AdminController extends Controller
 
     protected array $form_columns = [];
     protected array $form_controls = [];
-    protected array $dropdowns = [];
+    protected array $form_dropdowns = [];
     protected array $form_readonly = [];
     protected array $form_disabled = [];
 
@@ -125,10 +125,11 @@ abstract class AdminController extends Controller
     {
         $clear = isset($this->request->request->filter_clear);
         $valid = $this->validate([
-            "filter_search" => ["string"],
-            "filter_date_start" => ["string"],
-            "filter_date_end" => ["string"],
+            "filter_search" => [],
+            "filter_date_start" => [],
+            "filter_date_end" => [],
             "filter_clear" => [],
+            "filter_dropdowns" => [],
         ]);
         if ($valid) {
             if ($clear) {
@@ -381,8 +382,8 @@ abstract class AdminController extends Controller
                 ]),
                 "dropdown" => $this->renderControl("dropdown", $column, $value, [
                     "class" => "form-select",
-                    "options" => key_exists($column, $this->dropdowns)
-                        ? db()->fetchAll($this->dropdowns[$column])
+                    "options" => key_exists($column, $this->form_dropdowns)
+                        ? db()->fetchAll($this->form_dropdowns[$column])
                         : [],
                 ]),
                 default => $this->renderControl("text", $column, $value),
@@ -458,14 +459,23 @@ abstract class AdminController extends Controller
 
     private function setFilters(?object $request): void
     {
-        if (isset($request->filter_date_start) && isset($request->filter_date_end)) {
+        if ($request->filter_date_start && $request->filter_date_end) {
             $this->setSession("filter_date_start", $request->filter_date_start);
             $this->setSession("filter_date_end", $request->filter_date_end);
             $this->setSession("page", 1);
         }
-        if (isset($request->filter_search)) {
+        if ($request->filter_search) {
             $this->setSession("search_term", $request->filter_search);
             $this->setSession("page", 1);
+        }
+        if ($request->filter_dropdowns) {
+            foreach ($request->filter_dropdowns as $i => $value) {
+                if ($value !== 'NULL') {
+                    $this->setSession("filter_dropdowns_".$i, $value);
+                } else {
+                    $this->removeSession("filter_dropdowns_".$i, $value);
+                }
+            }
         }
     }
 
@@ -475,6 +485,9 @@ abstract class AdminController extends Controller
         $this->removeSession("search_term");
         $this->removeSession("filter_date_start");
         $this->removeSession("filter_date_end");
+        foreach (array_values($this->filter_dropdowns) as $i => $query) {
+            $this->removeSession("filter_dropdowns_".$i);
+        }
     }
 
     private function streamCSV(iterable $rows, array $columns = [], string $filename = 'export.csv')
@@ -644,6 +657,16 @@ abstract class AdminController extends Controller
             $this->query_where[] = sprintf("%s <= ?", $this->filter_date_column); 
             $this->query_params[] = $this->filter_date_end;
         }
+
+        // Dropdown filters
+        $i = 0;
+        foreach ($this->filter_dropdowns as $column => $query) {
+            $selected = $this->getSession("filter_dropdowns_".$i++);
+            if ($selected) {
+                $this->query_where[] = "$column = ?";
+                $this->query_params[] = $selected;
+            }
+        }
     }
 
     protected function exportOverride(array $row): array
@@ -723,6 +746,10 @@ abstract class AdminController extends Controller
 
         return $this->render("admin/filter.html.twig", [
             "post" => "/admin/{$this->module_link}/modal/filter",
+            "dropdowns" => [
+                "show" => !empty($this->filter_dropdowns),
+                "filters" => $this->dropdownFilters(),
+            ],
             "date_filter" => [
                 "show" => $this->filter_date_column && $this->columnExists($this->filter_date_column, $this->table_columns),
                 "start" => $this->filter_date_start,
@@ -733,6 +760,31 @@ abstract class AdminController extends Controller
                 "term" => $this->search_term,
             ],
         ]);
+    }
+
+    private function dropdownFilters(): array
+    {
+        $filters = [];
+        $i = 0;
+        foreach ($this->filter_dropdowns as $column => $query) {
+            $selected = $this->getSession("filter_dropdowns_".$i++);
+            $sql = $this->filter_dropdowns[$column];
+            $filters[] = [
+                "label" => $this->getTableTitle($column),
+                "selected" => $selected, 
+                "options" => db()->fetchAll($sql),
+            ];
+        }
+        return $filters;
+    }
+
+    private function getTableTitle(string $column)
+    {
+        foreach ($this->table_columns as $title => $query) {
+            $alias = $this->getAlias($query);
+            if ($alias === $column) return $title;
+        }
+        return null;
     }
 
     protected function renderTable(): string
@@ -761,7 +813,7 @@ abstract class AdminController extends Controller
             ...$this->getCommonData(),
             "headers" => array_keys($this->table_columns),
             "filters" => [
-                "show" => !empty($this->search_columns),
+                "show" => !empty($this->search_columns) || $this->filter_date_column != '' || !empty($this->filter_dropdowns),
                 "filter_links" => [
                     "show" => !empty($this->filter_links),
                     "active" => $this->active_filter_link,

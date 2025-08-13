@@ -33,6 +33,19 @@
         </div>
       </div>
       {% endif %}
+      {% if dropdowns.show %}
+        {% for filter in dropdowns.filters %}
+        <div class="mb-2">
+          <label class="form-label p-0 mb-1" for="">{{ filter.label }}</label>
+          <select class="form-select" name="filter_dropdowns[]">
+            <option value="NULL" selected>Select an option</option>
+            {% for option in filter.options %}
+              <option value="{{ option.value }}" {% if filter.selected == option.value %}selected{% endif %}>{{ option.label }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        {% endfor %}
+      {% endif %}
       {% if search.show %}
       <div id="search" class="mb-2"> 
         <label class="form-label p-0 mb-1" for="filter-search">Search</label>
