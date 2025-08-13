@@ -93,6 +93,13 @@ nav#nav-sidebar header h4 {
   opacity: 1;
   background-color: #314555;
 }
+#filter-search {
+  padding-left: 30px;
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/5/55/Magnifying_glass_icon.svg");
+  background-size: 13px;
+  background-repeat: no-repeat;
+  background-position: 10px center;
+}
 
 /**
  * Nav top
