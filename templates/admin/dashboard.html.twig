@@ -85,7 +85,8 @@ fetch('/admin/dashboard/requests/chart/today')
             label: 'Today',
             data: data.payload,
             fill: false,
-            borderColor: 'rgb(9, 255, 0)',
+            backgroundColor: 'rgba(0, 94, 255, 0.5)',
+            borderColor: 'rgb(0, 94, 255)',
             tension: 0.1
           }]
         },
@@ -113,8 +114,8 @@ fetch('/admin/dashboard/requests/chart/ytd')
           datasets: [{
             label: 'YTD',
             data: data.payload,
-            backgroundColor: 'rgba(50, 157, 168, 0.6)',
-            borderColor: 'rgb(50, 157, 168)',
+            backgroundColor: 'rgba(255, 47, 0, 0.5)',
+            borderColor: 'rgb(255, 47, 0)',
             borderWidth: 1
           }]
         },
