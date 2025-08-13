@@ -37,6 +37,7 @@ abstract class AdminController extends Controller
     protected array $form_columns = [];
     protected array $form_controls = [];
     protected array $form_dropdowns = [];
+    protected array $form_datalist = [];
     protected array $form_readonly = [];
     protected array $form_disabled = [];
 
@@ -452,6 +453,7 @@ abstract class AdminController extends Controller
             "title" => array_search($column, $this->form_columns),
             "value" => $value,
             "placeholder" => "",
+            "datalist" => $this->form_datalist[$column],
             "alt" => null,
             "minlength" => null,
             "maxlength" => null,

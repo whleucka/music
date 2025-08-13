@@ -30,6 +30,13 @@ class ModulesController extends AdminController
             "Order" => "item_order",
         ];
 
+        $url = config("paths.js") . '/bootstrap-icons.json';
+        $json = file_get_contents($url);
+        $data = json_decode($json, true);
+        $this->form_datalist = [
+            "icon" => array_keys($data),
+        ];
+
         $this->form_controls = [
             "link" => "input",
             "title" => "input",

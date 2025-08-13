@@ -27,7 +27,7 @@ class UserPermissionsController extends AdminController
         ];
 
         $this->filter_dropdowns = [
-            "module_id" => "SELECT id as value, title as label FROM modules ORDER BY label",
+            "module_id" => "SELECT id as value, title as label FROM modules WHERE parent_id IS NOT NULL AND enabled = 1 ORDER BY label",
             "user_id" => "SELECT id as value, CONCAT(first_name, ' ', surname) as label FROM users WHERE role != 'admin' ORDER BY label",
         ];
 
@@ -59,7 +59,7 @@ class UserPermissionsController extends AdminController
         ];
 
         $this->form_dropdowns = [
-            "module_id" => "SELECT id as value, title as label FROM modules WHERE parent_id IS NOT NULL ORDER BY title",
+            "module_id" => "SELECT id as value, title as label FROM modules WHERE parent_id IS NOT NULL AND enabled = 1 ORDER BY title",
             "user_id" => "SELECT id as value, CONCAT(first_name, ' ', surname) as label FROM users WHERE role != 'admin' ORDER BY label",
         ];
 
