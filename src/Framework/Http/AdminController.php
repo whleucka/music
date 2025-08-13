@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace Echo\Framework\Http;
 
 use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Group;

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Modules;
+namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Admin\AdminController;
+use Echo\Framework\Http\AdminController;
 use Echo\Framework\Routing\Group;
 
 #[Group(path_prefix: "/user-permissions", name_prefix: "user-permissions")]
