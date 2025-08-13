@@ -55,7 +55,9 @@
       {% endif %}
     </div>
     <div class="modal-footer">
+      {% if show_clear %}
       <button type="submit" name="filter_clear" class="btn btn-danger">Clear</button>
+      {% endif %}
       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       <button type="submit" class="btn btn-primary">Apply</button>
     </div>

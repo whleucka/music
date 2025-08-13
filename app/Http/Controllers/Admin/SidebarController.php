@@ -15,19 +15,20 @@ class SidebarController extends Controller
         if (empty($nodes)) {
             $nodes = db()->fetchAll("SELECT * 
                 FROM modules 
-                WHERE parent_id IS NULL
+                WHERE parent_id IS NULL AND enabled = 1
                 ORDER BY item_order");
         }
         foreach ($nodes as $node) {
             if ($user->role === 'admin') {
             $children = db()->fetchAll("SELECT *, CONCAT('/admin/', link) as url
                 FROM modules 
-                WHERE parent_id = ?
+                WHERE parent_id = ? AND enabled = 1
                 ORDER BY item_order", [$node['id']]);
             } else {
                 $children = db()->fetchAll("SELECT *, CONCAT('/admin/', link) as url
                     FROM modules 
-                    WHERE parent_id = ? AND
+                    WHERE parent_id = ? AND 
+                    enabled = 1 AND
                     EXISTS (SELECT * 
                         FROM user_permissions 
                         WHERE user_id = ? AND module_id = modules.id)

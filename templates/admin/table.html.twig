@@ -6,11 +6,17 @@
     {% if has_create() %}
       <button class="btn btn-sm btn-success me-2" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/create" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-plus-square pe-1"></i> New</button>
     {% endif %}
+    {% if has_export() and data.rows %}
+      <a href="/admin/{{ module.link }}/export-csv" class="btn btn-sm btn-primary me-2"><i class="bi bi-download pe-1"></i> Export</a>
+    {% endif %}
     {% if filters.show %}
       <button class="btn btn-sm btn-primary me-2" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/filter" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-funnel pe-1"></i> Filter</button>
     {% endif %}
-    {% if has_export() and data.rows %}
-      <a href="/admin/{{ module.link }}/export-csv" class="btn btn-sm btn-primary me-2"><i class="bi bi-download pe-1"></i> Export</a>
+    {% if filters.show_clear %}
+      <form hx-post="/admin/{{ module.link }}/modal/filter">
+        {{ csrf()|raw }}
+        <button type = "submit" class="btn btn-sm btn-danger me-2" name="filter_clear"><i class="bi bi-trash pe-1"></i> Clear Filter</button>
+      </form>
     {% endif %}
   </div>
   {% if filters.filter_links.show %}

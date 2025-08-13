@@ -11,6 +11,7 @@ return new class implements Migration
     {
          return Schema::create($this->table, function (Blueprint $table) {
             $table->id();
+            $table->unsignedTinyInteger("enabled")->default(1);
             $table->varchar("link")->nullable();
             $table->varchar("title");
             $table->varchar("icon")->nullable();

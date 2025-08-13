@@ -16,20 +16,20 @@
       <p>Modules</p>
     </div>
 
-    <div id="requests" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
-      <i class="bi bi-graph-up icon"></i>
-      <div class="text-end count" hx-get="/admin/dashboard/requests/all-time" hx-swap="textContent" hx-trigger="load">
-        --
-      </div>
-      <p>Total Requests</p>
-    </div>
-
     <div id="requests-today" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
       <i class="bi bi-clock icon"></i>
       <div class="text-end count" hx-get="/admin/dashboard/requests/today" hx-swap="textContent" hx-trigger="load">
         --
       </div>
       <p>Today's Requests</p>
+    </div>
+
+    <div id="requests" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+      <i class="bi bi-graph-up icon"></i>
+      <div class="text-end count" hx-get="/admin/dashboard/requests/all-time" hx-swap="textContent" hx-trigger="load">
+        --
+      </div>
+      <p>Total Requests</p>
     </div>
 
     <div id="sales" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
