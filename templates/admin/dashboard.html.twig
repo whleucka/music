@@ -1,43 +1,131 @@
+{% block head_js %}
+  <script src="/js/chart.js"></script>
+{% endblock %}
+
 <div id="dashboard">
-  <div id="alerts" class="bg-white shad rounded p-2 d-flex flex-wrap justify-content-md-around justify-content-sm-center align-items-center">
-    <div id="users" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
-      <i class="bi bi-people icon"></i>
-      <div class="text-end count" hx-get="/admin/dashboard/user/count" hx-swap="textContent" hx-trigger="load">
-        --
-      </div>
-      <p>Users</p>
-    </div>
 
-    <div id="modules" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
-      <i class="bi bi-box icon"></i>
-      <div class="text-end count" hx-get="/admin/dashboard/module/count" hx-swap="textContent" hx-trigger="load">
-        --
+  <div id="alerts" class="bg-white shad rounded p-2">
+    <div class="d-flex flex-wrap justify-content-md-around justify-content-sm-center align-items-center">
+      <div id="users" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+        <i class="bi bi-people icon"></i>
+        <div class="text-end count" hx-get="/admin/dashboard/user/count" hx-swap="textContent" hx-trigger="load">
+          --
+        </div>
+        <p>Users</p>
       </div>
-      <p>Modules</p>
-    </div>
 
-    <div id="requests-today" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
-      <i class="bi bi-clock icon"></i>
-      <div class="text-end count" hx-get="/admin/dashboard/requests/today" hx-swap="textContent" hx-trigger="load">
-        --
+      <div id="modules" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+        <i class="bi bi-box icon"></i>
+        <div class="text-end count" hx-get="/admin/dashboard/module/count" hx-swap="textContent" hx-trigger="load">
+          --
+        </div>
+        <p>Modules</p>
       </div>
-      <p>Today's Requests</p>
-    </div>
 
-    <div id="requests" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
-      <i class="bi bi-graph-up icon"></i>
-      <div class="text-end count" hx-get="/admin/dashboard/requests/all-time" hx-swap="textContent" hx-trigger="load">
-        --
+      <div id="requests-today" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+        <i class="bi bi-clock icon"></i>
+        <div class="text-end count" hx-get="/admin/dashboard/requests/count/today" hx-swap="textContent" hx-trigger="load">
+          --
+        </div>
+        <p>Today's Requests</p>
       </div>
-      <p>Total Requests</p>
-    </div>
 
-    <div id="sales" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
-      <i class="bi bi-cash-coin icon"></i>
-      <div class="text-end count" hx-get="/admin/dashboard/sales" hx-swap="textContent" hx-trigger="load">
-        --
+      <div id="requests" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+        <i class="bi bi-graph-up icon"></i>
+        <div class="text-end count" hx-get="/admin/dashboard/requests/count/all-time" hx-swap="textContent" hx-trigger="load">
+          --
+        </div>
+        <p>Total Requests</p>
       </div>
-      <p>Sales</p>
+
+      <div id="customers" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+        <i class="bi bi-person-bounding-box icon"></i>
+        <div class="text-end count" hx-get="/admin/dashboard/customer/count" hx-swap="textContent" hx-trigger="load">
+          --
+        </div>
+        <p>Customers</p>
+      </div>
+
+      <div id="sales" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+        <i class="bi bi-cash-coin icon"></i>
+        <div class="text-end count" hx-get="/admin/dashboard/sales/total" hx-swap="textContent" hx-trigger="load">
+          --
+        </div>
+        <p>Sales</p>
+      </div>
     </div>
   </div>
+
+  <div id="charts" class="bg-white shad rounded p-2 mt-3">
+    <h3>Requests</h3>
+    <div class="row">
+      <div class="col-md-6">
+        <canvas id="requests-today-chart" class="chart"></canvas>
+      </div>
+      <div class="col-md-6">
+        <canvas id="requests-ytd-chart" class="chart"></canvas>
+      </div>
+    </div>
+  </div>
+
 </div>
+
+<script>
+fetch('/admin/dashboard/requests/chart/today')
+  .then(response => response.json())
+  .then(res => {
+    if (res.success) {
+      data = res.data;
+      const ctx = document.getElementById('requests-today-chart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: data.labels,
+          datasets: [{
+            label: 'Today',
+            data: data.payload,
+            fill: false,
+            borderColor: 'rgb(9, 255, 0)',
+            tension: 0.1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+  });
+
+fetch('/admin/dashboard/requests/chart/ytd')
+  .then(response => response.json())
+  .then(res => {
+    if (res.success) {
+      data = res.data;
+      const ctx = document.getElementById('requests-ytd-chart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: data.labels,
+          datasets: [{
+            label: 'YTD',
+            data: data.payload,
+            backgroundColor: 'rgba(50, 157, 168, 0.6)',
+            borderColor: 'rgb(50, 157, 168)',
+            borderWidth: 1
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+  });
+</script>

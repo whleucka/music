@@ -171,12 +171,12 @@ nav#nav-sidebar header h4 {
   height: 150px;
   margin: 10px;
   position: relative;
-  width: 25%;
+  width: 380px;
 }
 #dashboard .top-alert .count {
   position: absolute;
-  bottom: 80px;
-  font-size: 3rem;
+  bottom: 60px;
+  font-size: 4rem;
   font-weight: 900;
   padding: 0;
   margin: 0;
@@ -185,40 +185,51 @@ nav#nav-sidebar header h4 {
   position: absolute;
   bottom: 20px;
   font-weight: 900;
-  font-size: 1.0rem;
+  font-size: 1.3rem;
   padding: 0;
   margin: 0;
-}
-#dashboard #users {
-  color: #fff;
-  background-color: #ff5f3d;
-  border-left: 8px solid #fc9f9f;
-}
-#dashboard #requests {
-  color: #fff;
-  background-color: #5967ff;
-  border-left: 8px solid #96adff;
-}
-#dashboard #requests-today {
-  color: #fff;
-  background-color: #ff9100;
-  border-left: 8px solid #ffd399;
-}
-#dashboard #modules {
-  color: #fff;
-  background-color: #f56eff;
-  border-left: 8px solid #f599ff;
-}
-#dashboard #sales {
-  color: #fff;
-  background-color: #3a9e46;
-  border-left: 8px solid #b1ff9c;
 }
 #dashboard .top-alert .icon {
   left: 15px;
   font-size: 4rem;
   position: absolute;
-  opacity: 0.2;
+  opacity: 0.3;
+}
+#dashboard #users {
+  color: #fff;
+  background-color: #ff0000;
+  border-left: 8px solid #ffa6a6;
+}
+#dashboard #requests {
+  color: #fff;
+  background-color: #ff6f00;
+  border-left: 8px solid #ffd2b0;
+}
+#dashboard #requests-today {
+  color: #fff;
+  background-color: #00ad1d;
+  border-left: 8px solid #ceffb8;
+}
+#dashboard #requests-today-chart {
+  width: 100%;
+}
+#dashboard #modules {
+  color: #fff;
+  background-color: #0080ff;
+  border-left: 8px solid #a3d1ff;
+}
+#dashboard #sales {
+  color: #fff;
+  background-color: #6200ff;
+  border-left: 8px solid #c3a3ff;
+}
+#dashboard #customers {
+  color: #fff;
+  background-color: #ff00f2;
+  border-left: 8px solid #ffa3fa;
+}
+#dashboard .chart {
+  height: 350px;
 }
 /** sm */
 @media (max-width: 575.98px) {
