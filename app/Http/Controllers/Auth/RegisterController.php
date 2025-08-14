@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Providers\Auth\RegisterService;
 use Echo\Framework\Http\Controller;
+use Echo\Framework\Routing\Group;
 use Echo\Framework\Routing\Route\{Get, Post};
 use Echo\Framework\Session\Flash;
 
+#[Group(path_prefix: '/admin')]
 class RegisterController extends Controller
 {
     public function __construct(private RegisterService $provider)

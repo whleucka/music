@@ -54,7 +54,7 @@
             </div>
             <div class="d-flex mt-4 justify-content-center">
                 <button type="submit" class="btn btn-success">Sign up</button>
-                <a hx-boost="true" class="btn btn-secondary ms-2" href="/sign-in" hx-swap="outerHTML" hx-select="#sign-in" hx-target="#register">Cancel</a>
+                <a hx-boost="true" class="btn btn-secondary ms-2" href="{{ uri('auth.sign-in.index') }}" hx-swap="outerHTML" hx-select="#sign-in" hx-target="#register">Cancel</a>
             </div>
         </form>
     </section>

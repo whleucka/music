@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Providers\Auth\SignInService;
 use Echo\Framework\Http\Controller;
+use Echo\Framework\Routing\Group;
 use Echo\Framework\Routing\Route\{Get, Post};
 use Echo\Framework\Session\Flash;
 
+#[Group(path_prefix: '/admin')]
 class SignInController extends Controller
 {
     public function __construct(private SignInService $provider)
