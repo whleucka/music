@@ -60,6 +60,54 @@ class DashboardController extends AdminController
         ];
     }
 
+    #[Get("/requests/chart/week", "requests.week.chart", ["api"])]
+    public function requests_week_chart()
+    {
+        $data = db()->fetchAll("SELECT 
+                DAYNAME(created_at) AS day_name,
+                DATE(created_at) AS day_date,
+                COUNT(*) AS total
+            FROM sessions
+            WHERE YEARWEEK(created_at, 1) = YEARWEEK(CURDATE(), 1)
+            GROUP BY day_date
+            ORDER BY day_date");
+        $daysOfWeek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+        $counts = array_fill(0, 7, 0);
+        foreach ($data as $row) {
+            $index = array_search($row['day_name'], $daysOfWeek);
+            if ($index !== false) {
+                $counts[$index] = (int)$row['total'];
+            }
+        }
+        return [
+            'labels' => $daysOfWeek,
+            'payload' => $counts
+        ];
+    }
+
+    #[Get("/requests/chart/month", "requests.month.chart", ["api"])]
+    public function requests_month_chart()
+    {
+        $data = db()->fetchAll("SELECT 
+            DAY(created_at) AS day_number,
+            COUNT(*) AS total
+            FROM sessions
+            WHERE YEAR(created_at) = YEAR(CURDATE())
+              AND MONTH(created_at) = MONTH(CURDATE())
+            GROUP BY day_number
+            ORDER BY day_number");
+        $daysInMonth = date('t');
+        $labels = range(1, $daysInMonth);
+        $counts = array_fill(0, $daysInMonth, 0);
+        foreach ($data as $row) {
+            $counts[$row['day_number'] - 1] = (int)$row['total'];
+        }
+        return [
+            'labels' => $labels,
+            'payload' => $counts
+        ];
+    }
+
     #[Get("/requests/chart/ytd", "requests.ytd.chart", ["api"])]
     public function requests_ytd_chart()
     {

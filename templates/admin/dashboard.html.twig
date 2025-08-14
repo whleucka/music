@@ -1,7 +1,7 @@
 <div id="dashboard">
 
   <div id="alerts" class="bg-white shad rounded p-2">
-    <div class="d-flex flex-wrap justify-content-md-around justify-content-sm-center align-items-center">
+    <div class="d-flex flex-wrap justify-content-md-around justify-content-center align-items-center">
       <div id="users" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
         <i class="bi bi-people icon"></i>
         <div class="text-end count" hx-get="/admin/dashboard/user/count" hx-swap="textContent" hx-trigger="load">
@@ -47,7 +47,7 @@
         <div class="text-end count" hx-get="/admin/dashboard/sales/total" hx-swap="textContent" hx-trigger="load">
           --
         </div>
-        <p>Sales</p>
+        <p>Total Sales</p>
       </div>
     </div>
   </div>
@@ -55,10 +55,20 @@
   <div id="charts" class="bg-white shad rounded p-2 mt-3">
     <h3>Requests</h3>
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-12">
         <canvas id="requests-today-chart" class="chart"></canvas>
       </div>
+    </div>
+    <div class="row">
       <div class="col-md-6 mt-3 mt-md-0">
+        <canvas id="requests-week-chart" class="chart"></canvas>
+      </div>
+      <div class="col-md-6 mt-3 mt-md-0">
+        <canvas id="requests-month-chart" class="chart"></canvas>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-12 mt-3 mt-md-0">
         <canvas id="requests-ytd-chart" class="chart"></canvas>
       </div>
     </div>
@@ -71,7 +81,7 @@ fetch('/admin/dashboard/requests/chart/today')
   .then(response => response.json())
   .then(res => {
     if (res.success) {
-      data = res.data;
+      let data = res.data;
       const ctx = document.getElementById('requests-today-chart').getContext('2d');
       new Chart(ctx, {
         type: 'line',
@@ -83,6 +93,7 @@ fetch('/admin/dashboard/requests/chart/today')
             fill: false,
             backgroundColor: 'rgba(0, 94, 255, 0.5)',
             borderColor: 'rgb(0, 94, 255)',
+            borderWidth: 2,
             tension: 0.1
           }]
         },
@@ -97,22 +108,82 @@ fetch('/admin/dashboard/requests/chart/today')
     }
   });
 
+fetch('/admin/dashboard/requests/chart/week')
+  .then(r => r.json())
+  .then(res => {
+    if (res.success) {
+      let data = res.data;
+      const ctx = document.getElementById('requests-week-chart').getContext('2d');
+      new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: data.labels,
+              datasets: [{
+                  label: 'Current week',
+                  data: data.payload,
+                  backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                  borderColor: 'rgb(255, 159, 64)',
+                  borderWidth: 2
+              }]
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                  y: { beginAtZero: true }
+              }
+          }
+      });
+    }
+  });
+
+fetch('/admin/dashboard/requests/chart/month')
+  .then(r => r.json())
+  .then(res => {
+    if (res.success) {
+      let data = res.data;
+      const ctx = document.getElementById('requests-month-chart').getContext('2d');
+      new Chart(ctx, {
+          type: 'bar',
+          data: {
+              labels: data.labels,
+              datasets: [{
+                  label: 'Current month',
+                  data: data.payload,
+                  fill: true,
+                  backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                  borderColor: 'rgb(153, 102, 255)',
+                  borderWidth: 2,
+                  tension: 0.1
+              }]
+          },
+          options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              scales: {
+                  y: { beginAtZero: true }
+              }
+          }
+      });
+    }
+  });
+
 fetch('/admin/dashboard/requests/chart/ytd')
   .then(response => response.json())
   .then(res => {
     if (res.success) {
-      data = res.data;
+      let data = res.data;
       const ctx = document.getElementById('requests-ytd-chart').getContext('2d');
       new Chart(ctx, {
         type: 'bar',
         data: {
           labels: data.labels,
           datasets: [{
-            label: 'YTD',
+            label: 'Year to date',
             data: data.payload,
-            backgroundColor: 'rgba(255, 47, 0, 0.5)',
-            borderColor: 'rgb(255, 47, 0)',
-            borderWidth: 1
+            backgroundColor: 'rgba(91, 235, 52, 0.5)',
+            borderColor: 'rgb(91, 235, 52)',
+            borderWidth: 2
           }]
         },
         options: {

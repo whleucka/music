@@ -171,10 +171,10 @@ nav#nav-sidebar header h4 {
 * Dashboard
 */
 #dashboard .top-alert {
+  width: 100%;
   height: 150px;
   margin: 10px;
   position: relative;
-  width: 380px;
 }
 #dashboard .top-alert .count {
   font-family: 'monospace';
@@ -235,21 +235,39 @@ nav#nav-sidebar header h4 {
 #dashboard .chart {
   height: 350px;
 }
-/** sm */
-@media (max-width: 575.98px) {
-}
+@media (min-width: 576px) {}
 
-/** md */
-@media (max-width: 767.98px) {
-}
-
-/** lg */
-@media (max-width: 991.98px) {
+@media (min-width: 768px) {
   #dashboard .top-alert {
-    width: 100% !important;
+    width: 350px;
   }
 }
 
-/** xl */
+@media (min-width: 992px) {
+  #dashboard .top-alert {
+    width: 380px;
+  }
+}
+
+@media (min-width: 1200px) {
+}
+
+@media (min-width: 1400px) {
+}
+
+
+/** sm devices and lower */
+@media (max-width: 575.98px) {
+}
+
+/** md devices and lower */
+@media (max-width: 767.98px) {
+}
+
+/** lg devices and lower */
+@media (max-width: 991.98px) {
+}
+
+/** xl devices and lower */
 @media (max-width: 1199.98px) {
 }
