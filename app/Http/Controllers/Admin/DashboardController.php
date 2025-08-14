@@ -46,7 +46,8 @@ class DashboardController extends AdminController
             WHERE DATE(created_at) = CURDATE() AND
             user_id IS NULL")->fetchColumn();
     }
-    #[Get("/requests/chart/today", "requests.today.chart", ["api", "max_requests" => 0])]
+
+    #[Get("/requests/chart/today", "requests.today.chart", ["max_requests" => 0])]
     public function requests_today_chart()
     {
         $data = db()->fetchAll("SELECT 
@@ -58,17 +59,43 @@ class DashboardController extends AdminController
             GROUP BY HOUR(created_at)
             ORDER BY hour");
         $hours = range(0, 23);
-        $chartData = array_fill(0, 24, 0);
+        $payload = array_fill(0, 24, 0);
         foreach ($data as $row) {
-            $chartData[(int)$row['hour']] = (int)$row['total'];
+            $payload[(int)$row['hour']] = (int)$row['total'];
         }
-        return [
-            'labels' => array_map(fn($h) => str_pad($h, 2, '0', STR_PAD_LEFT) . ":00", $hours),
-            'payload' => $chartData
-        ];
+        $labels = array_map(fn($h) => str_pad($h, 2, '0', STR_PAD_LEFT) . ":00", $hours);
+        return $this->render('admin/dashboard-chart.html.twig', [
+            'id' => 'requests-chart-today',
+            'options' => json_encode([
+                'type' => 'line',
+                'data' => (object)[
+                    'labels' => $labels,
+                    'datasets' => [
+                        (object)[
+                            'label' => 'Today',
+                            'data' => $payload,
+                            'fill' => false,
+                            'backgroundColor' => 'rgba(0, 94, 255, 0.5)',
+                            'borderColor' => 'rgb(0, 94, 255)',
+                            'borderWidth' => 2,
+                            'tension' => 0.1,
+                        ]
+                    ]
+                ],
+                'options' => (object)[
+                    'responsive' => true,
+                    'maintainAspectRatio' => false,
+                    'scales' => (object)[
+                        'y' => (object)[
+                            'beginAtZero' => true,
+                        ]
+                    ],
+                ],
+            ]),
+        ]);
     }
 
-    #[Get("/requests/chart/week", "requests.week.chart", ["api", "max_requests" => 0])]
+    #[Get("/requests/chart/week", "requests.week.chart", ["max_requests" => 0])]
     public function requests_week_chart()
     {
         $data = db()->fetchAll("SELECT 
@@ -80,21 +107,45 @@ class DashboardController extends AdminController
             user_id IS NULL
             GROUP BY day_date
             ORDER BY day_date");
-        $daysOfWeek = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-        $counts = array_fill(0, 7, 0);
+        $labels = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+        $payload = array_fill(0, 7, 0);
         foreach ($data as $row) {
-            $index = array_search($row['day_name'], $daysOfWeek);
+            $index = array_search($row['day_name'], $labels);
             if ($index !== false) {
-                $counts[$index] = (int)$row['total'];
+                $payload[$index] = (int)$row['total'];
             }
         }
-        return [
-            'labels' => $daysOfWeek,
-            'payload' => $counts
-        ];
+        return $this->render('admin/dashboard-chart.html.twig', [
+            'id' => 'requests-chart-week',
+            'options' => json_encode([
+                'type' => 'bar',
+                'data' => (object)[
+                    'labels' => $labels,
+                    'datasets' => [
+                        (object)[
+                            'label' => 'Current Week',
+                            'data' => $payload,
+                            'fill' => false,
+                            'backgroundColor' => 'rgba(255, 159, 64, 0.5)',
+                            'borderColor' => 'rgb(255, 159, 64)',
+                            'borderWidth' => 2,
+                        ]
+                    ]
+                ],
+                'options' => (object)[
+                    'responsive' => true,
+                    'maintainAspectRatio' => false,
+                    'scales' => (object)[
+                        'y' => (object)[
+                            'beginAtZero' => true,
+                        ]
+                    ],
+                ],
+            ]),
+        ]);
     }
 
-    #[Get("/requests/chart/month", "requests.month.chart", ["api", "max_requests" => 0])]
+    #[Get("/requests/chart/month", "requests.month.chart", ["max_requests" => 0])]
     public function requests_month_chart()
     {
         $data = db()->fetchAll("SELECT 
@@ -108,17 +159,41 @@ class DashboardController extends AdminController
             ORDER BY day_number");
         $daysInMonth = date('t');
         $labels = range(1, $daysInMonth);
-        $counts = array_fill(0, $daysInMonth, 0);
+        $payload = array_fill(0, $daysInMonth, 0);
         foreach ($data as $row) {
-            $counts[$row['day_number'] - 1] = (int)$row['total'];
+            $payload[$row['day_number'] - 1] = (int)$row['total'];
         }
-        return [
-            'labels' => $labels,
-            'payload' => $counts
-        ];
+        return $this->render('admin/dashboard-chart.html.twig', [
+            'id' => 'requests-chart-month',
+            'options' => json_encode([
+                'type' => 'bar',
+                'data' => (object)[
+                    'labels' => $labels,
+                    'datasets' => [
+                        (object)[
+                            'label' => 'Current Month',
+                            'data' => $payload,
+                            'fill' => false,
+                            'backgroundColor' => 'rgba(153, 102, 255, 0.5)',
+                            'borderColor' => 'rgb(153, 102, 255)',
+                            'borderWidth' => 2,
+                        ]
+                    ]
+                ],
+                'options' => (object)[
+                    'responsive' => true,
+                    'maintainAspectRatio' => false,
+                    'scales' => (object)[
+                        'y' => (object)[
+                            'beginAtZero' => true,
+                        ]
+                    ],
+                ],
+            ]),
+        ]);
     }
 
-    #[Get("/requests/chart/ytd", "requests.ytd.chart", ["api", "max_requests" => 0])]
+    #[Get("/requests/chart/ytd", "requests.ytd.chart", ["max_requests" => 0])]
     public function requests_ytd_chart()
     {
         $data = db()->fetchAll("SELECT DATE_FORMAT(created_at, '%Y-%m') AS month, COUNT(*) AS total
@@ -128,15 +203,39 @@ class DashboardController extends AdminController
             GROUP BY month
             ORDER BY month");
         $labels = [];
-        $counts = [];
+        $payload = [];
         foreach ($data as $row) {
-            $labels[] = date('M Y', strtotime($row['month'] . '-01')); // e.g. "Jan 2025"
-            $counts[] = (int)$row['total'];
+            $labels[] = date('M Y', strtotime($row['month'] . '-01'));
+            $payload[] = (int)$row['total'];
         }
-        return [
-            'labels' => $labels,
-            'payload' => $counts
-        ];
+        return $this->render('admin/dashboard-chart.html.twig', [
+            'id' => 'requests-chart-ytd',
+            'options' => json_encode([
+                'type' => 'bar',
+                'data' => (object)[
+                    'labels' => $labels,
+                    'datasets' => [
+                        (object)[
+                            'label' => 'Year to Date',
+                            'data' => $payload,
+                            'fill' => false,
+                            'backgroundColor' => 'rgba(91, 235, 52, 0.5)',
+                            'borderColor' => 'rgb(91, 235, 52)',
+                            'borderWidth' => 2,
+                        ]
+                    ]
+                ],
+                'options' => (object)[
+                    'responsive' => true,
+                    'maintainAspectRatio' => false,
+                    'scales' => (object)[
+                        'y' => (object)[
+                            'beginAtZero' => true,
+                        ]
+                    ],
+                ],
+            ]),
+        ]);
     }
 
     #[Get("/sales/total", "sales")]

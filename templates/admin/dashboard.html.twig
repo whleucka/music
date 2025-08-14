@@ -55,145 +55,18 @@
   <div id="charts" class="bg-white shad rounded p-2 mt-3">
     <h3>Requests</h3>
     <div class="row">
-      <div class="col-12">
-        <canvas id="requests-today-chart" class="chart"></canvas>
+      <div class="col-12" hx-get="/admin/dashboard/requests/chart/today" hx-trigger="load">
       </div>
     </div>
     <div class="row">
-      <div class="col-md-6 mt-3 mt-md-0">
-        <canvas id="requests-week-chart" class="chart"></canvas>
+      <div class="col-md-6 mt-3 mt-md-0" hx-get="/admin/dashboard/requests/chart/week" hx-trigger="load">
       </div>
-      <div class="col-md-6 mt-3 mt-md-0">
-        <canvas id="requests-month-chart" class="chart"></canvas>
+      <div class="col-md-6 mt-3 mt-md-0" hx-get="/admin/dashboard/requests/chart/month" hx-trigger="load">
       </div>
     </div>
     <div class="row">
-      <div class="col-12 mt-3 mt-md-0">
-        <canvas id="requests-ytd-chart" class="chart"></canvas>
+      <div class="col-12 mt-3 mt-md-0" hx-get="/admin/dashboard/requests/chart/ytd" hx-trigger="load">
       </div>
     </div>
   </div>
-
 </div>
-
-<script>
-fetch('/admin/dashboard/requests/chart/today')
-  .then(response => response.json())
-  .then(res => {
-    if (res.success) {
-      let data = res.data;
-      const ctx = document.getElementById('requests-today-chart').getContext('2d');
-      new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: data.labels,
-          datasets: [{
-            label: 'Today',
-            data: data.payload,
-            fill: false,
-            backgroundColor: 'rgba(0, 94, 255, 0.5)',
-            borderColor: 'rgb(0, 94, 255)',
-            borderWidth: 2,
-            tension: 0.1
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: { beginAtZero: true }
-          }
-        }
-      });
-    }
-  });
-
-fetch('/admin/dashboard/requests/chart/week')
-  .then(r => r.json())
-  .then(res => {
-    if (res.success) {
-      let data = res.data;
-      const ctx = document.getElementById('requests-week-chart').getContext('2d');
-      new Chart(ctx, {
-          type: 'bar',
-          data: {
-              labels: data.labels,
-              datasets: [{
-                  label: 'Current week',
-                  data: data.payload,
-                  backgroundColor: 'rgba(255, 159, 64, 0.6)',
-                  borderColor: 'rgb(255, 159, 64)',
-                  borderWidth: 2
-              }]
-          },
-          options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                  y: { beginAtZero: true }
-              }
-          }
-      });
-    }
-  });
-
-fetch('/admin/dashboard/requests/chart/month')
-  .then(r => r.json())
-  .then(res => {
-    if (res.success) {
-      let data = res.data;
-      const ctx = document.getElementById('requests-month-chart').getContext('2d');
-      new Chart(ctx, {
-          type: 'bar',
-          data: {
-              labels: data.labels,
-              datasets: [{
-                  label: 'Current month',
-                  data: data.payload,
-                  fill: true,
-                  backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                  borderColor: 'rgb(153, 102, 255)',
-                  borderWidth: 2,
-                  tension: 0.1
-              }]
-          },
-          options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                  y: { beginAtZero: true }
-              }
-          }
-      });
-    }
-  });
-
-fetch('/admin/dashboard/requests/chart/ytd')
-  .then(response => response.json())
-  .then(res => {
-    if (res.success) {
-      let data = res.data;
-      const ctx = document.getElementById('requests-ytd-chart').getContext('2d');
-      new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: data.labels,
-          datasets: [{
-            label: 'Year to date',
-            data: data.payload,
-            backgroundColor: 'rgba(91, 235, 52, 0.5)',
-            borderColor: 'rgb(91, 235, 52)',
-            borderWidth: 2
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            y: { beginAtZero: true }
-          }
-        }
-      });
-    }
-  });
-</script>
