@@ -9,29 +9,45 @@ use Echo\Framework\Routing\Route\Get;
 #[Group(path_prefix: "/dashboard", name_prefix: "dashboard")]
 class DashboardController extends AdminController
 {
-    #[Get("/user/count", "user.count")]
-    public function user_count(): int
+    #[Get("/users/count", "users.count")]
+    public function users_count(): int
     {
         return db()->execute("SELECT count(*) 
             FROM users")->fetchColumn();
     }
 
-    #[Get("/customer/count", "customer.count")]
-    public function customer_count(): int
+    #[Get("/users/active", "users.active")]
+    public function users_active(): int
+    {
+        return db()->execute("SELECT COUNT(DISTINCT user_id) AS active_users
+            FROM sessions
+            WHERE created_at >= NOW() - INTERVAL 30 MINUTE AND 
+            user_id IS NOT NULL;")->fetchColumn();
+    }
+    
+
+    #[Get("/customers/count", "customers.count")]
+    public function customers_count(): int
     {
         return 0;
     }
 
-    #[Get("/module/count", "module.count")]
-    public function module_count(): int
+    #[Get("/customers/new", "customers.new")]
+    public function customers_new(): int
+    {
+        return 0;
+    }
+
+    #[Get("/modules/count", "modules.count")]
+    public function modules_count(): int
     {
         return db()->execute("SELECT count(*) 
             FROM modules 
             WHERE parent_id IS NOT NULL")->fetchColumn();
     }
 
-    #[Get("/requests/count/all-time", "requests.all-time")]
-    public function requests_all_time(): int
+    #[Get("/requests/count/total", "requests.total")]
+    public function requests_total(): int
     {
         return db()->execute("SELECT count(*) 
             FROM sessions
@@ -238,8 +254,14 @@ class DashboardController extends AdminController
         ]);
     }
 
-    #[Get("/sales/total", "sales")]
+    #[Get("/sales/total", "sales.total")]
     public function sales(): string
+    {
+        return '$' . number_format(0,2);
+    }
+
+    #[Get("/sales/today", "sales.today")]
+    public function sales_today(): string
     {
         return '$' . number_format(0,2);
     }

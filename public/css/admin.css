@@ -171,16 +171,18 @@ nav#nav-sidebar header h4 {
 * Dashboard
 */
 #dashboard .top-alert {
-  width: 100%;
   height: 150px;
+  width: 24%;
   margin: 10px;
+  flex: 1 1 200px; /* grow, shrink, basis */
+  flex-grow: 3;
   position: relative;
 }
 #dashboard .top-alert .count {
   font-family: 'monospace';
   position: absolute;
   bottom: 60px;
-  font-size: 4rem;
+  font-size: 3.8rem;
   font-weight: 900;
   padding: 0;
   margin: 0;
@@ -189,7 +191,7 @@ nav#nav-sidebar header h4 {
   position: absolute;
   bottom: 20px;
   font-weight: 900;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   padding: 0;
   margin: 0;
 }
@@ -203,6 +205,11 @@ nav#nav-sidebar header h4 {
   color: #fff;
   background-color: #e01b32;
   border-left: 8px solid #ffa6a6;
+}
+#dashboard #users-active {
+  color: #fff;
+  background-color: #1b046e;
+  border-left: 8px solid #7462b5;
 }
 #dashboard #requests {
   color: #fff;
@@ -221,16 +228,27 @@ nav#nav-sidebar header h4 {
   color: #fff;
   background-color: #0080ff;
   border-left: 8px solid #a3d1ff;
+  
 }
 #dashboard #sales {
   color: #fff;
   background-color: #6200ff;
   border-left: 8px solid #c3a3ff;
 }
+#dashboard #sales-today {
+  color: #fff;
+  background-color: #c9ad1c;
+  border-left: 8px solid #fff1ab;
+}
 #dashboard #customers {
   color: #fff;
   background-color: #e330da;
   border-left: 8px solid #ffa3fa;
+}
+#dashboard #customers-new {
+  color: #fff;
+  background-color: #3a786c;
+  border-left: 8px solid #adffef;
 }
 #dashboard .chart {
   height: 350px;
@@ -238,15 +256,9 @@ nav#nav-sidebar header h4 {
 @media (min-width: 576px) {}
 
 @media (min-width: 768px) {
-  #dashboard .top-alert {
-    width: 350px;
-  }
 }
 
 @media (min-width: 992px) {
-  #dashboard .top-alert {
-    width: 380px;
-  }
 }
 
 @media (min-width: 1200px) {

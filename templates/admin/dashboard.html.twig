@@ -2,29 +2,46 @@
   {% include "components/flash.html.twig" %}
 
   <div id="alerts" class="bg-white shad rounded p-2">
-    <div class="d-flex flex-wrap justify-content-md-around justify-content-center align-items-center">
-      <div id="users" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
-        <i class="bi bi-people icon"></i>
-        <div class="text-end count" hx-get="/admin/dashboard/user/count" hx-swap="textContent" hx-trigger="load">
+    <div class="d-flex flex-wrap justify-content-md-evenly justify-content-center align-items-center">
+
+      <div id="modules" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+        <i class="bi bi-box icon"></i>
+        <div class="text-end count" hx-get="/admin/dashboard/modules/count" hx-swap="textContent" hx-trigger="load">
           --
         </div>
-        <p>Users</p>
+        <p>Modules</p>
+      </div>
+
+      <div id="users" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+        <i class="bi bi-people icon"></i>
+        <div class="text-end count" hx-get="/admin/dashboard/users/count" hx-swap="textContent" hx-trigger="load">
+          --
+        </div>
+        <p>Total Users</p>
+      </div>
+
+      <div id="users-active" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+        <i class="bi bi-people icon"></i>
+        <div class="text-end count" hx-get="/admin/dashboard/users/active" hx-swap="textContent" hx-trigger="load">
+          --
+        </div>
+        <p>Active Users</p>
       </div>
 
       <div id="customers" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
         <i class="bi bi-person-bounding-box icon"></i>
-        <div class="text-end count" hx-get="/admin/dashboard/customer/count" hx-swap="textContent" hx-trigger="load">
+        <div class="text-end count" hx-get="/admin/dashboard/customers/count" hx-swap="textContent" hx-trigger="load">
           --
         </div>
-        <p>Customers</p>
+        <p>Total Customers</p>
       </div>
 
-      <div id="modules" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
-        <i class="bi bi-box icon"></i>
-        <div class="text-end count" hx-get="/admin/dashboard/module/count" hx-swap="textContent" hx-trigger="load">
+      <div id="customers-new" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+        <i class="bi bi-person-bounding-box icon"></i>
+        <div class="text-end count" hx-get="/admin/dashboard/customers/new" hx-swap="textContent" hx-trigger="load">
           --
         </div>
-        <p>Modules</p>
+        <p>New Customers</p>
       </div>
 
       <div id="requests-today" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
@@ -37,14 +54,22 @@
 
       <div id="requests" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
         <i class="bi bi-graph-up icon"></i>
-        <div class="text-end count" hx-get="/admin/dashboard/requests/count/all-time" hx-swap="textContent" hx-trigger="load">
+        <div class="text-end count" hx-get="/admin/dashboard/requests/count/total" hx-swap="textContent" hx-trigger="load">
           --
         </div>
         <p>Total Requests</p>
       </div>
 
+      <div id="sales-today" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+        <i class="bi bi-cash icon"></i>
+        <div class="text-end count" hx-get="/admin/dashboard/sales/today" hx-swap="textContent" hx-trigger="load">
+          --
+        </div>
+        <p>Today's Sales</p>
+      </div>
+
       <div id="sales" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
-        <i class="bi bi-cash-coin icon"></i>
+        <i class="bi bi-cash-stack icon"></i>
         <div class="text-end count" hx-get="/admin/dashboard/sales/total" hx-swap="textContent" hx-trigger="load">
           --
         </div>
