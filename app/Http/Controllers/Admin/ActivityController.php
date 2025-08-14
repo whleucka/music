@@ -13,10 +13,14 @@ class ActivityController extends AdminController
         $this->has_create = $this->has_edit = $this->has_delete = false;
 
         $this->table_columns = [
-            "User" => "(SELECT email FROM users WHERE users.id = user_id) as user",
+            "User" => "(SELECT email FROM users WHERE users.id = user_id) as user_id",
             "IP" => "INET_NTOA(ip)",
             "URI" => "uri",
             "Created" => "created_at",
+        ];
+
+        $this->filter_dropdowns = [
+            "user_id" => "SELECT id as value, CONCAT(first_name, ' ', surname) as label FROM users ORDER BY label",
         ];
 
         $this->filter_links = [

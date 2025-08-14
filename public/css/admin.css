@@ -93,6 +93,9 @@ nav#nav-sidebar header h4 {
   opacity: 1;
   background-color: #314555;
 }
+#filter-links .link-count {
+  font-family: 'monospace';
+}
 #filter-search {
   padding-left: 30px;
   background-image: url("https://upload.wikimedia.org/wikipedia/commons/5/55/Magnifying_glass_icon.svg");
@@ -174,6 +177,7 @@ nav#nav-sidebar header h4 {
   width: 380px;
 }
 #dashboard .top-alert .count {
+  font-family: 'monospace';
   position: absolute;
   bottom: 60px;
   font-size: 4rem;
@@ -185,19 +189,19 @@ nav#nav-sidebar header h4 {
   position: absolute;
   bottom: 20px;
   font-weight: 900;
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   padding: 0;
   margin: 0;
 }
 #dashboard .top-alert .icon {
-  left: 15px;
-  font-size: 4rem;
+  left: 30px;
+  font-size: 4.5rem;
   position: absolute;
-  opacity: 0.3;
+  opacity: 0.4;
 }
 #dashboard #users {
   color: #fff;
-  background-color: #ff0000;
+  background-color: #e01b32;
   border-left: 8px solid #ffa6a6;
 }
 #dashboard #requests {
@@ -225,7 +229,7 @@ nav#nav-sidebar header h4 {
 }
 #dashboard #customers {
   color: #fff;
-  background-color: #ff00f2;
+  background-color: #e330da;
   border-left: 8px solid #ffa3fa;
 }
 #dashboard .chart {

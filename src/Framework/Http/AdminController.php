@@ -785,7 +785,7 @@ abstract class AdminController extends Controller
         $filters = [];
         $i = 0;
         foreach ($this->filter_dropdowns as $column => $query) {
-            $selected = $this->getSession("dropdowns_".$i++);
+            $selected = $this->getFilter("dropdowns_".$i++);
             $sql = $this->filter_dropdowns[$column];
             $filters[] = [
                 "label" => $this->getTableTitle($column),
@@ -831,7 +831,7 @@ abstract class AdminController extends Controller
             ...$this->getCommonData(),
             "headers" => array_keys($this->table_columns),
             "filters" => [
-                "show" => $this->total_results > 0 && (!empty($this->search_columns) || $this->filter_date_column != '' || !empty($this->filter_dropdowns)),
+                "show" => !empty($this->search_columns) || $this->filter_date_column != '' || !empty($this->filter_dropdowns),
                 "show_clear" => !empty($this->getSession("filters")),
                 "filter_links" => [
                     "show" => !empty($this->filter_links),

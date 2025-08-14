@@ -1,7 +1,3 @@
-{% block head_js %}
-  <script src="/js/chart.js"></script>
-{% endblock %}
-
 <div id="dashboard">
 
   <div id="alerts" class="bg-white shad rounded p-2">
@@ -12,6 +8,14 @@
           --
         </div>
         <p>Users</p>
+      </div>
+
+      <div id="customers" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+        <i class="bi bi-person-bounding-box icon"></i>
+        <div class="text-end count" hx-get="/admin/dashboard/customer/count" hx-swap="textContent" hx-trigger="load">
+          --
+        </div>
+        <p>Customers</p>
       </div>
 
       <div id="modules" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
@@ -38,14 +42,6 @@
         <p>Total Requests</p>
       </div>
 
-      <div id="customers" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
-        <i class="bi bi-person-bounding-box icon"></i>
-        <div class="text-end count" hx-get="/admin/dashboard/customer/count" hx-swap="textContent" hx-trigger="load">
-          --
-        </div>
-        <p>Customers</p>
-      </div>
-
       <div id="sales" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
         <i class="bi bi-cash-coin icon"></i>
         <div class="text-end count" hx-get="/admin/dashboard/sales/total" hx-swap="textContent" hx-trigger="load">
@@ -62,7 +58,7 @@
       <div class="col-md-6">
         <canvas id="requests-today-chart" class="chart"></canvas>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-6 mt-3 mt-md-0">
         <canvas id="requests-ytd-chart" class="chart"></canvas>
       </div>
     </div>
