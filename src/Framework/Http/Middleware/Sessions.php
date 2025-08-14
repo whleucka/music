@@ -13,15 +13,12 @@ class Sessions implements Middleware
     public function handle(Request $request, Closure $next): Response
     {
         try {
-            $user = user();
-            if ($user) {
-                db()->execute("INSERT INTO sessions (user_id, uri, ip) 
-                    VALUES (?,?,?)", [
-                    user()?->id,
-                    $request->getUri(),
-                    ip2long($request->getClientIp())
-                ]);
-            }
+            db()->execute("INSERT INTO sessions (user_id, uri, ip) 
+                VALUES (?,?,?)", [
+                user()?->id,
+                $request->getUri(),
+                ip2long($request->getClientIp())
+            ]);
         } catch (\Exception|\Error|\PDOException $e) {
             error_log("-- Skipping session insert --");
         }
