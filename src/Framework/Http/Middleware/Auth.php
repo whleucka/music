@@ -20,7 +20,8 @@ class Auth implements Middleware
 
         if (in_array('auth', $middleware) && !$user) {
             Flash::add("warning", "Please sign in to view this page.");
-            $res = new HttpResponse("<script>window.location.href = '/sign-in';</script>", 401);
+            $route = uri("auth.sign-in.index");
+            $res = new HttpResponse("<script>window.location.href = '$route';</script>", 401);
             return $res;
         }
 
