@@ -11,6 +11,9 @@ class RegisterController extends Controller
 {
     public function __construct(private RegisterService $provider)
     {
+        if (!config("security.register_enabled")) {
+            $this->permissionDenied();
+        }
     }
 
     #[Get("/register", "auth.register.index")]

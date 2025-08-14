@@ -16,7 +16,9 @@ class SignInController extends Controller
     #[Get("/sign-in", "auth.sign-in.index")]
     public function index(): string
     {
-        return $this->render("auth/sign-in/index.html.twig");
+        return $this->render("auth/sign-in/index.html.twig", [
+            "register_enabled" => config("security.register_enabled")
+        ]);
     }
 
     #[Post("/sign-in", "auth.sign-in.post", ["max_requests" => 20])]
@@ -30,7 +32,9 @@ class SignInController extends Controller
             $success = $this->provider->signIn($valid->email, $valid->password);
             if ($success) {
                 $path = config("security.authenticated_route");
+                Flash::add("success", "Welcome, " . user()->fullName() . ". You are now signed in");
                 header("HX-Redirect: $path");
+                exit;
             } else {
                 Flash::add("warning", "Invalid email and/or password");
             }

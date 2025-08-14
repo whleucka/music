@@ -11,6 +11,11 @@ class User extends Model
         parent::__construct('users', $id);
     }
 
+    public function fullName()
+    {
+        return trim($this->first_name . ' ' . $this->surname);
+    }
+
     public function gravatar(int $size = 80, string $default = "mp", string $rating = "g")
     {
         $hash = hash( "sha256", strtolower(trim($this->email)));
