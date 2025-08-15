@@ -253,6 +253,50 @@ nav#nav-sidebar header h4 {
 #dashboard .chart {
   height: 350px;
 }
+
+/**
+* HTMX
+*/
+.hx-indicator{
+  opacity:0;
+  transition: opacity 500ms ease-in;
+  color: #324554;
+}
+.htmx-request .hx-indicator{
+  opacity:1;
+}
+.htmx-request.hx-indicator{
+  opacity:1;
+}
+.spinner {
+   width: 22px;
+   height: 22px;
+   display: grid;
+   animation: spinner-plncf9 4s infinite;
+}
+
+.spinner::before,
+.spinner::after {
+   content: "";
+   grid-area: 1/1;
+   border: 3px solid;
+   border-radius: 50%;
+   border-color: #324554 #324554 #0000 #0000;
+   mix-blend-mode: darken;
+   animation: spinner-plncf9 1s infinite linear;
+}
+
+.spinner::after {
+   border-color: #0000 #0000 #dbdcef #dbdcef;
+   animation-direction: reverse;
+}
+
+@keyframes spinner-plncf9 {
+   100% {
+      transform: rotate(1turn);
+   }
+}
+
 @media (min-width: 576px) {}
 
 @media (min-width: 768px) {

@@ -441,6 +441,7 @@ abstract class AdminController extends Controller
 
     private function renderControl(string $type, string $column, ?string $value, array $data = [])
     {
+        $required = false;
         if (isset($this->validation_rules[$column])) {
             $required = in_array("required", $this->validation_rules[$column]);
         }
