@@ -19,6 +19,7 @@ return new class implements Migration
 
     public function down(): string
     {
+        // Fixme: ref integrety breakage
         return "DELETE FROM modules";
     }
 };
