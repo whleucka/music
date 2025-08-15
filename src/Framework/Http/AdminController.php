@@ -898,6 +898,8 @@ abstract class AdminController extends Controller
     protected function getCommonData(): array
     {
         $sidebar_state = session()->get("sidebar_state");
+        // Refresh module in case there are changes
+        $module = $this->getModule();
         return [
             "sidebar" => [
                 "hide" => $sidebar_state
@@ -908,9 +910,9 @@ abstract class AdminController extends Controller
                 "avatar" => $this->user->gravatar(38),
             ],
             "module" => [
-                "link" => $this->module_link,
-                "title" => $this->module_title,
-                "icon" => $this->module_icon,
+                "link" => $module['link'],
+                "title" => $module['title'],
+                "icon" => $module['icon'],
             ]
         ];
     }

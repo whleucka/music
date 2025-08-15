@@ -1,4 +1,4 @@
-<nav id="nav-sidebar" class="text-light {% if hide %}hide{% endif %}">
+<nav id="nav-sidebar" class="text-light {% if hide %}hide{% endif %}" hx-get="/admin/sidebar" hx-trigger="loadSidebar from:body" hx-swap="outerHTML">
   <header class="d-flex justify-content-center align-items-center p-2">
     <h4 class="m-0"><i class="bi bi-shield-check pe-1"></i> <span class="desc">Admin</span></h4>
   </header>
@@ -17,7 +17,7 @@
   </div>
 </nav>
 <script>
-const sidebarLinkActiveLoad = () => {
+var sidebarLinkActiveLoad = () => {
   const links = document.querySelectorAll('#sidebar-links .link');
   links.forEach((link) => {
     link.classList.remove('active');
@@ -28,7 +28,7 @@ const sidebarLinkActiveLoad = () => {
   });
 }
 
-const sidebarLinkActive = (e) => {
+var sidebarLinkActive = (e) => {
   const links = document.querySelectorAll('#sidebar-links .link');
   if (links.length) {
     links.forEach((link) => {
