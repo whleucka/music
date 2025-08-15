@@ -414,15 +414,15 @@ abstract class AdminController extends Controller
         return null;
     }
 
-    private function getValidationClass(string $column)
+    private function getValidationClass(string $column, bool $required)
     {
         $validation_errors = $this->getValiationErrors();
         $request = $this->request->request;
         $classname = [];
-        if (isset($request->$column)) {
+        if (isset($request->$column) || $required && !isset($request->$column)) {
             $classname[] = isset($validation_errors[$column])
                 ? 'is-invalid'
-                : 'is-valid';
+                : (isset($request->$column) ? 'is-valid' : '');
         }
         return implode(" ", $classname);
     }
@@ -448,7 +448,7 @@ abstract class AdminController extends Controller
         $default = [
             "type" => "input",
             "class" => "form-control",
-            "v_class" => $this->getValidationClass($column),
+            "v_class" => $this->getValidationClass($column, $required),
             "id" => $column,
             "name" => $column,
             "title" => array_search($column, $this->form_columns),
