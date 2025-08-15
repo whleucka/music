@@ -10,7 +10,10 @@ use Echo\Framework\Routing\Route\Get;
 #[Group(path_prefix: "/dashboard", name_prefix: "dashboard")]
 class DashboardController extends AdminController
 {
-    public function __construct(private DashboardService $provider) {}
+    public function __construct(private DashboardService $provider) 
+    {
+        parent::__construct();
+    }
 
     #[Get("/sales/total", "sales.total")]
     public function sales(): string
