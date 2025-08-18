@@ -47,8 +47,9 @@ nav#nav-sidebar {
   max-width: 230px;
 }
 nav#nav-sidebar.hide {
-  min-width: 67px;
-  max-width: 67px;
+  min-width: 0px;
+  max-width: 0px;
+  display: none;
 }
 nav#nav-sidebar .nav-link.active {
   margin-left: -5px;
@@ -301,9 +302,19 @@ nav#nav-sidebar header h4 {
    }
 }
 
-@media (min-width: 576px) {}
+@media (min-width: 576px) {
+}
 
 @media (min-width: 768px) {
+  nav#nav-sidebar {
+    min-width: 220px;
+    max-width: 220px;
+  }
+  nav#nav-sidebar.hide {
+    display: block;
+    min-width: 67px;
+    max-width: 67px;
+  }
 }
 
 @media (min-width: 992px) {
