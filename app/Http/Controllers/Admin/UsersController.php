@@ -34,6 +34,7 @@ class UsersController extends AdminController
         ];
 
         $this->form_columns = [
+            "Avatar" => "avatar",
             "Role" => "role",
             "First Name" => "first_name",
             "Surname" => "surname",
@@ -43,6 +44,7 @@ class UsersController extends AdminController
         ];
 
         $this->form_controls = [
+            "avatar" => "image",
             "role" => "dropdown",
             "first_name" => "input",
             "surname" => "input",
@@ -57,9 +59,10 @@ class UsersController extends AdminController
         ];
 
         $this->validation_rules = [
+            "avatar" => [],
             "role" => ["required"],
             "first_name" => ["required"],
-            "surname" => ["required"],
+            "surname" => [],
             "email" => ["required", "email", "unique:users"],
             "password" => ["required", "min_length:10", "regex:^(?=.*[A-Z])(?=.*\W)(?=.*\d).+$"],
             "password_match" => ["required", "match:password"],

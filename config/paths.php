@@ -12,5 +12,6 @@ return [
     "public" => $root . "public",
     "js" => $root . "public/js",
     "logs" => $root . "storage/logs/",
-    "session" => "/tmp"
+    "session" => "/tmp",
+    "uploads" => $root . "storage/uploads",
 ];

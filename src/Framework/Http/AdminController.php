@@ -2,6 +2,7 @@
 
 namespace Echo\Framework\Http;
 
+use App\Models\FileInfo;
 use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Group;
 use Echo\Framework\Routing\Route\{Get, Post};
@@ -40,6 +41,9 @@ abstract class AdminController extends Controller
     protected array $form_datalist = [];
     protected array $form_readonly = [];
     protected array $form_disabled = [];
+    protected array $form_defaults = [];
+
+    protected array $file_accept = [];
 
     protected string $filter_date_column = "created_at";
     protected string $filter_date_start = "";
@@ -176,8 +180,9 @@ abstract class AdminController extends Controller
         }
         $valid = $this->validate($this->validation_rules, "store");
         if ($valid) {
-            $result = $this->handleStore($this->massageRequest((array)$valid));
-            if ($result) {
+            $request = $this->massageRequest(null, (array)$valid);
+            $id = $this->handleStore($request);
+            if ($id) {
                 Flash::add("success", "Create successful");
                 header("HX-Retarget: #module");
                 header("HX-Reselect: #module");
@@ -200,7 +205,8 @@ abstract class AdminController extends Controller
         }
         $valid = $this->validate($this->validation_rules, "update");
         if ($valid) {
-            $result = $this->handleUpdate($id, $this->massageRequest((array)$valid));
+            $request = $this->massageRequest($id, (array)$valid);
+            $result = $this->handleUpdate($id, $request);
             if ($result) {
                 Flash::add("success", "Update successful");
                 header("HX-Retarget: #module");
@@ -232,14 +238,35 @@ abstract class AdminController extends Controller
         return $this->index();
     }
 
-    private function massageRequest(array $request): array
+    private function massageRequest(?int $id, array $request): array
     {
-        foreach ($request as $key => $value) {
+        foreach ($request as $column => $value) {
+            $control = $this->form_controls[$column] ?? null;
             // Handle null
-            if ($value === "NULL") $request[$key] = null;
+            if ($value === "NULL") $request[$column] = null;
             // Handle checkboxes
-            if (isset($this->form_controls[$key]) && $this->form_controls[$key] == "checkbox") {
-                $request[$key] = $value ? 1 : 0;
+            if ($control == "checkbox") {
+                $request[$column] = $value ? 1 : 0;
+            }
+            if (in_array($control, ["file", "image"])) {
+                $delete_file = $this->request->request->delete_file;
+                $is_upload = $this->request->files->$column ?? false;
+                if (isset($delete_file[$column])) {
+                    // Delete the file
+                    $fi = new FileInfo($delete_file[$column]);
+                    if ($fi) {
+                        $fi->delete();
+                        $request[$column] = null;
+                    }
+                } else if ($is_upload) {
+                    $upload_result = $this->handleFileUpload($is_upload);
+                    if ($upload_result) {
+                        $request[$column] = $upload_result;
+                    }
+                } else {
+                    // The file is not being modified
+                    unset($request[$column]);
+                }
             }
         }
         return $request;
@@ -338,7 +365,7 @@ abstract class AdminController extends Controller
             $data = [];
             foreach ($this->form_columns as $value) {
                 $column = $this->getAlias($value);
-                $data[$column] = null;
+                $data[$column] = $this->form_defaults[$column] ?? null;
             }
             return $data;
         }
@@ -364,12 +391,9 @@ abstract class AdminController extends Controller
     {
         if (isset($this->table_format[$column])) {
             $format = $this->table_format[$column];
-            if (is_callable($format)) {
-                return $format($column, $value);
-            }
             return match ($format) {
                 "check" => $this->renderFormat("check", $column, $value),
-                default => $this->renderFormat("text", $column, $value),
+                default => is_callable($format) ? $format($column, $value) : $value
             };
         }
         return $value;
@@ -379,8 +403,8 @@ abstract class AdminController extends Controller
     {
         if (isset($this->form_controls[$column])) {
             $control = $this->form_controls[$column];
-            if (is_callable($control)) {
-                return $control($column, $value);
+            if (in_array($control, ["file", "image"])) {
+                $fi = new FileInfo($value);
             }
             return match ($control) {
                 "input" => $this->renderControl("input", $column, $value),
@@ -407,11 +431,23 @@ abstract class AdminController extends Controller
                         ? db()->fetchAll($this->form_dropdowns[$column])
                         : [],
                 ]),
-                default => $this->renderControl("text", $column, $value),
+                "image" => $this->renderControl("image", $column, $value, [
+                    "type" => "file",
+                    "file" => $fi ? $fi->getAttributes() : false,
+                    "stored_name" => $fi ? $fi->stored_name : false,
+
+                    "accept" => $this->file_accept[$column] ?? "image/*",
+                ]),
+                "file" => $this->renderControl("file", $column, $value, [
+                    "type" => "file",
+                    "file" => $fi ? $fi->getAttributes() : false,
+                    "accept" => $this->file_accept[$column] ?? '',
+                ]),
+                default => is_callable($control) ? $control($column, $value) : $value
             };
         }
         // No control output
-        return null;
+        return $value;
     }
 
     private function getValidationClass(string $column, bool $required)
@@ -494,9 +530,9 @@ abstract class AdminController extends Controller
         if ($request->filter_dropdowns) {
             foreach ($request->filter_dropdowns as $i => $value) {
                 if ($value !== 'NULL') {
-                    $this->setFilter("dropdowns_".$i, $value);
+                    $this->setFilter("dropdowns_" . $i, $value);
                 } else {
-                    $this->removeFilter("dropdowns_".$i, $value);
+                    $this->removeFilter("dropdowns_" . $i, $value);
                 }
             }
         }
@@ -641,7 +677,7 @@ abstract class AdminController extends Controller
     protected function props(bool $filter_links = true)
     {
         $this->processSession();
-        
+
         // Filter links
         if ($filter_links && !empty($this->filter_links)) {
             $filters = array_values($this->filter_links);
@@ -660,26 +696,26 @@ abstract class AdminController extends Controller
                     $this->query_params[] = "%{$this->search_term}%";
                 }
             }
-            $this->query_where[] = '('.implode(" OR ", $where).')';
+            $this->query_where[] = '(' . implode(" OR ", $where) . ')';
         }
 
         // Datetime filter
         if ($this->filter_date_column && $this->filter_date_start && $this->filter_date_end) {
-            $this->query_where[] = sprintf("%s BETWEEN ? AND ?", $this->filter_date_column); 
+            $this->query_where[] = sprintf("%s BETWEEN ? AND ?", $this->filter_date_column);
             $this->query_params[] = $this->filter_date_start;
             $this->query_params[] = $this->filter_date_end;
         } else if ($this->filter_date_column && $this->filter_date_start && !$this->filter_date_end) {
-            $this->query_where[] = sprintf("%s >= ?", $this->filter_date_column); 
+            $this->query_where[] = sprintf("%s >= ?", $this->filter_date_column);
             $this->query_params[] = $this->filter_date_start;
         } else if ($this->filter_date_column && !$this->filter_date_start && $this->filter_date_end) {
-            $this->query_where[] = sprintf("%s <= ?", $this->filter_date_column); 
+            $this->query_where[] = sprintf("%s <= ?", $this->filter_date_column);
             $this->query_params[] = $this->filter_date_end;
         }
 
         // Dropdown filters
         $i = 0;
         foreach ($this->filter_dropdowns as $column => $query) {
-            $selected = $this->getFilter("dropdowns_".$i++);
+            $selected = $this->getFilter("dropdowns_" . $i++);
             if ($selected) {
                 $this->query_where[] = "$column = ?";
                 $this->query_params[] = $selected;
@@ -786,11 +822,11 @@ abstract class AdminController extends Controller
         $filters = [];
         $i = 0;
         foreach ($this->filter_dropdowns as $column => $query) {
-            $selected = $this->getFilter("dropdowns_".$i++);
+            $selected = $this->getFilter("dropdowns_" . $i++);
             $sql = $this->filter_dropdowns[$column];
             $filters[] = [
                 "label" => $this->getTableTitle($column),
-                "selected" => $selected, 
+                "selected" => $selected,
                 "options" => db()->fetchAll($sql),
             ];
         }
@@ -908,7 +944,9 @@ abstract class AdminController extends Controller
             "user" => [
                 "name" => $this->user->first_name . " " . $this->user->surname,
                 "email" => $this->user->email,
-                "avatar" => $this->user->gravatar(38),
+                "avatar" => $this->user->avatar
+                    ? $this->user->avatar()
+                    : $this->user->gravatar(38)
             ],
             "module" => [
                 "link" => $module['link'],
@@ -916,6 +954,49 @@ abstract class AdminController extends Controller
                 "icon" => $module['icon'],
             ]
         ];
+    }
+
+    protected function handleFileUpload(array $file): int|false
+    {
+        $upload_dir = config("paths.uploads");
+        if (!is_dir($upload_dir)) {
+            $result = mkdir($upload_dir, 0775, true);
+            if (!$result) {
+                throw new \RuntimeException("Cannot create uploads directory" . $file['error']);
+            }
+        }
+
+        // Check for upload errors
+        if ($file['error'] !== UPLOAD_ERR_OK) {
+            throw new \RuntimeException("File upload error: " . $file['error']);
+        }
+
+        // Sanitize and generate unique filename
+        $og_name = basename($file['name']);
+        $extension    = pathinfo($og_name, PATHINFO_EXTENSION);
+        $unique_name   = uniqid('file_', true) . ($extension ? ".$extension" : "");
+        $target_path   = sprintf("%s/%s", $upload_dir, $unique_name);
+
+        // Move the uploaded file
+        if (!move_uploaded_file($file['tmp_name'], $target_path)) {
+            throw new \RuntimeException("Failed to move uploaded file.");
+        }
+
+        // Gather file info
+        $mime_type = mime_content_type($target_path);
+        $file_size = filesize($target_path);
+        $relative_path = sprintf("/uploads/%s", $unique_name);
+
+        // Insert file information
+        $result = FileInfo::create([
+            "original_name" => $og_name,
+            "stored_name" => $unique_name,
+            "path" => $relative_path,
+            "mime_type" => $mime_type,
+            "size" => $file_size,
+        ]);
+
+        return $result->id ?? false;
     }
 
     protected function handleDestroy(int $id): bool

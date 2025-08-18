@@ -16,6 +16,12 @@ class User extends Model
         return trim($this->first_name . ' ' . $this->surname);
     }
 
+    public function avatar()
+    {
+        $fi = new FileInfo($this->avatar);
+        return $fi ? $fi->path : null;
+    }
+
     public function gravatar(int $size = 80, string $default = "mp", string $rating = "g")
     {
         $hash = hash( "sha256", strtolower(trim($this->email)));

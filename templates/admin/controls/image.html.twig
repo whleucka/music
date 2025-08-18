@@ -1,0 +1,6 @@
+{% if file.path %}
+<div class="d-flex flex-column">
+  <img src="{{ file.path }}" class="img-thumbnail thumbnail" />
+</div>
+{% endif %}
+{% include 'admin/controls/file.html.twig' %}

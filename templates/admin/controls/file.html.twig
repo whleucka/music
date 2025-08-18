@@ -1,0 +1,8 @@
+{% if value %}
+<div class="py-2">
+  <p class="text-secondary m-0 p-0 mb-1">{{ file.stored_name }}</p>
+  <label for="{{id}}_delete_file">Delete</label>
+  <input type="checkbox" id="{{id}}_delete_file" name="delete_file[{{name}}]" value="{{ value }}" />
+</div>
+{% endif %}
+{% include 'admin/controls/input.html.twig' %}

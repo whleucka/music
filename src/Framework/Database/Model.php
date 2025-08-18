@@ -36,9 +36,6 @@ class Model implements DatabaseModel
 
         if (!is_null($id)) {
             $this->loadAttributes($id);
-            if (empty($this->attributes)) {
-                throw new Exception("model not found");
-            }
         }
     }
 
@@ -255,6 +252,11 @@ class Model implements DatabaseModel
             ->where(["$key = ?"], $this->id)
             ->execute();
         return (bool) $result;
+    }
+
+    public function getAttributes(): array
+    {
+        return $this->attributes;
     }
 
     public function __set($name, $value)

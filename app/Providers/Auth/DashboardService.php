@@ -111,13 +111,13 @@ class DashboardService
 
     public function getWeekRequestsChart()
     {
-        $data = db()->fetchAll("SELECT 
-                DAYNAME(created_at) AS day_name,
+        $data = db()->fetchAll("SELECT
+                MIN(DAYNAME(created_at)) AS day_name,
                 DATE(created_at) AS day_date,
                 COUNT(*) AS total
             FROM sessions
-            WHERE YEARWEEK(created_at, 1) = YEARWEEK(CURDATE(), 1) AND
-            user_id IS NULL
+            WHERE YEARWEEK(created_at, 1) = YEARWEEK(CURDATE(), 1)
+              AND user_id IS NULL
             GROUP BY day_date
             ORDER BY day_date");
         $labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];

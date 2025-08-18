@@ -94,7 +94,7 @@ nav#nav-sidebar header h4 {
   background-color: #314555;
 }
 #filter-links .link-count {
-  font-family: 'monospace';
+  font-family: "Ubuntu Mono", monospace;
 }
 #filter-search {
   padding-left: 30px;
@@ -166,6 +166,10 @@ nav#nav-sidebar header h4 {
   font-weight: 800; 
   color: #333;
 }
+.thumbnail {
+  width: 100px;
+  height: 100px;
+}
 
 /**
 * Dashboard
@@ -179,10 +183,10 @@ nav#nav-sidebar header h4 {
   position: relative;
 }
 #dashboard .top-alert .count {
-  font-family: 'monospace';
+  font-family: "Ubuntu Mono", monospace;
   position: absolute;
   bottom: 60px;
-  font-size: 3.8rem;
+  font-size: 3.2rem;
   font-weight: 900;
   padding: 0;
   margin: 0;
