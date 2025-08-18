@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use Echo\Framework\Http\Controller;
+use Echo\Framework\Routing\Group;
 use Echo\Framework\Routing\Route\Get;
 use Echo\Framework\Session\Flash;
 
+#[Group(path_prefix: "/admin")]
 class SignOutController extends Controller
 {
     #[Get("/sign-out", "auth.sign-out.index")]
