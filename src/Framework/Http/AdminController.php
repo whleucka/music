@@ -3,6 +3,7 @@
 namespace Echo\Framework\Http;
 
 use App\Models\FileInfo;
+use App\Providers\Auth\SidebarService;
 use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Group;
 use Echo\Framework\Routing\Route\{Get, Post};
@@ -934,12 +935,13 @@ abstract class AdminController extends Controller
 
     protected function getCommonData(): array
     {
-        $sidebar_state = session()->get("sidebar_state");
         // Refresh module in case there are changes
         $module = $this->getModule();
+        $sidebar_provider = new SidebarService;
         return [
             "sidebar" => [
-                "hide" => $sidebar_state
+                "hide" => $sidebar_provider->getState(),
+                "links" => $sidebar_provider->getLinks([], [], user())
             ],
             "user" => [
                 "name" => $this->user->first_name . " " . $this->user->surname,

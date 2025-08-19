@@ -1,0 +1,8 @@
+  <a title="{{ module.title }}" href="{{ module.url }}" class="dropdown-item d-block d-md-none" {% if module.normal %}hx-boost="false"{% endif %}>
+    <li>
+        <i class="bi bi-{{ module.icon }}"></i> <span class="ps-2 desc">{{ module.title }}</span>
+    </li>
+    {% for module in module['children'] %}
+      {% include "admin/menu-links.html.twig" with {'module': module, 'depth': depth + 5 } only %} 
+    {% endfor %}
+  </a>
