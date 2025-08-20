@@ -99,6 +99,7 @@ nav#nav-sidebar header h4 {
 }
 #filter-links .link-count {
   font-family: "Ubuntu Mono", monospace;
+  font-size: 0.8em;
 }
 #filter-search {
   padding-left: 30px;
@@ -156,6 +157,9 @@ nav#nav-sidebar header h4 {
   content: ' ▲';
 }
 
+#table #table-actions button, #table #table-actions a {
+  margin-top: 5px;
+}
 #table #row-actions {
   padding: 0 5px;
 }
