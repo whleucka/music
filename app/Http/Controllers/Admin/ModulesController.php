@@ -60,10 +60,9 @@ class ModulesController extends AdminController
         ];
 
         $this->form_dropdowns = [
-            "parent_id" => "SELECT id as value, title as label 
+            "parent_id" => "SELECT id as value, if(parent_id IS NULL, concat(title, ' (root)'), title) as label 
                 FROM modules 
-                WHERE parent_id IS NULL 
-                ORDER BY title",
+                ORDER BY parent_id IS NULL DESC, title",
         ];
 
         $this->validation_rules = [
