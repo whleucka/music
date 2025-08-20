@@ -266,6 +266,6 @@ class Model implements DatabaseModel
 
     public function __get($name)
     {
-        return $this->attributes[$name];
+        return $this->attributes[$name] ?? null;
     }
 }

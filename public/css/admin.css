@@ -30,7 +30,7 @@ html,body {
   border: 0;
   font-weight: 700;
 }
-.btn-primary {
+.btn-primary,.btn-primary:disabled {
  background-color: #324554;
 }
 .btn-primary:hover {
@@ -161,6 +161,14 @@ nav#nav-sidebar header h4 {
 }
 #table #row-actions i {
   font-size: 1.2rem;
+}
+#table .table th.checkbox-cell {
+  width: 1px !important;
+  white-space: nowrap;
+}
+#table .table .checkbox-cell input {
+  width: 15px;
+  height: 15px;
 }
 
 #pagination .page-link {

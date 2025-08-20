@@ -894,6 +894,9 @@ abstract class AdminController extends Controller
         return $this->render("admin/table.html.twig", [
             ...$this->getCommonData(),
             "headers" => $headers,
+            "has_delete" => $this->has_delete,
+            "has_edit" => $this->has_edit,
+            "has_create" => $this->has_create,
             "order_by" => $this->query_order_by,
             "filters" => [
                 "show" => !empty($this->search_columns) || $this->filter_date_column != '' || !empty($this->filter_dropdowns),
