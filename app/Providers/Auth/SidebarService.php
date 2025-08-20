@@ -6,43 +6,44 @@ use App\Models\User;
 
 class SidebarService
 {
-    public function getState()
-    {
-        $state = session()->get("sidebar_state");
-        if (is_null($state)) {
-            session()->set("sidebar_state", true);
-            $state = true;
-        }
-        return $state;
+  public function getState()
+  {
+    $state = session()->get("sidebar_state");
+    if (is_null($state)) {
+      session()->set("sidebar_state", true);
+      $state = true;
     }
+    return $state;
+  }
 
-    public function setState(bool $state)
-    {
-        session()->set("sidebar_state", $state);
-    }
+  public function setState(bool $state)
+  {
+    session()->set("sidebar_state", $state);
+  }
 
-    public function toggleState()
-    {
-        $state = $this->getState();
-        $this->setState(!$state);
-    }
+  public function toggleState()
+  {
+    $state = $this->getState();
+    $this->setState(!$state);
+  }
 
-    public function getLinks(array $nodes = [], array $modules = [], User $user)
-    {
-        if (empty($nodes)) {
-            $nodes = db()->fetchAll("SELECT * 
+  public function getLinks(array $nodes = [], array $modules = [], ?User $user = null)
+  {
+    if (is_null($user)) return [];
+    if (empty($nodes)) {
+      $nodes = db()->fetchAll("SELECT * 
                 FROM modules 
                 WHERE parent_id IS NULL AND enabled = 1
                 ORDER BY item_order");
-        }
-        foreach ($nodes as $node) {
-            if ($user->role === 'admin') {
-            $children = db()->fetchAll("SELECT *, CONCAT('/admin/', link) as url
+    }
+    foreach ($nodes as $node) {
+      if ($user->role === 'admin') {
+        $children = db()->fetchAll("SELECT *, CONCAT('/admin/', link) as url
                 FROM modules 
                 WHERE parent_id = ? AND enabled = 1
                 ORDER BY item_order", [$node['id']]);
-            } else {
-                $children = db()->fetchAll("SELECT *, CONCAT('/admin/', link) as url
+      } else {
+        $children = db()->fetchAll("SELECT *, CONCAT('/admin/', link) as url
                     FROM modules 
                     WHERE parent_id = ? AND 
                     enabled = 1 AND
@@ -51,15 +52,15 @@ class SidebarService
                         WHERE user_id = ? AND module_id = modules.id)
                     ORDER BY item_order
                     ", [
-                    $node['id'],
-                    $user->id
-                ]);
-            }
-            if ($children) {
-                $node['children'] = $this->getLinks($children, [], $user);
-            }
-            $modules[] = $node;
-        }
-        return $modules;
+          $node['id'],
+          $user->id
+        ]);
+      }
+      if ($children) {
+        $node['children'] = $this->getLinks($children, [], $user);
+      }
+      $modules[] = $node;
     }
+    return $modules;
+  }
 }
