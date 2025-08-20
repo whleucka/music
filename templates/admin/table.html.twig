@@ -9,7 +9,7 @@
     {% if has_export() and data.rows %}
       <a href="/admin/{{ module.link }}/export-csv" class="btn btn-sm btn-primary me-2"><i class="bi bi-download pe-1"></i> Export</a>
     {% endif %}
-    {% if filters.show %}
+    {% if filters.show and data.rows %}
       <button class="btn btn-sm btn-primary me-2" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/filter" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-funnel pe-1"></i> Filter</button>
     {% endif %}
     {% if filters.show_clear %}
@@ -18,16 +18,12 @@
         <button type = "submit" class="btn btn-sm btn-danger me-2" name="filter_clear"><i class="bi bi-trash pe-1"></i> Clear Filter</button>
       </form>
     {% endif %}
-    {% if filters.filter_links.show %}
-      <div id="filter-links" class="d-flex flex-wrap">
-      {% for link in filters.filter_links.links %}
-        <button hx-get="/admin/{{ module.link }}/filter/link/{{ loop.index0 }}" hx-swap="outerHTML" hx-target="#table" hx-select="#table" class="btn btn-primary btn-sm text-light filter-link {% if filters.filter_links.active == loop.index0 %}active{% endif %} me-2">{{ link }} 
-          <span class="link-count badge bg-light text-dark ms-1">--</span>
-        </button>
-        <span hx-get="/admin/{{ module.link }}/filter/count/{{ loop.index0 }}" hx-trigger="load" hx-swap="textContent" hx-target="previous .link-count"></span>
-      {% endfor %}
-      </div>
-    {% endif %}
+    {% for link in filters.filter_links.links %}
+      <button hx-get="/admin/{{ module.link }}/filter/link/{{ loop.index0 }}" hx-swap="outerHTML" hx-target="#table" hx-select="#table" class="btn btn-primary btn-sm text-light filter-link {% if filters.filter_links.active == loop.index0 %}active{% endif %} me-2">{{ link }} 
+        <span class="link-count badge bg-light text-dark ms-1">--</span>
+      </button>
+      <span hx-get="/admin/{{ module.link }}/filter/count/{{ loop.index0 }}" hx-trigger="load" hx-swap="textContent" hx-target="previous .link-count"></span>
+    {% endfor %}
   </div>
   <div class="table-responsive p-2">
     {% if data.rows|length > 0 %}

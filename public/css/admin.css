@@ -88,16 +88,16 @@ nav#nav-sidebar header h4 {
 /**
 * Filters
 */
-#filter-links .filter-link {
+#table .filter-link {
   text-decoration: none;
   opacity: 0.5;
 }
-#filter-links .filter-link.active {
+#table .filter-link.active {
   font-weight: 800;
   opacity: 1;
   background-color: #314555;
 }
-#filter-links .link-count {
+#table .link-count {
   font-family: "Ubuntu Mono", monospace;
   font-size: 0.8em;
 }
