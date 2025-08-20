@@ -14,7 +14,7 @@ class ActivityController extends AdminController
 
         $this->table_columns = [
             "User" => "(SELECT email FROM users WHERE users.id = user_id) as user_id",
-            "IP" => "INET_NTOA(ip)",
+            "IP" => "INET_NTOA(ip) as ip",
             "URI" => "uri",
             "Created" => "created_at",
         ];

@@ -81,6 +81,23 @@ abstract class AdminController extends Controller
         return $this->index();
     }
 
+    #[Get("/sort/{idx}", "admin.sort")]
+    public function sort(int $idx): string
+    {
+        $columns = array_values($this->table_columns);
+        $column = $this->getAlias($columns[$idx]);
+        $order_by = $this->getSession("order_by") ?? $this->query_order_by;
+        $sort = $this->getSession("sort") ?? $this->query_sort;
+        if ($order_by == $column) {
+            // Switch direction
+            $this->setSession("sort", ($sort === "ASC" ? "DESC" : "ASC"));
+        } else {
+            $this->setSession("order_by", $column);
+            $this->setSession("sort", "DESC");
+        }
+        return $this->index();
+    }
+
     #[Get("/export-csv", "admin.export-csv")]
     public function export_csv(): mixed
     {
@@ -336,16 +353,6 @@ abstract class AdminController extends Controller
 
     private function runTableQuery(bool $limit = true): bool|PDOStatement
     {
-
-        // Table columns must always contain table_pk
-        if (!in_array($this->table_pk, $this->table_columns)) {
-            $columns[strtoupper($this->table_pk)] = $this->table_pk;
-            $this->table_columns = [
-                ...$columns,
-                ...$this->table_columns,
-            ];
-        }
-
         $q = qb()->select(array_values($this->table_columns))
             ->from($this->table_name)
             ->params($this->query_params)
@@ -607,6 +614,16 @@ abstract class AdminController extends Controller
         } else {
             $this->pageNotFound();
         }
+
+        // Table columns must always contain table_pk
+        if (!in_array($this->table_pk, $this->table_columns)) {
+            $columns[strtoupper($this->table_pk)] = $this->table_pk;
+            $this->table_columns = [
+                ...$columns,
+                ...$this->table_columns,
+            ];
+        }
+
     }
 
     private function columnExists(string $needle, array $haystack): bool
@@ -668,11 +685,13 @@ abstract class AdminController extends Controller
     {
         // Assign module properties
         if ($this->table_name && !empty($this->table_columns)) {
-            $this->active_filter_link = $this->getSession("filter_link") ?? 0;
-            $this->page = $this->getSession("page") ?? 1;
-            $this->search_term = $this->getFilter("search") ?? '';
-            $this->filter_date_start = $this->getFilter("date_start") ?? '';
-            $this->filter_date_end = $this->getFilter("date_end") ?? '';
+            $this->active_filter_link = $this->getSession("filter_link") ?? $this->active_filter_link;
+            $this->page = $this->getSession("page") ?? $this->page;
+            $this->query_order_by = $this->getSession("order_by") ?? $this->query_order_by;
+            $this->query_sort = $this->getSession("sort") ?? $this->query_sort;
+            $this->search_term = $this->getFilter("search") ?? $this->search_term;
+            $this->filter_date_start = $this->getFilter("date_start") ?? $this->filter_date_start;
+            $this->filter_date_end = $this->getFilter("date_end") ?? $this->filter_date_end;
         }
     }
 
@@ -866,9 +885,16 @@ abstract class AdminController extends Controller
         // Setup functions
         $this->registerFunctions();
 
+        // Setup headers
+        $headers = [];
+        foreach ($this->table_columns as $title => $query) {
+            $headers[$this->getAlias($query)] = $title;
+        }
+
         return $this->render("admin/table.html.twig", [
             ...$this->getCommonData(),
-            "headers" => array_keys($this->table_columns),
+            "headers" => $headers,
+            "order_by" => $this->query_order_by,
             "filters" => [
                 "show" => !empty($this->search_columns) || $this->filter_date_column != '' || !empty($this->filter_dropdowns),
                 "show_clear" => !empty($this->getSession("filters")),
@@ -877,16 +903,20 @@ abstract class AdminController extends Controller
                     "active" => $this->active_filter_link,
                     "links" => array_keys($this->filter_links),
                 ],
+                "order_by" => $this->query_order_by,
+                "sort" => $this->query_sort,
             ],
             "caption" => $this->total_pages > 1
                 ? "Showing {$start}–{$end} of {$this->total_results} results"
                 : "",
             "data" => [
                 "rows" => $data,
+            ],
+            "pagination" => [
                 "page" => $this->page,
                 "total_pages" => $this->total_pages,
                 "total_results" => $this->total_results,
-                "pagination_links" => $this->pagination_links,
+                "links" => $this->pagination_links,
             ]
         ]);
     }

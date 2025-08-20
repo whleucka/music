@@ -20,6 +20,9 @@ html,body {
 /**
  * Utilities
  */
+.pointer {
+  cursor: pointer;
+}
 .shad {
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
 }
@@ -137,11 +140,20 @@ nav#nav-sidebar header h4 {
 /**
  * Table
  */
-#table {
-}
-
 #table .table td {
   white-space: nowrap;
+}
+#table .table th {
+  opacity: 0.6;
+}
+#table .table th.active {
+  opacity: 1;
+}
+#table .table th.active.desc:after {
+  content: ' ▼';
+}
+#table .table th.active.asc:after {
+  content: ' ▲';
 }
 
 #table #row-actions {
