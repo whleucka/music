@@ -8,7 +8,7 @@ services:
       - ./:/var/www/html
       - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
     networks:
-      - echonet
+      - net
 
   nginx:
     image: nginx:alpine
@@ -22,7 +22,7 @@ services:
     depends_on:
       - php
     networks:
-      - echonet
+      - net
 
   db:
     image: mariadb:11
@@ -36,10 +36,10 @@ services:
     volumes:
       - ./db_data:/var/lib/mysql
     networks:
-      - echonet
+      - net
 
 networks:
-  echonet:
+  net:
 
 volumes:
   db_data:
