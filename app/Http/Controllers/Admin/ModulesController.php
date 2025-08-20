@@ -23,9 +23,8 @@ class ModulesController extends AdminController
             "icon" => fn($column, $value) => "<i class='bi bi-$value' />",
         ];
 
-        $this->query_order_by = [
-            "item_order ASC",
-        ];
+        $this->query_order_by = "item_order";
+        $this->query_sort = "ASC";
 
         $this->search_columns = [
             "Title",

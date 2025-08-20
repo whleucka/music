@@ -34,7 +34,8 @@ abstract class AdminController extends Controller
 
     protected array $query_where = [];
     protected array $query_params = [];
-    protected array $query_order_by = ["id DESC"];
+    protected string $query_order_by = "id";
+    protected string $query_sort = "DESC";
 
     protected array $form_columns = [];
     protected array $form_controls = [];
@@ -349,7 +350,7 @@ abstract class AdminController extends Controller
             ->from($this->table_name)
             ->params($this->query_params)
             ->where($this->query_where)
-            ->orderBy($this->query_order_by);
+            ->orderBy(["{$this->query_order_by} {$this->query_sort}"]);
 
         if ($limit) {
             $limit = $this->per_page;
