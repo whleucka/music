@@ -21,28 +21,29 @@
     {% if filters.show_clear %}
       <form hx-post="/admin/{{ module.link }}/modal/filter">
         {{ csrf()|raw }}
-        <button type = "submit" class="btn btn-sm btn-danger me-2" name="filter_clear"><i class="bi bi-trash pe-1"></i> Clear Filter</button>
+        <button type="submit" class="btn btn-sm btn-danger me-2" name="filter_clear"><i class="bi bi-trash pe-1"></i> Clear Filter</button>
       </form>
     {% endif %}
   </div>
   <div class="table-responsive p-2">
     {% if data.rows|length > 0 %}
+      <form>
+      {{ csrf()|raw }}
       <table class="table table-hover table-sm m-0">
         <thead>
           {% if table_actions|length > 0 %}
           <tr>
             <td colspan="100%" class="checkbox-cell pb-2">
-              <form hx-post="/admin/{{ module.link }}/table-action" hx-confirm="Are you sure you want to apply this action?" hx-select="#table" hx-target="#table" hx-swap="outerHTML" class="d-flex align-items-center">
-                {{ csrf()|raw }}
+              <div class="d-flex align-items-center">
                 <input id="select-all" onClick="selectAllToggle(event)" type="checkbox" />
-                <select name="table_action" class="form-select p-1 ms-2" id="multi-action" disabled>
+                <select name="table_action" class="form-select p-1 ms-2" id="table-action" disabled>
                   <option disabled selected>Action</option>
                   {% for action in table_actions %}
                   <option value="{{ action.value }}">{{ action.label }}</option>
                   {% endfor %}
                 </select>
-                <button type="submit" class="btn btn-sm btn-primary ms-1" id="multi-action-submit" disabled>OK</button>
-              </form>
+                <button hx-post="/admin/{{ module.link }}/table-action" hx-confirm="Are you sure you want to apply this action?" hx-select="#module" hx-target="#module" hx-swap="outerHTML" type="submit" class="btn btn-sm btn-primary ms-1" id="table-action-submit" disabled>OK</button>
+              </div>
             </td>
           </tr>
           {% endif %}
@@ -63,28 +64,27 @@
           {% for row in data.rows %}
           <tr>
             {% if table_actions|length > 0 %}
-            <td class="checkbox-cell"><input type="checkbox" onChange="checkEnabledMultiAction(event)" id="select_{{ row.id }}" class="checkbox-selection" value="{{ row.id }}" /></td>
+              <td class="checkbox-cell">
+                <input type="checkbox" name="table_selection[]" onChange="checkEnabledMultiAction(event)" id="select_{{ row.id }}" class="checkbox-selection" value="{{ row.id }}" />
+              </td>
             {% endif %}
             {% for key,value in row %}
-            <td>{{ format(key, value)|raw }}</td>
+              <td>{{ format(key, value)|raw }}</td>
             {% endfor %}
             {% if has_row_actions() %}
-            <td id="row-actions">
-              <div class="d-flex justify-content-end">
-                {% if has_show(row.id) %}
-                <button class="btn btn-sm" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-eye"></i></button>
-                {% endif %}
-                {% if has_edit(row.id) %}
-                <button class="btn btn-sm ms-1" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}/edit" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-pencil"></i></button>
-                {% endif %}
-                {% if has_delete(row.id) %}
-                <form>
-                  {{ csrf()|raw }}
-                  <button class="btn btn-sm ms-1" hx-confirm="Please confirm deletion" hx-post="/admin/{{ module.link }}/{{ row.id }}/destroy"><i class="bi bi-trash"></i></button>
-                </form>
-                {% endif %}
-              </div>
-            </td>
+              <td id="row-actions">
+                <div class="d-flex justify-content-end">
+                  {% if has_show(row.id) %}
+                    <button class="btn btn-sm" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-eye"></i></button>
+                  {% endif %}
+                  {% if has_edit(row.id) %}
+                    <button class="btn btn-sm ms-1" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/{{ row.id }}/edit" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-pencil"></i></button>
+                  {% endif %}
+                  {% if has_delete(row.id) %}
+                    <button class="btn btn-sm ms-1" hx-confirm="Please confirm deletion" hx-post="/admin/{{ module.link }}/{{ row.id }}/destroy"><i class="bi bi-trash"></i></button>
+                  {% endif %}
+                </div>
+              </td>
             {% endif %}
           </tr>
           {% endfor %}
@@ -93,6 +93,7 @@
           {{ caption }}
         </caption>
       </table>
+      </form>
     {% else %}
       <div class="text-center p-1">
           <strong>No data available</strong>
@@ -173,7 +174,7 @@
     setMultiActionDisabled(!checked.length);
   }
   var setMultiActionDisabled = (state) => {
-    document.getElementById("multi-action").disabled = state;
-    document.getElementById("multi-action-submit").disabled = state;
+    document.getElementById("table-action").disabled = state;
+    document.getElementById("table-action-submit").disabled = state;
   }
 </script>

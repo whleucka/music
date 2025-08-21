@@ -147,6 +147,7 @@ abstract class AdminController extends Controller
     #[Post("/table-action", "admin.table-action")]
     public function table_action(): string
     {
+        $this->handleRequest($this->request->request);
         return $this->index();
     }
 
@@ -165,7 +166,7 @@ abstract class AdminController extends Controller
             if ($clear) {
                 $this->clearFilters();
             } else {
-                $this->setFilters($valid);
+                $this->handleRequest($valid);
             }
             header("HX-Retarget: #module");
             header("HX-Reselect: #module");
@@ -208,7 +209,7 @@ abstract class AdminController extends Controller
             $request = $this->massageRequest(null, (array)$valid);
             $id = $this->handleStore($request);
             if ($id) {
-                Flash::add("success", "Create successful");
+                Flash::add("success", "Successfully created record");
                 header("HX-Retarget: #module");
                 header("HX-Reselect: #module");
                 header("HX-Reswap: outerHTML");
@@ -233,7 +234,7 @@ abstract class AdminController extends Controller
             $request = $this->massageRequest($id, (array)$valid);
             $result = $this->handleUpdate($id, $request);
             if ($result) {
-                Flash::add("success", "Update successful");
+                Flash::add("success", "Successfully updated record");
                 header("HX-Retarget: #module");
                 header("HX-Reselect: #module");
                 header("HX-Reswap: outerHTML");
@@ -255,7 +256,7 @@ abstract class AdminController extends Controller
         }
         $result = $this->handleDestroy($id);
         if ($result) {
-            Flash::add("success", "Delete successful");
+            Flash::add("success", "Successfully deleted record");
         }
         header("HX-Retarget: #module");
         header("HX-Reselect: #module");
@@ -531,8 +532,14 @@ abstract class AdminController extends Controller
         return $this->render("admin/controls/$type.html.twig", $template_data);
     }
 
-    private function setFilters(?object $request): void
+    private function handleRequest(?object $request): void
     {
+        if ($request->table_action) {
+            $ids = $request->table_selection;
+            foreach ($ids as $id) {
+                $this->handleTableAction($id, $request->table_action);
+            }
+        }
         if ($request->filter_date_start && $request->filter_date_end) {
             $this->setFilter("date_start", $request->filter_date_start);
             $this->setFilter("date_end", $request->filter_date_end);
@@ -685,6 +692,27 @@ abstract class AdminController extends Controller
             return $permission;
         }
         return true;
+    }
+
+    protected function handleTableAction(int $id, string $action)
+    {
+        $exec = match ($action) {
+            "delete" => function($id) {
+                if ($this->hasDelete($id)) {
+                    $result = $this->handleDestroy($id);
+                    if ($result) {
+                        Flash::add("success", "Successfully deleted record");
+                    }
+                } else {
+                    Flash::add("warning", "Cannot delete record $id");
+                }
+            },
+            default => fn() => Flash::add("warning", "Unknown action")
+        };
+        if (is_callable($exec)) {
+            // Execute the action
+            $exec($id);
+        }
     }
 
     protected function processSession()
@@ -1052,7 +1080,6 @@ abstract class AdminController extends Controller
 
     protected function handleDestroy(int $id): bool
     {
-
         try {
             $result = qb()->delete()
                 ->from($this->table_name)
@@ -1064,7 +1091,7 @@ abstract class AdminController extends Controller
             return false;
         } catch (Throwable $ex) {
             error_log($ex->getMessage());
-            Flash::add("danger", "Delete failed. Check logs.");
+            Flash::add("danger", "Delete record failed. Check logs.");
             return false;
         }
     }
@@ -1085,7 +1112,7 @@ abstract class AdminController extends Controller
             return false;
         } catch (Throwable $ex) {
             error_log($ex->getMessage());
-            Flash::add("danger", "Update failed. Check logs.");
+            Flash::add("danger", "Update record failed. Check logs.");
             return false;
         }
     }
@@ -1104,7 +1131,7 @@ abstract class AdminController extends Controller
             return false;
         } catch (Throwable $ex) {
             error_log($ex->getMessage());
-            Flash::add("danger", "Create failed. Check logs.");
+            Flash::add("danger", "Create record failed. Check logs.");
             return false;
         }
     }

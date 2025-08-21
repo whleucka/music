@@ -156,7 +156,6 @@ nav#nav-sidebar header h4 {
 #table .table th.active.asc:after {
   content: ' ▲';
 }
-
 #table #table-actions button, #table #table-actions a {
   margin-top: 5px;
 }
@@ -174,7 +173,9 @@ nav#nav-sidebar header h4 {
   width: 15px;
   height: 15px;
 }
-#table #multi-action {
+#table #table-action {
+  height: 29px;
+  font-size: 0.9em;
   max-width: 150px;
 }
 
