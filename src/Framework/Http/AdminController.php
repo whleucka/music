@@ -26,7 +26,7 @@ abstract class AdminController extends Controller
     protected array $table_actions = [];
     protected array $table_format = [];
 
-    protected int $per_page = 20;
+    protected int $per_page = 10;
     protected int $page = 1;
     protected int $total_pages = 1;
     protected int $total_results = 0;

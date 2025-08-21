@@ -184,6 +184,7 @@ nav#nav-sidebar header h4 {
 }
 
 #pagination .page-link {
+  font-size: 0.7rem;
   color: #324554;
 }
 #pagination .page-item.active .page-link {
