@@ -264,8 +264,8 @@ nav#nav-sidebar header h4 {
 }
 #dashboard #sales {
   color: #fff;
-  background-color: #6200ff;
-  border-left: 8px solid #c3a3ff;
+  background-color: #3a786c;
+  border-left: 8px solid #adffef;
 }
 #dashboard #sales-today {
   color: #fff;
@@ -274,13 +274,13 @@ nav#nav-sidebar header h4 {
 }
 #dashboard #customers {
   color: #fff;
-  background-color: #e330da;
-  border-left: 8px solid #ffa3fa;
+  background-color: #6200ff;
+  border-left: 8px solid #c3a3ff;
 }
 #dashboard #customers-new {
   color: #fff;
-  background-color: #3a786c;
-  border-left: 8px solid #adffef;
+  background-color: #e330da;
+  border-left: 8px solid #ffa3fa;
 }
 #dashboard .chart {
   height: 350px;

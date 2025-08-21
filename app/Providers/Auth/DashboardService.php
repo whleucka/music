@@ -78,6 +78,7 @@ class DashboardService
             $payload[(int)$row['hour']] = (int)$row['total'];
         }
         $labels = array_map(fn($h) => str_pad($h, 2, '0', STR_PAD_LEFT) . ":00", $hours);
+        $today = date("l, F d, Y");
         return [
             'id' => 'requests-chart-today',
             'options' => json_encode([
@@ -86,7 +87,7 @@ class DashboardService
                     'labels' => $labels,
                     'datasets' => [
                         (object)[
-                            'label' => 'Today',
+                            'label' => "$today",
                             'data' => $payload,
                             'fill' => false,
                             'backgroundColor' => 'rgba(0, 94, 255, 0.5)',
@@ -128,6 +129,7 @@ class DashboardService
                 $payload[$index] = (int)$row['total'];
             }
         }
+        $week = date("W");
         return [
             'id' => 'requests-chart-week',
             'options' => json_encode([
@@ -136,7 +138,7 @@ class DashboardService
                     'labels' => $labels,
                     'datasets' => [
                         (object)[
-                            'label' => 'Current Week',
+                            'label' => "Week $week",
                             'data' => $payload,
                             'fill' => false,
                             'backgroundColor' => 'rgba(255, 159, 64, 0.5)',
@@ -175,6 +177,7 @@ class DashboardService
         foreach ($data as $row) {
             $payload[$row['day_number'] - 1] = (int)$row['total'];
         }
+        $month = date('F, Y');
         return [
             'id' => 'requests-chart-month',
             'options' => json_encode([
@@ -183,7 +186,7 @@ class DashboardService
                     'labels' => $labels,
                     'datasets' => [
                         (object)[
-                            'label' => 'Current Month',
+                            'label' => "$month",
                             'data' => $payload,
                             'fill' => false,
                             'backgroundColor' => 'rgba(153, 102, 255, 0.5)',
@@ -219,6 +222,7 @@ class DashboardService
             $labels[] = date('M Y', strtotime($row['month'] . '-01'));
             $payload[] = (int)$row['total'];
         }
+        $year = date("Y");
         return [
             'id' => 'requests-chart-ytd',
             'options' => json_encode([
@@ -227,7 +231,7 @@ class DashboardService
                     'labels' => $labels,
                     'datasets' => [
                         (object)[
-                            'label' => 'Year to Date',
+                            'label' => "$year",
                             'data' => $payload,
                             'fill' => false,
                             'backgroundColor' => 'rgba(91, 235, 52, 0.5)',

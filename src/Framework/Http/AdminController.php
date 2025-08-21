@@ -144,6 +144,12 @@ abstract class AdminController extends Controller
         return $this->runTableQuery(false)->rowCount();
     }
 
+    #[Post("/table-action", "admin.table-action")]
+    public function table_action(): string
+    {
+        return $this->index();
+    }
+
     #[Post("/modal/filter", "admin.set-filter")]
     public function set_filter(): string
     {
@@ -338,7 +344,7 @@ abstract class AdminController extends Controller
         $has_edit = new TwigFunction("has_edit", fn(int $id) => $this->hasEdit($id));
         $has_show = new TwigFunction("has_show", fn(int $id) => $this->hasShow($id));
         $has_delete = new TwigFunction("has_delete", fn(int $id) => $this->hasDelete($id));
-        $has_row_actions = new TwigFunction("has_row_actions", fn() => $this->has_edit || $this->has_delete || !empty($this->table_actions));
+        $has_row_actions = new TwigFunction("has_row_actions", fn() => $this->has_edit || $this->has_delete);
         $control = new TwigFunction("control", fn(string $column, ?string $value) => $this->control($column, $value));
         $format = new TwigFunction("format", fn(string $column, ?string $value) => $this->format($column, $value));
         twig()->addFunction($has_export);
@@ -891,12 +897,21 @@ abstract class AdminController extends Controller
             $headers[$this->getAlias($query)] = $title;
         }
 
+        // Setup table actions
+        if ($this->has_delete) {
+            $this->table_actions[] = [
+                "value" => "delete",
+                "label" => "Delete",
+            ];
+        }
+
         return $this->render("admin/table.html.twig", [
             ...$this->getCommonData(),
             "headers" => $headers,
             "has_delete" => $this->has_delete,
             "has_edit" => $this->has_edit,
             "has_create" => $this->has_create,
+            "table_actions" =>$this->table_actions,
             "order_by" => $this->query_order_by,
             "filters" => [
                 "show" => !empty($this->search_columns) || $this->filter_date_column != '' || !empty($this->filter_dropdowns),

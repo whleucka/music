@@ -12,14 +12,6 @@
         <p>Modules</p>
       </div>
 
-      <div id="users" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
-        <i class="bi bi-people icon"></i>
-        <div class="text-end count" hx-get="/admin/dashboard/users/count" hx-swap="textContent" hx-trigger="load">
-          --
-        </div>
-        <p>Total Users</p>
-      </div>
-
       <div id="users-active" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
         <i class="bi bi-people icon"></i>
         <div class="text-end count" hx-get="/admin/dashboard/users/active" hx-swap="textContent" hx-trigger="load">
@@ -28,7 +20,15 @@
         <p>Active Users</p>
       </div>
 
-      <div id="customers" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+      <div id="users" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+        <i class="bi bi-people icon"></i>
+        <div class="text-end count" hx-get="/admin/dashboard/users/count" hx-swap="textContent" hx-trigger="load">
+          --
+        </div>
+        <p>Total Users</p>
+      </div>
+
+      <!--<div id="customers" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
         <i class="bi bi-person-bounding-box icon"></i>
         <div class="text-end count" hx-get="/admin/dashboard/customers/count" hx-swap="textContent" hx-trigger="load">
           --
@@ -42,7 +42,7 @@
           --
         </div>
         <p>New Customers</p>
-      </div>
+      </div>-->
 
       <div id="requests-today" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
         <i class="bi bi-clock icon"></i>
@@ -60,7 +60,7 @@
         <p>Total Requests</p>
       </div>
 
-      <div id="sales-today" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+      <!--<div id="sales-today" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
         <i class="bi bi-cash icon"></i>
         <div class="text-end count" hx-get="/admin/dashboard/sales/today" hx-swap="textContent" hx-trigger="load">
           --
@@ -74,7 +74,7 @@
           --
         </div>
         <p>Total Sales</p>
-      </div>
+      </div>-->
     </div>
   </div>
 
