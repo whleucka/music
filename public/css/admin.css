@@ -156,6 +156,10 @@ nav#nav-sidebar header h4 {
 #table .table th.active.asc:after {
   content: ' ▲';
 }
+#table #table-actions {
+  white-space: nowrap;
+  overflow: auto;
+}
 #table #table-actions button, #table #table-actions a {
   margin-top: 5px;
 }

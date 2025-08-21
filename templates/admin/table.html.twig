@@ -2,7 +2,7 @@
   {% include "components/flash.html.twig" %}
 </div>
 <div id="table" class="bg-white shad rounded p-2">
-  <div id="table-actions" class="d-flex flex-wrap p-2">
+  <div id="table-actions" class="p-2">
     {% if has_create() %}
       <button class="btn btn-sm btn-success me-2" hx-on::after-request="new bootstrap.Modal(document.getElementById('modal')).show()" hx-get="/admin/{{ module.link }}/modal/create" hx-target=".modal-dialog" hx-select=".modal-content"><i class="bi bi-plus-square pe-1"></i> New</button>
     {% endif %}

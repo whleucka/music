@@ -25,7 +25,7 @@ class ActivityController extends AdminController
 
         $this->filter_links = [
             "Frontend" => "user_id IS NULL",
-            "Backend" => "user_id IS NOT NULL AND user_id != " . user()->id,
+            "Backend" => "user_id IS NOT NULL",
             "Me" => "user_id = " . user()->id,
         ];
 
