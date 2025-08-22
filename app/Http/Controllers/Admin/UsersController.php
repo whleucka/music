@@ -19,11 +19,6 @@ class UsersController extends AdminController
             "Created" => "created_at",
         ];
 
-        $this->filter_links = [
-            "Me" => "id = " . user()->id,
-            "Others" => "id != " . user()->id,
-        ];
-
         $this->search_columns = [
             "Email",
         ];
@@ -71,7 +66,7 @@ class UsersController extends AdminController
         parent::__construct("users");
     }
 
-    public function validate(array $ruleset, string $tag = ''): ?object
+    public function validate(array $ruleset = [], string $tag = ''): mixed
     {
         if ($tag === 'update') {
             $ruleset = $this->removeValidationRule($ruleset, "email", "unique:users");

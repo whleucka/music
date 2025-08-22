@@ -27,4 +27,21 @@ class User extends Model
         $hash = hash( "sha256", strtolower(trim($this->email)));
         return "https://www.gravatar.com/avatar/{$hash}?s={$size}&d={$default}&r={$rating}";
     }
+
+    public function hasPermission(int $module_id): bool
+    {
+        $permission = UserPermission::where("user_id", $this->id)
+            ->andWhere("module_id", $module_id)
+            ->get();
+        return $permission ? true : false;
+    }
+
+    public function hasModePermission(int $module_id, string $mode): bool
+    {
+        $permission = UserPermission::where("user_id", $this->id)
+            ->andWhere("module_id", $module_id)
+            ->andWhere($mode, 1)
+            ->get();
+        return $permission ? true : false;
+    }
 }

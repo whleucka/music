@@ -161,7 +161,7 @@ abstract class AdminController extends Controller
             "filter_date_end" => [],
             "filter_clear" => [],
             "filter_dropdowns" => [],
-        ]);
+        ], "filter");
         if ($valid) {
             if ($clear) {
                 $this->clearFilters();
@@ -670,9 +670,7 @@ abstract class AdminController extends Controller
         // Check module permission
         if (user()->role !== 'admin') {
             // Maybe permission is granted to them
-            $permission = db()->fetch("SELECT * 
-                FROM user_permissions 
-                WHERE user_id = ? AND module_id = ?", [user()->id, $module['id']]);
+            $permission = user()->hasPermission($module["id"]);
             if (!$permission) {
                 $this->permissionDenied();
             }
@@ -680,15 +678,13 @@ abstract class AdminController extends Controller
         return true;
     }
 
-    private function checkPermission(string $permission)
+    private function checkPermission(string $mode)
     {
         $module = $this->getModule();
         // Check module (create,edit,delete) permission
         if (user()->role !== 'admin') {
             // Maybe permission is granted to them
-            $permission = db()->fetch("SELECT * 
-                FROM user_permissions 
-                WHERE user_id = ? AND module_id = ? AND $permission = 1", [user()->id, $module['id']]);
+            $permission = user()->hasModePermission($module["id"], $mode);
             return $permission;
         }
         return true;
