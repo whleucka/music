@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
+use App\Models\UserPermission;
 use Echo\Framework\Http\AdminController;
 use Echo\Framework\Routing\Group;
 
@@ -67,27 +68,27 @@ class UserPermissionsController extends AdminController
         parent::__construct("user_permissions");
     }
 
-    public function validate(array $ruleset = [], string $tag = ''): mixed
+    public function validate(array $ruleset = [], mixed $id = null): mixed
     {
-        $request = parent::validate($ruleset, $tag);
+        $request = parent::validate($ruleset, $id);
+        // Parent validation succeeds
         if ($request) {
             $module_id = $request->module_id;
             $user_id = $request->user_id;
             $user = User::find($user_id);
             if ($user) {
                 $exists = $user->hasPermission($module_id);
-                if ($tag === "store") {
-                    if ($exists) {
-                        // Set validation error
+                if ($id) {
+                    // Update validation
+                    $user_permission = UserPermission::find($id);
+                    if ($exists && $user_permission && $user_permission->module_id != $request->module_id) {
                         $this->addValidationError("module_id", "This user already has permission to this module");
                         return null;
                     }
-                } else if ($tag === "update") {
-                    if ($exists) {
-                        // This record already exists, unset request to avoid crash
-                        unset($request->module_id);
-                        unset($request->user_id);
-                    }
+                } else if ($exists) {
+                    // Create validation
+                    $this->addValidationError("module_id", "This user already has permission to this module");
+                    return null;
                 }
             }
         }

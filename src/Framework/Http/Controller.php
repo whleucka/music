@@ -86,7 +86,7 @@ class Controller implements HttpController
         $this->setHeader("HX-Trigger", $opts);
     }
 
-    public function validate(array $ruleset = [], string $tag = ''): mixed
+    public function validate(array $ruleset = [], mixed $id = null): mixed
     {
         $valid = true;
         $request = $this->request->request->data();

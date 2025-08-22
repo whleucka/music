@@ -66,9 +66,9 @@ class UsersController extends AdminController
         parent::__construct("users");
     }
 
-    public function validate(array $ruleset = [], string $tag = ''): mixed
+    public function validate(array $ruleset = [], mixed $id = null): mixed
     {
-        if ($tag === 'update') {
+        if ($id) {
             $ruleset = $this->removeValidationRule($ruleset, "email", "unique:users");
         }
         return parent::validate($ruleset);

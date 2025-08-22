@@ -204,7 +204,7 @@ abstract class AdminController extends Controller
         if (!$this->hasCreate()) {
             return $this->permissionDenied();
         }
-        $valid = $this->validate($this->validation_rules, "store");
+        $valid = $this->validate($this->validation_rules);
         if ($valid) {
             $request = $this->massageRequest(null, (array)$valid);
             $id = $this->handleStore($request);
@@ -229,7 +229,7 @@ abstract class AdminController extends Controller
         if (!$this->hasEdit($id)) {
             return $this->permissionDenied();
         }
-        $valid = $this->validate($this->validation_rules, "update");
+        $valid = $this->validate($this->validation_rules, $id);
         if ($valid) {
             $request = $this->massageRequest($id, (array)$valid);
             $result = $this->handleUpdate($id, $request);
