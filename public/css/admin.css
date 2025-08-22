@@ -144,12 +144,11 @@ nav#nav-sidebar header h4 {
 #table .table td {
   white-space: nowrap;
 }
-#table .table th.active {
-  color: #ffe6a3;
-}
 #table .table th {
-  background-color: #324554;
-  color: #fff;
+  opacity: 0.6;
+}
+#table .table th.active {
+  opacity: 1;
 }
 #table .table th.active.desc:after {
   content: ' ▼';
@@ -185,7 +184,7 @@ nav#nav-sidebar header h4 {
 }
 
 #pagination .page-link {
-  font-size: 0.7rem;
+  font-size: 1.2em;
   color: #324554;
 }
 #pagination .page-item.active .page-link {
@@ -242,31 +241,31 @@ nav#nav-sidebar header h4 {
 }
 #dashboard #users {
   color: #fff;
-  background-color: #e01b32;
-  border-left: 8px solid #ffa6a6;
+  background-color: #08961d;
+  border-left: 8px solid #87ff99;
 }
 #dashboard #users-active {
   color: #fff;
-  background-color: #1b046e;
-  border-left: 8px solid #7462b5;
+  background-color: #ff8c19;
+  border-left: 8px solid #ffdfbf;
 }
 #dashboard #requests {
   color: #fff;
-  background-color: #ff6f00;
-  border-left: 8px solid #ffd2b0;
+  background-color: #c800ff;
+  border-left: 8px solid #e482ff;
 }
 #dashboard #requests-today {
   color: #fff;
-  background-color: #00ad1d;
-  border-left: 8px solid #ceffb8;
+  background-color: #003cff;
+  border-left: 8px solid #4287f5;
 }
 #dashboard #requests-today-chart {
   width: 100%;
 }
 #dashboard #modules {
   color: #fff;
-  background-color: #0080ff;
-  border-left: 8px solid #a3d1ff;
+  background-color: #ff2929;
+  border-left: 8px solid #ffbfbf;
   
 }
 #dashboard #sales {
@@ -363,6 +362,10 @@ nav#nav-sidebar header h4 {
 
 /** sm devices and lower */
 @media (max-width: 575.98px) {
+  #pagination .page-link {
+    font-size: 0.8em;
+    padding: 8px;
+  }
 }
 
 /** md devices and lower */
