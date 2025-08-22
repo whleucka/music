@@ -144,11 +144,12 @@ nav#nav-sidebar header h4 {
 #table .table td {
   white-space: nowrap;
 }
-#table .table th {
-  opacity: 0.6;
-}
 #table .table th.active {
-  opacity: 1;
+  color: #ffe6a3;
+}
+#table .table th {
+  background-color: #324554;
+  color: #fff;
 }
 #table .table th.active.desc:after {
   content: ' ▼';
