@@ -534,22 +534,24 @@ abstract class AdminController extends Controller
 
     private function handleRequest(?object $request): void
     {
-        if ($request->table_action) {
+        if (isset($request->table_action)) {
             $ids = $request->table_selection;
-            foreach ($ids as $id) {
-                $this->handleTableAction($id, $request->table_action);
+            if ($ids) {
+                foreach ($ids as $id) {
+                    $this->handleTableAction($id, $request->table_action);
+                }
             }
         }
-        if ($request->filter_date_start && $request->filter_date_end) {
+        if (isset($request->filter_date_start) && isset($request->filter_date_end)) {
             $this->setFilter("date_start", $request->filter_date_start);
             $this->setFilter("date_end", $request->filter_date_end);
             $this->setSession("page", 1);
         }
-        if ($request->filter_search) {
+        if (isset($request->filter_search)) {
             $this->setFilter("search", $request->filter_search);
             $this->setSession("page", 1);
         }
-        if ($request->filter_dropdowns) {
+        if (isset($request->filter_dropdowns)) {
             foreach ($request->filter_dropdowns as $i => $value) {
                 if ($value !== 'NULL') {
                     $this->setFilter("dropdowns_" . $i, $value);
