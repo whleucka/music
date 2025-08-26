@@ -90,7 +90,8 @@ abstract class AdminController extends Controller
         $sort = $this->getSession("sort") ?? $this->query_sort;
         if ($order_by == $column) {
             // Switch direction
-            $this->setSession("sort", ($sort === "ASC" ? "DESC" : "ASC"));
+            $direction = $sort === "ASC" ? "DESC" : "ASC";
+            $this->setSession("sort", $direction);
         } else {
             $this->setSession("order_by", $column);
             $this->setSession("sort", "DESC");
@@ -443,9 +444,9 @@ abstract class AdminController extends Controller
                 ]),
                 "dropdown" => $this->renderControl("dropdown", $column, $value, [
                     "class" => "form-select",
-                    "options" => key_exists($column, $this->form_dropdowns)
+                    "options" => key_exists($column, $this->form_dropdowns) && is_string($this->form_dropdowns[$column])
                         ? db()->fetchAll($this->form_dropdowns[$column])
-                        : [],
+                        : $this->form_dropdowns[$column] ?? '',
                 ]),
                 "image" => $this->renderControl("image", $column, $value, [
                     "type" => "file",
@@ -880,7 +881,9 @@ abstract class AdminController extends Controller
             $filters[] = [
                 "label" => $this->getTableTitle($column),
                 "selected" => $selected,
-                "options" => db()->fetchAll($sql),
+                "options" => key_exists($column, $this->filter_dropdowns) && is_string($this->filter_dropdowns[$column])
+                    ? db()->fetchAll($this->filter_dropdowns[$column])
+                    : $this->filter_dropdowns[$column] ?? [],
             ];
         }
         return $filters;

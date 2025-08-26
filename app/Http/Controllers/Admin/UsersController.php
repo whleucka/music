@@ -24,8 +24,16 @@ class UsersController extends AdminController
         ];
 
         $this->filter_dropdowns = [
-            "role" => "SELECT 'standard' as value, 'Standard' as label UNION
-                SELECT 'admin' as value, 'Admin' as label",
+            "role" => [
+                [
+                    "value" => "standard",
+                    "label" => "Standard",
+                ],
+                [
+                    "value" => "admin",
+                    "label" => "Admin",
+                ],
+            ]
         ];
 
         $this->form_columns = [
@@ -49,8 +57,16 @@ class UsersController extends AdminController
         ];
 
         $this->form_dropdowns = [
-            "role" => "SELECT 'standard' as value, 'Standard' as label UNION 
-                SELECT 'admin' as value, 'Admin' as label",
+            "role" => [
+                [
+                    "value" => "standard",
+                    "label" => "Standard",
+                ],
+                [
+                    "value" => "admin",
+                    "label" => "Admin",
+                ],
+            ]
         ];
 
         $this->validation_rules = [
