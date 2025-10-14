@@ -2,386 +2,421 @@
 
 /** App */
 #app {
-    color: #333;
-    font-family: "Ubuntu", sans-serif;
-    font-weight: 400;
-    font-style: normal;
+  color: #333;
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 400;
+  font-style: normal;
 }
 #view {
-    overflow: hidden;
+  overflow: hidden;
 }
 
 /** Tracks */
 .track-row {
-    overflow: visible;
+  overflow: visible;
 }
 .dropdown-menu {
-    z-index: 9999;
+  z-index: 9999;
 }
 .dropdown-menu li {
-    position: relative;
+  position: relative;
 }
 .dropdown-menu .dropdown-item {
-    max-width: 320px;
+  max-width: 320px;
 }
 .dropstart .dropdown-toggle::before {
-    content: none;
+  content: none;
 }
 .dropdown-menu .dropdown-submenu {
-    display: none;
+  display: none;
 }
 .dropdown-menu > li:hover > .dropdown-submenu {
-    display: block;
+  display: block;
 }
 .track-row:not(:last-child) {
-    margin-bottom: 6px;
+  margin-bottom: 6px;
 }
 
 .track-row:hover {
-    cursor: pointer;
-    background-color: rgba(0,0,0, 0.05);
+  cursor: pointer;
+  background-color: rgba(0,0,0, 0.05);
 }
 
 .track-row .cover img {
-    border: 1px solid #bbb;
-    width: 38px;
-    height: 38px;
-    border-radius: 6px;
+  border: 1px solid #bbb;
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
 }
 
 .track-row.active .title {
-    font-weight: 800;
+  font-weight: 800;
 }
 
 .track-row .artist {
-    font-size: 0.8rem;
+  font-size: 0.8rem;
 }
 
 .track-row .like {
-    font-size: 1.5rem;
+  font-size: 1.5rem;
 }
 
 .track-row .liked {
-    color: #222;
-    opacity: 0.3;
+  color: #222;
+  opacity: 0.3;
 }
 
 .track-row .liked.active {
-    color: #e52d27;
-    opacity: 1;
+  color: #e52d27;
+  opacity: 1;
 }
 
 /**
- * Actions
- */
+* Actions
+*/
 #actions.bg-white {
-    background-color: #f1f2f6 !important;
+  background-color: #f1f2f6 !important;
 }
 #actions .btn {
-    height: 30px;
-    white-space: nowrap;
+  height: 30px;
+  white-space: nowrap;
 }
 #actions .btn-primary {
-    background: #485563;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #29323c, #485563);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #29323c, #485563); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #485563;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #29323c, #485563);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #29323c, #485563); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 #actions .btn:not(:last-child) {
-    margin-right: 5px;
+  margin-right: 5px;
 }
 
 /** Player */
 #player {
-    border-top: 3px solid #ddd;
+  border-top: 3px solid #ddd;
 }
 
 #player #cover {
-    padding: 10px;
+  padding: 10px;
 }
 
 #player #cover img {
-    border: 1px solid #bbb;
-    border-radius: 5px;
-    width: 60px;
-    height: 60px;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  width: 60px;
+  height: 60px;
 }
 
 #player #info {
-    width: 100%;
-    max-width: 160px;
+  width: 100%;
+  max-width: 160px;
 }
 
 #player #controls {
-    overflow: hidden;
-    margin: 0 10px;
+  overflow: hidden;
+  margin: 0 10px;
 }
 
 #player #controls #track-progress {
-    border: 1px solid #bbb;
-    max-width: 500px;
-    width: 100%;
-    height: 8px;
+  border: 1px solid #bbb;
+  max-width: 500px;
+  width: 100%;
+  height: 8px;
 }
 
 #player #controls .track-progress {
-    background: #e52d27;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #FF00BF, #e52d27);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to left, #FF00BF, #e52d27); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #e52d27;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #FF00BF, #e52d27);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #FF00BF, #e52d27); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 #player #controls .track-progress.disable {
-    opacity: 0.5;
+  opacity: 0.5;
 }
 
 #player #controls .buffer {
-    opacity: 0.5;
-    background-color: #bbb;
+  opacity: 0.5;
+  background-color: #bbb;
 }
 
 #player #controls button {
-    font-size: 1.5rem;
-    padding: 0.7rem;
-    opacity: 0.6;
-    border: 0;
+  font-size: 1.5rem;
+  padding: 0.7rem;
+  opacity: 0.6;
+  border: 0;
 }
 
 #player #controls button:hover {
-    opacity: 1;
+  opacity: 1;
 }
 
 #player #controls #shuffle.active {
-    opacity: 1;
+  opacity: 1;
 }
 
 #player #controls #shuffle.active i {
-    color: #33CD32;
+  color: #33CD32;
 }
 
 #player #volume {
-    width: 400px;
+  width: 400px;
 }
 
 #player #volume #volume-progress {
-    border: 1px solid #bbb;
-    height: 8px;
+  border: 1px solid #bbb;
+  height: 8px;
 }
 
 #player #volume #volume-progress .progress-bar {
-    background: #FDFC47;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to left, #24FE41, #FDFC47);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to left, #24FE41, #FDFC47); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #FDFC47;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #24FE41, #FDFC47);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #24FE41, #FDFC47); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 #player .loader {
-    display: none;
-    transform: scale(0.8);
+  display: none;
+  transform: scale(0.8);
 }
 
 .lds-ellipsis,
 .lds-ellipsis div {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 .lds-ellipsis {
-    display: inline-block;
-    position: relative;
-    left: -5px;
-    top: -10px;
-    width: 60px;
-    height: 60px;
+  display: inline-block;
+  position: relative;
+  left: -5px;
+  top: -10px;
+  width: 60px;
+  height: 60px;
 }
 .lds-ellipsis div {
-    position: absolute;
-    top: 33.33333px;
-    width: 13.33333px;
-    height: 13.33333px;
-    border-radius: 50%;
-    background: #aaa;
-    animation-timing-function: cubic-bezier(0, 1, 1, 0);
+  position: absolute;
+  top: 33.33333px;
+  width: 13.33333px;
+  height: 13.33333px;
+  border-radius: 50%;
+  background: #aaa;
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
 }
 .lds-ellipsis div:nth-child(1) {
-    left: 8px;
-    animation: lds-ellipsis1 0.6s infinite;
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
 }
 .lds-ellipsis div:nth-child(2) {
-    left: 8px;
-    animation: lds-ellipsis2 0.6s infinite;
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
 }
 .lds-ellipsis div:nth-child(3) {
-    left: 32px;
-    animation: lds-ellipsis2 0.6s infinite;
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
 }
 .lds-ellipsis div:nth-child(4) {
-    left: 56px;
-    animation: lds-ellipsis3 0.6s infinite;
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
 }
 @keyframes lds-ellipsis1 {
-    0% {
-        transform: scale(0);
-    }
-    100% {
-        transform: scale(1);
-    }
+0% {
+  transform: scale(0);
+}
+100% {
+  transform: scale(1);
+}
 }
 @keyframes lds-ellipsis3 {
-    0% {
-        transform: scale(1);
-    }
-    100% {
-        transform: scale(0);
-    }
+0% {
+  transform: scale(1);
+}
+100% {
+  transform: scale(0);
+}
 }
 @keyframes lds-ellipsis2 {
-    0% {
-        transform: translate(0, 0);
-    }
-    100% {
-        transform: translate(24px, 0);
-    }
+0% {
+  transform: translate(0, 0);
+}
+100% {
+  transform: translate(24px, 0);
+}
 }
 
 /** Now playing (playlist) */
 #top-play {
-    font-size: 2.5rem;
-    font-weight: bold;
+  font-size: 2.5rem;
+  font-weight: bold;
 }
 
 /** Playlists */
 #playlists #load div {
-    margin-bottom: 4px;
+  margin-bottom: 4px;
 }
 
 
 #actions .btn-group {
-    position: relative;
+  position: relative;
 }
 
 #actions .btn-group .dropdown-menu {
-    position: fixed !important;
+  position: fixed !important;
 }
 
 
 /** Headers */
 .header {
-    padding: 10px;
-    height: 150px;
+  padding: 10px;
+  height: 150px;
 }
 
 .header h2 {
-    font-size: 2rem !important;
+  font-size: 2rem !important;
 }
 
 /**
- * Utility
- */
+* Utility
+*/
 .hidden {
-    display: none;
+  display: none;
 }
 
 *:focus {
-    box-shadow: none !important;
-    outline-style: none;
-    border: 0;
+  box-shadow: none !important;
+  outline-style: none;
+  border: 0;
 }
 
 .scroll-cont {
-    height: 100%;
-    overflow: auto;
+  height: 100%;
+  overflow: auto;
 }
 
 /** Buttons */
 .btn {
-    border: 0;
-    opacity: 0.8;
+  border: 0;
+  opacity: 0.8;
 }
 .btn:hover {
-    opacity: 1;
+  opacity: 1;
 }
 .btn-primary {
-    background: #005C97;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #363795, #005C97);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #363795, #005C97); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #005C97;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #363795, #005C97);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #363795, #005C97); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 .btn-danger {
-    background: #FF416C;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to right, #FF4B2B, #FF416C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: #FF416C;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #FF4B2B, #FF416C);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #FF4B2B, #FF416C); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
 /** Colours */
 .bg-twitch {
-    color: #fff;
-    background: #6441A5;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to bottom, #2a0845, #6441A5);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to bottom, #2a0845, #6441A5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: #fff;
+  background: #6441A5;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to bottom, #2a0845, #6441A5);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to bottom, #2a0845, #6441A5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-image: linear-gradient(
+    rgba(255, 0, 255, 0.3),    /* Top overlay color (black @ 50% opacity) */
+    rgba(255, 0, 255, 0.3)     /* Bottom overlay color */
+    ), url('../images/metallica.jpg');
+  background-size: cover;
+  background-position: 50% 15%;
+  background-repeat: no-repeat;
 }
 .bg-visions {
-    color: #fff;
-    background: #000046;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to top, #1CB5E0, #000046);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to top, #1CB5E0, #000046); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: #fff;
+  background: #000046;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to top, #1CB5E0, #000046);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to top, #1CB5E0, #000046); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 .bg-moon {
-    color: #fff;
-    background: #4e54c8;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to top, #8f94fb, #4e54c8);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to top, #8f94fb, #4e54c8); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: #fff;
+  background: #4e54c8;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to top, #8f94fb, #4e54c8);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to top, #8f94fb, #4e54c8); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-image: linear-gradient(
+    rgba(0, 255, 10, 0.3),    /* Top overlay color (black @ 50% opacity) */
+    rgba(0, 255, 10, 0.3)     /* Bottom overlay color */
+    ), url('../images/slipknot.jpeg');
+  background-size: cover;
+  background-position: 50% 35%;
+  background-repeat: no-repeat;
 }
 .bg-sin {
-    color: #fff;
-    background: #ED213A;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to bottom, #93291E, #ED213A);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to bottom, #93291E, #ED213A); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: #fff;
+  background: #ED213A;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to bottom, #93291E, #ED213A);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to bottom, #93291E, #ED213A); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-image: linear-gradient(
+    rgba(255, 0, 0, 0.3),    /* Top overlay color (black @ 50% opacity) */
+    rgba(255, 0, 0, 0.3)     /* Bottom overlay color */
+    ), url('../images/tragicallyhip.jpg');
+  background-size: cover;
+  background-position: 50% 15%;
+  background-repeat: no-repeat;
 }
 .bg-lush {
-    color: #fff;
-    background: #56ab2f;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to top, #a8e063, #56ab2f);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to top, #a8e063, #56ab2f); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: #fff;
+  background: #56ab2f;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to top, #a8e063, #56ab2f);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to top, #a8e063, #56ab2f); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-image: linear-gradient(
+    rgba(0, 10, 255, 0.3),    /* Top overlay color (black @ 50% opacity) */
+    rgba(0, 10, 255, 0.3)     /* Bottom overlay color */
+    ), url('../images/alexisonfire.jpg');
+  background-size: cover;
+  background-position: 50% 15%;
+  background-repeat: no-repeat;
 }
 .bg-orange {
-    color: #fff;
-    background: #fc4a1a;  /* fallback for old browsers */
-    background: -webkit-linear-gradient(to top, #f7b733, #fc4a1a);  /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(to top, #f7b733, #fc4a1a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: #fff;
+  background: #fc4a1a;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to top, #f7b733, #fc4a1a);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to top, #f7b733, #fc4a1a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background-image: linear-gradient(
+    rgba(255, 165, 0, 0.3),    /* Top overlay color (black @ 50% opacity) */
+    rgba(255, 165, 0, 0.3)     /* Bottom overlay color */
+    ), url('../images/ozzy.webp');
+  background-size: cover;
+  background-position: 50% 25%;
+  background-repeat: no-repeat;
 }
 
 
 /** Nav */
 #navbar {
-    border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #eee;
 }
 
 #navbar #menu #top-search {
-    width: 60%;
+  width: 60%;
 }
 
 #navbar #menu #top-search input {
-    border: 1px solid #ddd;
+  border: 1px solid #ddd;
 }
 
 #navbar #menu .nav-item {
-    white-space: nowrap;
+  white-space: nowrap;
 }
 
 /**
- * Spinner/Loader
- */
+* Spinner/Loader
+*/
 #content-loader img {
-    width: 40px;
-    height: 40px;
+  width: 40px;
+  height: 40px;
 }
 
 
 /** Larger devices */
 @media (min-width: 576px) {
-    .header {
-        height: 180px;
-    }
-    .header h2 {
-        font-size: 3rem !important;
-    }
-    #top-play {
-        font-size: 3rem;
-    }
+  .header {
+    height: 180px;
+  }
+  .header h2 {
+    font-size: 3rem !important;
+  }
+  #top-play {
+    font-size: 3rem;
+  }
 }
