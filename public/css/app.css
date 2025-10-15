@@ -2,14 +2,14 @@
 
 body {
     background-image: linear-gradient(
-      rgba(255, 255, 255, 0.4),    /* Top overlay color (black @ 50% opacity) */
-      rgba(255, 255, 255, 0.4)     /* Bottom overlay color */
+      rgba(0, 0, 0, 0.1),    /* Top overlay color (black @ 50% opacity) */
+      rgba(0, 0, 0, 0.1)     /* Bottom overlay color */
       ), url('../images/pixel-bg.png');
 }
 
 #content {
-  border: 1px solid #ccc;
-  background-color: #fff;
+  border: 2px solid #ccc;
+  max-width: 800px;
 }
 
 /** App */
@@ -46,10 +46,10 @@ body {
 
 #view {
   overflow: hidden;
+  background-color: #f1f2f6 !important;
 }
 
 .bg-light {
-  background-color: #f1f2f6 !important;
 }
 
 /** Tracks */
@@ -135,6 +135,7 @@ body {
 /** Player */
 #player {
   border: 1px solid #ddd;
+  background-color: #f1f2f6 !important;
 }
 
 #player #cover {
@@ -200,7 +201,7 @@ body {
 }
 
 #player #volume {
-  width: 400px;
+  width: 200px;
 }
 
 #player #volume #volume-progress {
@@ -427,6 +428,9 @@ body {
 #navbar {
   font-size: 0.9rem;
   border-bottom: 1px solid #eee;
+}
+
+#navbar #menu {
   background-color: #f1f2f6 !important;
 }
 
