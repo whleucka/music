@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
-
 body {
     background-image: linear-gradient(
       rgba(0, 0, 0, 0.1),    /* Top overlay color (black @ 50% opacity) */
@@ -110,6 +109,12 @@ body {
 .track-row .liked.active {
   color: #e52d27;
   opacity: 1;
+}
+
+.track-row .played-count {
+  background-color: #fff;
+  color: #888;
+  border: 1px solid #ccc;
 }
 
 /**
