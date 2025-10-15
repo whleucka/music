@@ -4,12 +4,8 @@ body {
     font-family: "Ubuntu", sans-serif;
     font-weight: 400;
     font-style: normal;
-    background-color: #fff;
+    background-color: #f1f2f6 !important;
     height: 100%;
-    background-image: linear-gradient(
-      rgba(255, 255, 255, 0.4),    /* Top overlay color (black @ 50% opacity) */
-      rgba(255, 255, 255, 0.4)     /* Bottom overlay color */
-      ), url('../images/pixel-bg.png');
 }
 
 #sign-in form, #register form {
@@ -26,8 +22,6 @@ html, body, #content {
 
 #content {
   padding: 0;
-  border: 1px solid #ccc;
-  background-color: #fff;
 }
 
 /** Flash messages */

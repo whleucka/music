@@ -1,5 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 
+body {
+    background-image: linear-gradient(
+      rgba(255, 255, 255, 0.4),    /* Top overlay color (black @ 50% opacity) */
+      rgba(255, 255, 255, 0.4)     /* Bottom overlay color */
+      ), url('../images/pixel-bg.png');
+}
+
+#content {
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
 /** App */
 #app {
   color: #333;
@@ -413,6 +425,7 @@
 
 /** Nav */
 #navbar {
+  font-size: 0.95rem;
   border-bottom: 1px solid #eee;
   background-color: #f1f2f6 !important;
 }
