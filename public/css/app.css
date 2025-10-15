@@ -297,6 +297,13 @@ body {
 #playlists #load div {
   margin-bottom: 4px;
 }
+#playlists #load div > div {
+  padding: 2px;
+}
+#playlists #load div > div:hover {
+  background-color: #ddd;
+
+}
 
 
 #actions .btn-group {
@@ -311,11 +318,11 @@ body {
 /** Headers */
 .header {
   padding: 10px;
-  height: 150px;
+  height: 160px;
 }
 
 .header h2 {
-  font-size: 2rem !important;
+  font-size: 1.8rem !important;
 }
 
 /**
@@ -411,7 +418,7 @@ body {
     rgba(0, 10, 255, 0.3)     /* Bottom overlay color */
     ), url('../images/alexisonfire.jpg');
   background-size: cover;
-  background-position: 50% 15%;
+  background-position: 50% 10%;
   background-repeat: no-repeat;
 }
 .bg-orange {
@@ -424,7 +431,7 @@ body {
     rgba(255, 0, 255, 0.3)     /* Bottom overlay color */
     ), url('../images/metallica.jpg');
   background-size: cover;
-  background-position: 50% 15%;
+  background-position: 50% 5%;
   background-repeat: no-repeat;
 }
 
@@ -463,10 +470,10 @@ body {
 /** Larger devices */
 @media (min-width: 576px) {
   .header {
-    height: 180px;
+    height: 200px;
   }
   .header h2 {
-    font-size: 3rem !important;
+    font-size: 2.3rem !important;
   }
   #top-play {
     font-size: 3rem;
