@@ -425,13 +425,13 @@ body {
 
 /** Nav */
 #navbar {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   border-bottom: 1px solid #eee;
   background-color: #f1f2f6 !important;
 }
 
 #navbar #menu #top-search {
-  width: 60%;
+  width: 180px;
 }
 
 #navbar #menu #top-search input {
