@@ -1,14 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 body {
-    background-image: linear-gradient(
-      rgba(0, 0, 0, 0.1),    /* Top overlay color (black @ 50% opacity) */
-      rgba(0, 0, 0, 0.1)     /* Bottom overlay color */
-      ), url('../images/pixel-bg.png');
+  background-color: rgba(0,0,0,0.1) !important;
+}
+
+html, body {
+  overscroll-behavior: none;
 }
 
 #content {
-  border: 2px solid #ccc;
   max-width: 800px;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
 }
 
 /** App */
@@ -139,7 +141,7 @@ body {
 
 /** Player */
 #player {
-  border: 1px solid #ddd;
+  border-top: 1px solid #ddd;
   background-color: #f1f2f6 !important;
 }
 
@@ -371,7 +373,7 @@ body {
   background-image: linear-gradient(
     rgba(255, 165, 0, 0.3),    /* Top overlay color (black @ 50% opacity) */
     rgba(255, 165, 0, 0.3)     /* Bottom overlay color */
-    ), url('../images/ozzy.webp');
+    ), url('../images/cover/road.png');
   background-size: cover;
   background-position: 50% 25%;
   background-repeat: no-repeat;
@@ -390,7 +392,7 @@ body {
   background-image: linear-gradient(
     rgba(0, 255, 10, 0.3),    /* Top overlay color (black @ 50% opacity) */
     rgba(0, 255, 10, 0.3)     /* Bottom overlay color */
-    ), url('../images/slipknot.jpeg');
+    ), url('../images/cover/city.jpg');
   background-size: cover;
   background-position: 50% 35%;
   background-repeat: no-repeat;
@@ -403,7 +405,7 @@ body {
   background-image: linear-gradient(
     rgba(255, 0, 0, 0.3),    /* Top overlay color (black @ 50% opacity) */
     rgba(255, 0, 0, 0.3)     /* Bottom overlay color */
-    ), url('../images/tragicallyhip.jpg');
+    ), url('../images/cover/machine.jpg');
   background-size: cover;
   background-position: 50% 15%;
   background-repeat: no-repeat;
@@ -416,7 +418,7 @@ body {
   background-image: linear-gradient(
     rgba(0, 10, 255, 0.3),    /* Top overlay color (black @ 50% opacity) */
     rgba(0, 10, 255, 0.3)     /* Bottom overlay color */
-    ), url('../images/alexisonfire.jpg');
+    ), url('../images/cover/swim.jpg');
   background-size: cover;
   background-position: 50% 10%;
   background-repeat: no-repeat;
@@ -429,7 +431,7 @@ body {
   background-image: linear-gradient(
     rgba(255, 0, 255, 0.3),    /* Top overlay color (black @ 50% opacity) */
     rgba(255, 0, 255, 0.3)     /* Bottom overlay color */
-    ), url('../images/metallica.jpg');
+    ), url('../images/cover/tree.jpg');
   background-size: cover;
   background-position: 50% 5%;
   background-repeat: no-repeat;
