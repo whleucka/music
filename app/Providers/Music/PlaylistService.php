@@ -47,7 +47,7 @@ class PlaylistService
     {
         // Add track to the playlist
         PlaylistTrack::create([
-            "playlist_id" => $playlist_id, 
+            "playlist_id" => $playlist_id,
             "track_id" => $track_id,
         ]);
     }
@@ -207,6 +207,17 @@ class PlaylistService
         return $playlist[$index] ?? null;
     }
 
+    private function getRandomIndexExcluding(int $count, ?int $exclude): int
+    {
+        if ($count <= 1) return 0;
+
+        $rand = rand(0, $count - 1);
+        while ($exclude !== null && $rand === $exclude) {
+            $rand = rand(0, $count - 1);
+        }
+        return $rand;
+    }
+
     public function getNextIndex(): ?int
     {
         $index = $this->getPlaylistTrackIndex();
@@ -216,12 +227,12 @@ class PlaylistService
         if (!$playlist || count($playlist) <= 1) return null;
         if (is_null($index) && !$shuffle) return 0;
 
+        $count = count($playlist);
         $new_index = $shuffle
-            ? rand(1, count($playlist) - 1)
+            ? $this->getRandomIndexExcluding($count, $index)
             : $index + 1;
-        if ($new_index === $index) return $this->getNextIndex();
 
-        return $new_index % count($playlist);
+        return $new_index % $count;
     }
 
     public function getPrevIndex(): ?int
@@ -233,12 +244,12 @@ class PlaylistService
         if (!$playlist || count($playlist) <= 1) return null;
         if (is_null($index) && !$shuffle) return 0;
 
+        $count = count($playlist);
         $new_index = $shuffle
-            ? rand(1, count($playlist) - 1)
+            ? $this->getRandomIndexExcluding($count, $index)
             : $index - 1;
-        if ($new_index === $index) return $this->getPrevIndex();
 
-        return $new_index % count($playlist);
+        return $new_index % $count;
     }
 
     public function nextTrack(): bool
