@@ -14,7 +14,7 @@ html,body {
 }
 #view {
   height: 100%;
-  width: calc(100% - 230px);
+  width: calc(100% - 240px);
 }
 
 /**
@@ -46,8 +46,8 @@ html,body {
  */
 nav#nav-sidebar {
   background-color: #324554;
-  min-width: 230px;
-  max-width: 230px;
+  min-width: 240px;
+  max-width: 240px;
 }
 nav#nav-sidebar.hide {
   min-width: 0px;
@@ -340,8 +340,8 @@ nav#nav-sidebar header h4 {
 
 @media (min-width: 768px) {
   nav#nav-sidebar {
-    min-width: 220px;
-    max-width: 220px;
+    min-width: 240px;
+    max-width: 240px;
   }
   nav#nav-sidebar.hide {
     display: block;
