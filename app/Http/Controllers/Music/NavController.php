@@ -11,6 +11,6 @@ class NavController extends Controller
     #[Get("/navbar", "navbar.index", ["auth"])]
     public function index(): string
     {
-        return $this->render("navbar/index.html.twig");
+        return $this->render("navbar/index.html.twig", ["user_role" => $this->user->role]);
     }
 }

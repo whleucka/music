@@ -20,9 +20,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/podcasts">Podcasts</a>
                 </li>
+                {% if user_role == 'admin' %}
                 <li hx-boost="false" class="nav-item">
                     <a class="nav-link" href="/admin/dashboard">Admin</a>
                 </li>
+                {% endif %}
                 <li hx-boost="false" class="nav-item">
                     <a class="nav-link" href="/admin/sign-out">Log out</a>
                 </li>
