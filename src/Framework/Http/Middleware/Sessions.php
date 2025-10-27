@@ -13,8 +13,10 @@ class Sessions implements Middleware
     public function handle(Request $request, Closure $next): Response
     {
         try {
-            db()->execute("INSERT INTO sessions (uri, ip) 
-                VALUES (?,?)", [
+            $user = user();
+            db()->execute("INSERT INTO sessions (user_id, uri, ip) 
+                VALUES (?,?,?)", [
+                $user ? $user->id : null,
                 $request->getUri(),
                 ip2long($request->getClientIp())
             ]);

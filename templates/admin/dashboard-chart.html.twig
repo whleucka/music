@@ -1,0 +1,5 @@
+<canvas id="{{ id }}" class="chart"></canvas>
+<script>
+var ctx = document.getElementById('{{ id }}').getContext('2d');
+new Chart(ctx, {{ options|raw }});
+</script>

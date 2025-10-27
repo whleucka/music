@@ -2,6 +2,7 @@
 
 return [
     "authenticated_route" => "/playlist",
+    "register_enabled" => env("AUTH_REGISTER_ENABLED", false),
     "whitelist" => [
     ],
     "blacklist" => [

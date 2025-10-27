@@ -1,6 +1,7 @@
 <?php
 
 use App\Application;
+use App\Models\User;
 use App\Http\Kernel as HttpKernel;
 use App\Console\Kernel as ConsoleKernel;
 use App\State\Brain;
@@ -8,6 +9,7 @@ use Echo\Framework\Container\Container;
 use Echo\Framework\Database\Connection;
 use Echo\Framework\Database\Drivers\MariaDB;
 use Echo\Framework\Database\Drivers\MySQL;
+use Echo\Framework\Database\QueryBuilder;
 use Echo\Framework\Http\Request;
 use Echo\Framework\Routing\Router;
 use Echo\Framework\Session\Session;
@@ -43,12 +45,25 @@ function console(): Application
     return new Application($kernel);
 }
 
+function user()
+{
+    $uuid = session()->get("user_uuid");
+    return $uuid 
+        ? User::where("uuid", $uuid)->get()
+        : false;
+}
+
 /**
  * Get application container
  */
 function container()
 {
     return Container::getInstance();
+}
+
+function qb()
+{
+    return new QueryBuilder;
 }
 
 function twig()

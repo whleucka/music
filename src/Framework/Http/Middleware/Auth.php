@@ -2,7 +2,6 @@
 
 namespace Echo\Framework\Http\Middleware;
 
-use App\Models\User;
 use Closure;
 use Echo\Framework\Http\Response as HttpResponse;
 use Echo\Framework\Session\Flash;
@@ -17,16 +16,12 @@ class Auth implements Middleware
     {
         $route = $request->getAttribute("route");
         $middleware = $route["middleware"];
-        $uuid = session()->get("user_uuid");
-        $user = $uuid ? User::where("uuid", $uuid) : false;
+        $user = user();
 
         if (in_array('auth', $middleware) && !$user) {
-            $res = new HttpResponse('<script>window.location.href="/sign-in";</script>', 200);
-            $res->setHeader("HX-Retarget", "body");
-            if (preg_match("/index/", $route->name)) {
-                session()->set("auth_redirect", $_SERVER["REQUEST_URI"]);
-            }
             Flash::add("warning", "Please sign in to view this page.");
+            $route = uri("auth.sign-in.index");
+            $res = new HttpResponse("<script>window.location.href = '$route';</script>", 401);
             return $res;
         }
 

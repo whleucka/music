@@ -38,6 +38,7 @@ class Controller implements HttpController
         "max_length" => "Input is too long",
         "regex" => "Does not match pattern",
     ];
+    private bool $twig_loaded = false;
 
     public function setHeader(string $key, string $value): void
     {
@@ -85,13 +86,16 @@ class Controller implements HttpController
         $this->setHeader("HX-Trigger", $opts);
     }
 
-    public function validate(array $ruleset): ?object
+    public function validate(array $ruleset = [], mixed $id = null): mixed
     {
         $valid = true;
         $request = $this->request->request->data();
         $data = [];
 
         foreach ($ruleset as $field => $set) {
+            if (empty($set)) {
+                $data[$field] = $request[$field] ?? null;
+            }
             foreach ($set as $rule) {
                 $r = explode(":", $rule);
                 $rule = $r[0];
@@ -102,7 +106,7 @@ class Controller implements HttpController
                     'unique' => count(db()->fetch("SELECT 1 FROM $rule_val WHERE $field = ?", [$request_value])) === 0,
                     'min_length' => strlen($request_value) >= $rule_val,
                     'max_length' => strlen($request_value) <= $rule_val,
-                    'required' => !is_null($request_value) && $request_value !== '',
+                    'required' => !is_null($request_value) && $request_value !== '' && $request_value !== "NULL",
                     'string' => is_string($request_value),
                     'array' => is_array($request_value),
                     'date' => strtotime($request_value) !== false,
@@ -165,11 +169,22 @@ class Controller implements HttpController
             exit;
     }
 
+    public function permissionDenied()
+    {
+            $content = twig()->render("error/permission-denied.html.twig");
+            $response = new Response($content, 403);
+            $response->send();
+            exit;
+    }
+
     protected function render(string $template, array $data = []): string
     {
         $twig = twig();
         $data = array_merge($data, $this->getDefaultTemplateData());
-        $twig->addExtension(new TwigExtension);
+        if (!$this->twig_loaded) {
+            $this->twig_loaded = true;
+            $twig->addExtension(new TwigExtension);
+        }
         return $twig->render($template, $data);
     }
 }

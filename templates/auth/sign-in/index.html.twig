@@ -31,9 +31,11 @@
             <div class="d-grid gap-2 mb-3">
                 <button type="submit" class="btn btn-primary">Log in</button>
             </div>
+            {% if register_enabled %}
             <div class="d-flex mt-4 justify-content-center">
-                <p><a hx-boost="true" href="/register" hx-swap="outerHTML" hx-select="#register" hx-target="#sign-in">Create new account</a></p>
+                <p><a hx-boost="true" href="{{ uri('auth.register.index') }}" hx-swap="outerHTML" hx-select="#register" hx-target="#sign-in">Create new account</a></p>
             </div>
+            {% endif %}
         </form>
     </section>
 {% endblock %}

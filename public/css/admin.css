@@ -1,0 +1,381 @@
+/**
+ * Structure
+ */
+html,body {
+  height: 100%;
+}
+#content {
+  width: 100%;
+}
+#admin {
+  color: #222;
+  height: 100%;
+  width: 100%;
+}
+#view {
+  height: 100%;
+  width: calc(100% - 240px);
+}
+
+/**
+ * Utilities
+ */
+.pointer {
+  cursor: pointer;
+}
+.shad {
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px, rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+}
+.btn {
+  border: 0;
+  font-weight: 700;
+}
+.btn-primary,.btn-primary:disabled {
+ background-color: #324554;
+}
+.btn-primary:hover {
+  background-color: #2b3b4b;
+}
+.form-control:focus, #pagination .page-link {
+  border-color: none;
+  box-shadow: none;
+}
+
+/**
+ * Sidebar
+ */
+nav#nav-sidebar {
+  background-color: #324554;
+  min-width: 240px;
+  max-width: 240px;
+}
+nav#nav-sidebar.hide {
+  min-width: 0px;
+  max-width: 0px;
+  display: none;
+}
+nav#nav-sidebar .nav-link.active {
+  margin-left: -5px;
+  background-color: #2b3b4b;
+  color: #acbfcc;
+  font-weight: 800;
+  border-left: 5px solid #acbfcc;
+}
+nav#nav-sidebar.hide .nav-link {
+  padding: 8px;
+  margin-bottom: 6px;
+}
+nav#nav-sidebar .category {
+  font-size: 1.2rem;
+  padding-left: 5px;
+  margin-top: 20px;
+  font-weight: 900;
+  color: #adc0ce;
+}
+nav#nav-sidebar.hide .desc,
+nav#nav-sidebar.hide .category
+{
+  display: none;
+}
+nav#nav-sidebar header {
+  height: 44px;
+  background-color: #2b3b4b;
+}
+nav#nav-sidebar header h4 {
+  font-weight: 800;
+}
+
+/**
+* Filters
+*/
+#table .filter-link {
+  text-decoration: none;
+  opacity: 0.5;
+}
+#table .filter-link.active {
+  font-weight: 800;
+  opacity: 1;
+  background-color: #314555;
+}
+#table .link-count {
+  font-family: "Ubuntu Mono", monospace;
+  font-size: 0.8em;
+}
+#filter-search {
+  padding-left: 30px;
+  background-image: url("https://upload.wikimedia.org/wikipedia/commons/5/55/Magnifying_glass_icon.svg");
+  background-size: 13px;
+  background-repeat: no-repeat;
+  background-position: 10px center;
+}
+
+/**
+ * Nav top
+ */
+#nav-top {
+  height: 48px;
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+}
+
+#nav-top .avatar {
+  height: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+}
+
+/**
+ * Module
+ */
+#module {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+#module-title {
+  font-weight: 800;
+  color: #324554;
+}
+
+/**
+ * Table
+ */
+#table .table td {
+  white-space: nowrap;
+}
+#table .table th {
+  opacity: 0.6;
+}
+#table .table th.active {
+  opacity: 1;
+}
+#table .table th.active.desc:after {
+  content: ' ▼';
+}
+#table .table th.active.asc:after {
+  content: ' ▲';
+}
+#table #table-actions {
+  white-space: nowrap;
+  overflow: auto;
+}
+#table #table-actions button, #table #table-actions a {
+  margin-top: 5px;
+}
+#table #row-actions {
+  padding: 0 5px;
+}
+#table #row-actions i {
+  font-size: 1.2rem;
+}
+#table .table th.checkbox-cell {
+  width: 1px !important;
+  white-space: nowrap;
+}
+#table .table .checkbox-cell input {
+  width: 15px;
+  height: 15px;
+}
+#table #table-action {
+  height: 29px;
+  font-size: 0.9em;
+  max-width: 150px;
+}
+
+#pagination .page-link {
+  font-size: 1.2em;
+  color: #324554;
+}
+#pagination .page-item.active .page-link {
+  border-color: #324554;
+  background-color: #324554 !important;
+  color: #fff;
+}
+
+/**
+ * Forms
+ */
+.form-label {
+  font-weight: 800; 
+  color: #333;
+}
+.thumbnail {
+  width: 100px;
+  height: 100px;
+}
+
+/**
+* Dashboard
+*/
+#dashboard .top-alert {
+  height: 150px;
+  width: 24%;
+  margin: 10px;
+  flex: 1 1 200px; /* grow, shrink, basis */
+  flex-grow: 3;
+  position: relative;
+}
+#dashboard .top-alert .count {
+  font-family: "Ubuntu Mono", monospace;
+  position: absolute;
+  bottom: 60px;
+  font-size: 3.2rem;
+  font-weight: 900;
+  padding: 0;
+  margin: 0;
+}
+#dashboard .top-alert p {
+  position: absolute;
+  bottom: 20px;
+  font-weight: 900;
+  font-size: 1.3rem;
+  padding: 0;
+  margin: 0;
+}
+#dashboard .top-alert .icon {
+  left: 30px;
+  font-size: 4.5rem;
+  position: absolute;
+  opacity: 0.4;
+}
+#dashboard #users {
+  color: #fff;
+  background-color: #08961d;
+  border-left: 8px solid #87ff99;
+}
+#dashboard #users-active {
+  color: #fff;
+  background-color: #ff8c19;
+  border-left: 8px solid #ffdfbf;
+}
+#dashboard #requests {
+  color: #fff;
+  background-color: #c800ff;
+  border-left: 8px solid #e482ff;
+}
+#dashboard #requests-today {
+  color: #fff;
+  background-color: #003cff;
+  border-left: 8px solid #4287f5;
+}
+#dashboard #requests-today-chart {
+  width: 100%;
+}
+#dashboard #modules {
+  color: #fff;
+  background-color: #ff2929;
+  border-left: 8px solid #ffbfbf;
+  
+}
+#dashboard #sales {
+  color: #fff;
+  background-color: #3a786c;
+  border-left: 8px solid #adffef;
+}
+#dashboard #sales-today {
+  color: #fff;
+  background-color: #c9ad1c;
+  border-left: 8px solid #fff1ab;
+}
+#dashboard #customers {
+  color: #fff;
+  background-color: #6200ff;
+  border-left: 8px solid #c3a3ff;
+}
+#dashboard #customers-new {
+  color: #fff;
+  background-color: #e330da;
+  border-left: 8px solid #ffa3fa;
+}
+#dashboard .chart {
+  height: 350px;
+}
+
+/**
+* HTMX
+*/
+.hx-indicator{
+  opacity:0;
+  transition: opacity 500ms ease-in;
+  color: #324554;
+}
+.htmx-request .hx-indicator{
+  opacity:1;
+}
+.htmx-request.hx-indicator{
+  opacity:1;
+}
+.spinner {
+   width: 22px;
+   height: 22px;
+   display: grid;
+   animation: spinner-plncf9 4s infinite;
+}
+
+.spinner::before,
+.spinner::after {
+   content: "";
+   grid-area: 1/1;
+   border: 3px solid;
+   border-radius: 50%;
+   border-color: #324554 #324554 #0000 #0000;
+   mix-blend-mode: darken;
+   animation: spinner-plncf9 1s infinite linear;
+}
+
+.spinner::after {
+   border-color: #0000 #0000 #dbdcef #dbdcef;
+   animation-direction: reverse;
+}
+
+@keyframes spinner-plncf9 {
+   100% {
+      transform: rotate(1turn);
+   }
+}
+
+@media (min-width: 576px) {
+}
+
+@media (min-width: 768px) {
+  nav#nav-sidebar {
+    min-width: 240px;
+    max-width: 240px;
+  }
+  nav#nav-sidebar.hide {
+    display: block;
+    min-width: 67px;
+    max-width: 67px;
+  }
+}
+
+@media (min-width: 992px) {
+}
+
+@media (min-width: 1200px) {
+}
+
+@media (min-width: 1400px) {
+}
+
+
+/** sm devices and lower */
+@media (max-width: 575.98px) {
+  #pagination .page-link {
+    font-size: 0.8em;
+    padding: 8px;
+  }
+}
+
+/** md devices and lower */
+@media (max-width: 767.98px) {
+}
+
+/** lg devices and lower */
+@media (max-width: 991.98px) {
+}
+
+/** xl devices and lower */
+@media (max-width: 1199.98px) {
+}

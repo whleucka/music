@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 
 body {
     font-family: "Ubuntu", sans-serif;
@@ -34,19 +34,19 @@ html, body, #content {
     margin-right: 8px;
 }
 .flash.alert-warning {
-    border-left: 4px solid #ff9305;
+    border-left: 5px solid #ff9305;
     fill: #ff9305;
 }
 .flash.alert-danger {
-    border-left: 4px solid #ff4747;
+    border-left: 5px solid #ff4747;
     fill: #ff0000;
 }
 .flash.alert-success {
-    border-left: 4px solid #25a140;
+    border-left: 5px solid #25a140;
     fill: #25a140;
 }
 .flash.alert-info {
-    border-left: 4px solid #4772ff;
+    border-left: 5px solid #4772ff;
     fill: #4772ff;
 }
 

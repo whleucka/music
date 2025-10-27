@@ -26,7 +26,8 @@ class ControllerTest extends TestCase
         $this->assertNotNull($valid);
         $this->assertEquals((object)[
             "email" => "test@test.com",
-            "password" => "password1234"
+            "password" => "password1234",
+            "foo" => "bar"
         ], $valid);
     }
 }

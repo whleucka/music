@@ -9,10 +9,13 @@ return [
     "migrations" => $root . "migrations",
     "template_cache" => $root . "templates/.cache",
     "jobs" => $root . "jobs",
+    "public" => $root . "public",
+    "js" => $root . "public/js",
     "logs" => $root . "storage/logs/",
     "session" => "/tmp/music_sessions",
     "covers" => $root . "storage/tracks/covers/",
     "transcode" => $root . "storage/tracks/transcode/",
     "public_covers" => '/covers/',
     "public_transcode" => '/transcode/',
+    "uploads" => $root . "storage/uploads",
 ];

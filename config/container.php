@@ -66,5 +66,5 @@ return [
         "cache" => config("paths.template_cache"),
         "auto_reload" => config("app.debug"),
         "debug" => config("app.debug"),
-    ])
+    ]),
 ];

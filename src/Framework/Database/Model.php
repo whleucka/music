@@ -36,9 +36,6 @@ class Model implements DatabaseModel
 
         if (!is_null($id)) {
             $this->loadAttributes($id);
-            if (empty($this->attributes)) {
-                throw new Exception("model not found");
-            }
         }
     }
 
@@ -257,6 +254,11 @@ class Model implements DatabaseModel
         return (bool) $result;
     }
 
+    public function getAttributes(): array
+    {
+        return $this->attributes;
+    }
+
     public function __set($name, $value)
     {
         return $this->attributes[$name] = $value;
@@ -264,6 +266,6 @@ class Model implements DatabaseModel
 
     public function __get($name)
     {
-        return $this->attributes[$name];
+        return $this->attributes[$name] ?? null;
     }
 }

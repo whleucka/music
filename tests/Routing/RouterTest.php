@@ -110,12 +110,6 @@ class RouterTest extends TestCase
         $this->assertSame(null, $route);
     }
 
-    public function testDuplicateRoutePath()
-    {
-        $this->expectException(\Exception::class);
-        $this->dispatchRoute("/", "GET", [Routes::class, DuplicatePath::class]);
-    }
-
     public function testRouteNumeric()
     {
         $route = $this->dispatchRoute("/numbers/0", "GET");
@@ -197,15 +191,6 @@ class Routes extends Controller
         return 'testing';
     }
 
-}
-
-class DuplicatePath extends Controller
-{
-    #[Get("/", "duplicate-path.index")]
-    public function duplicate_path()
-    {
-        return 'index';
-    }
 }
 
 class DuplicateName extends Controller

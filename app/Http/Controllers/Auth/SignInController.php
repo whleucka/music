@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Auth;
 
 use App\Providers\Auth\SignInService;
 use Echo\Framework\Http\Controller;
+use Echo\Framework\Routing\Group;
 use Echo\Framework\Routing\Route\{Get, Post};
 use Echo\Framework\Session\Flash;
 
+#[Group(path_prefix: '/admin')]
 class SignInController extends Controller
 {
     public function __construct(private SignInService $provider)
@@ -16,7 +18,9 @@ class SignInController extends Controller
     #[Get("/sign-in", "auth.sign-in.index")]
     public function index(): string
     {
-        return $this->render("auth/sign-in/index.html.twig");
+        return $this->render("auth/sign-in/index.html.twig", [
+            "register_enabled" => config("security.register_enabled")
+        ]);
     }
 
     #[Post("/sign-in", "auth.sign-in.post", ["max_requests" => 20])]
@@ -29,13 +33,10 @@ class SignInController extends Controller
         if ($valid) {
             $success = $this->provider->signIn($valid->email, $valid->password);
             if ($success) {
-                if (session()->has("auth_redirect")) {
-                    $path = session()->get("auth_redirect");
-                    session()->delete("auth_redirect");
-                } else {
-                    $path = config("security.authenticated_route");
-                }
+                $path = config("security.authenticated_route");
+                Flash::add("success", "Welcome, " . user()->fullName() . ". You are now signed in");
                 header("HX-Redirect: $path");
+                exit;
             } else {
                 Flash::add("warning", "Invalid email and/or password");
             }

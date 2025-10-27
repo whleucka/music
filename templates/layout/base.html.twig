@@ -13,11 +13,12 @@
             <link href="/css/bootstrap.min.css" rel="stylesheet">
             <link href="/css/style.css?2025v3" rel="stylesheet">
             <script src="/js/htmx.min.js"></script>
+            <script src="/js/head-support.js"></script>
             <script src="/js/bootstrap.bundle.min.js"></script>
             <script src="/js/script.js?2025v3"></script>
         {% endblock %}
     </head>
-    <body>
+    <body hx-ext="head-support">
         <section class="container" id="content">{% block content %}{% endblock %}</section>
         {% block footer %}
         {% endblock %}

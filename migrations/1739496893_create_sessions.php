@@ -11,10 +11,12 @@ return new class implements Migration
     {
          return Schema::create($this->table, function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger("user_id")->nullable();
             $table->varchar("uri");
             $table->unsignedBigInteger("ip");
             $table->timestamp("created_at")->default("CURRENT_TIMESTAMP");
             $table->primaryKey("id");
+            $table->foreignKey("user_id")->references("users", "id")->onDelete("SET NULL");
         });
     }
 

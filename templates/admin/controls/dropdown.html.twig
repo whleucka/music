@@ -1,0 +1,8 @@
+<select id="{{ id }}" class="{{ class }} {{ v_class }}" name="{{ name }}" {% if readonly or disabled %}disabled{% endif %}>
+  {% if not required %}
+  <option value="NULL" selected>(none)</option>
+  {% endif %}
+  {% for option in options %} 
+  <option value="{{ option.value }}" {% if value == option.value %}selected{% endif %}>{{ option.label }}</option>
+  {% endfor %}
+</select>

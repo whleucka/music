@@ -17,6 +17,11 @@ class RequestLimit implements Middleware
         $route = $request->getAttribute("route");
         $middleware = $route["middleware"];
 
+        // Maybe it is disabled?
+        if (isset($middleware["max_requests"]) && $middleware["max_requests"] == 0) {
+            return $next($request);
+        }
+
         // Get the max requests and decay seconds
         if (in_array("api", $middleware)) {
             $max_requests = 60;

@@ -11,6 +11,9 @@ class Router implements RouterInterface
     {
     }
 
+    /**
+     * Search routes for URI by name
+     */
     public function searchUri(string $name, ...$params): ?string
     {
         $routes = $this->collector->getRoutes();
