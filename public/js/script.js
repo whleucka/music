@@ -26,3 +26,12 @@ const showDotMenu = (hash) => {
         new bootstrap.Dropdown(button);
     }, 10);
 }
+
+document.querySelectorAll('.dot-menu').forEach(el => {
+  new bootstrap.Dropdown(el, {
+    popperConfig: {
+      strategy: 'fixed',
+      modifiers: [{ name: 'preventOverflow', options: { boundary: 'viewport' } }]
+    }
+  });
+});

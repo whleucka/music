@@ -73,10 +73,10 @@ html, body {
 
 /** Tracks */
 .track-row {
-  overflow: visible;
+  overflow: visible !important;
 }
 .dropdown-menu {
-  z-index: 9999;
+  z-index: 9999 !important;
 }
 .dropdown-menu li {
   position: relative;
