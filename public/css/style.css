@@ -4,24 +4,11 @@ body {
     font-family: "Ubuntu", sans-serif;
     font-weight: 400;
     font-style: normal;
-    background-color: #f1f2f6 !important;
-    height: 100%;
-}
-
-#sign-in form, #register form {
-    width: 350px;
-    border-radius: 10px;
-    padding: 20px;
-    background-color: #fff;
-    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
-}
-
-html, body, #content {
-    height: 100%;
+    background-color: #f1f2f6;
 }
 
 #content {
-  padding: 0;
+    height: 100%;
 }
 
 /** Flash messages */
@@ -50,9 +37,3 @@ html, body, #content {
     fill: #4772ff;
 }
 
-/** Utility */
-.truncate {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
