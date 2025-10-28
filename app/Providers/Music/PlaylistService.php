@@ -218,7 +218,7 @@ class PlaylistService
         return $rand;
     }
 
-    public function getNextIndex(): ?int
+    public function getIndex($forward = true): ?int
     {
         $index = $this->getPlaylistTrackIndex();
         $playlist = $this->getPlaylistTracks();
@@ -228,33 +228,19 @@ class PlaylistService
         if (is_null($index) && !$shuffle) return 0;
 
         $count = count($playlist);
-        $new_index = $shuffle
-            ? $this->getRandomIndexExcluding($count, $index)
-            : $index + 1;
-
-        return $new_index % $count;
-    }
-
-    public function getPrevIndex(): ?int
-    {
-        $index = $this->getPlaylistTrackIndex();
-        $playlist = $this->getPlaylistTracks();
-        $shuffle = $this->getShuffle();
-
-        if (!$playlist || count($playlist) <= 1) return null;
-        if (is_null($index) && !$shuffle) return 0;
-
-        $count = count($playlist);
-        $new_index = $shuffle
-            ? $this->getRandomIndexExcluding($count, $index)
+        $d = $forward 
+            ? $index + 1 
             : $index - 1;
+        $new_index = $shuffle
+            ? $this->getRandomIndexExcluding($count, $index)
+            : $d;
 
         return $new_index % $count;
     }
 
     public function nextTrack(): bool
     {
-        $next_index = $this->getNextIndex();
+        $next_index = $this->getIndex();
         if (!is_null($next_index)) {
             $this->setPlaylistTrack($next_index);
             return true;
@@ -264,7 +250,7 @@ class PlaylistService
 
     public function prevTrack(): bool
     {
-        $prev_index = $this->getPrevIndex();
+        $prev_index = $this->getIndex(false);
         if (!is_null($prev_index)) {
             $this->setPlaylistTrack($prev_index);
             return true;
