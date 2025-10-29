@@ -412,8 +412,9 @@ html, body {
     rgba(255, 255, 255, 0.05) 2px,
     transparent 4px,
     transparent 8px
-  );
+    );
   animation: waveMove 5s linear infinite;
+  pointer-events: none;
 }
 
 @keyframes waveMove {
