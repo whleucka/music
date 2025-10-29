@@ -77,6 +77,8 @@ html, body {
 }
 .dropdown-menu {
   z-index: 9999 !important;
+  max-height: 300px;
+  overflow-y: auto;
 }
 .dropdown-menu li {
   position: relative;
@@ -393,13 +395,30 @@ html, body {
   background: #6441A5;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to bottom, #2a0845, #6441A5);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to bottom, #2a0845, #6441A5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  background-image: linear-gradient(
-    rgba(255, 165, 0, 0.3),    /* Top overlay color (black @ 50% opacity) */
-    rgba(255, 165, 0, 0.3)     /* Bottom overlay color */
-    ), url('../images/cover/road.png');
-  background-size: cover;
-  background-position: 50% 25%;
-  background-repeat: no-repeat;
+}
+.bg-wave {
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+}
+
+.bg-wave::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 0,
+    rgba(255, 255, 255, 0.05) 2px,
+    transparent 4px,
+    transparent 8px
+  );
+  animation: waveMove 5s linear infinite;
+}
+
+@keyframes waveMove {
+  from { background-position: 0 0; }
+  to { background-position: 100px 0; }
 }
 .bg-visions {
   color: #fff;
@@ -412,54 +431,25 @@ html, body {
   background: #4e54c8;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to top, #8f94fb, #4e54c8);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to top, #8f94fb, #4e54c8); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  background-image: linear-gradient(
-    rgba(0, 255, 10, 0.3),    /* Top overlay color (black @ 50% opacity) */
-    rgba(0, 255, 10, 0.3)     /* Bottom overlay color */
-    ), url('../images/cover/city.jpg');
-  background-size: cover;
-  background-position: 50% 35%;
-  background-repeat: no-repeat;
 }
 .bg-sin {
   color: #fff;
   background: #ED213A;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to bottom, #93291E, #ED213A);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to bottom, #93291E, #ED213A); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  background-image: linear-gradient(
-    rgba(255, 0, 0, 0.3),    /* Top overlay color (black @ 50% opacity) */
-    rgba(255, 0, 0, 0.3)     /* Bottom overlay color */
-    ), url('../images/cover/machine.jpg');
-  background-size: cover;
-  background-position: 50% 15%;
-  background-repeat: no-repeat;
 }
 .bg-lush {
   color: #fff;
   background: #56ab2f;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to top, #a8e063, #56ab2f);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to top, #a8e063, #56ab2f); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  background-image: linear-gradient(
-    rgba(0, 10, 255, 0.3),    /* Top overlay color (black @ 50% opacity) */
-    rgba(0, 10, 255, 0.3)     /* Bottom overlay color */
-    ), url('../images/cover/swim.jpg');
-  background-size: cover;
-  background-position: 50% 10%;
-  background-repeat: no-repeat;
 }
 .bg-orange {
   color: #fff;
   background: #fc4a1a;  /* fallback for old browsers */
   background: -webkit-linear-gradient(to top, #f7b733, #fc4a1a);  /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to top, #f7b733, #fc4a1a); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-  background-image: linear-gradient(
-    rgba(255, 0, 255, 0.3),    /* Top overlay color (black @ 50% opacity) */
-    rgba(255, 0, 255, 0.3)     /* Bottom overlay color */
-    ), url('../images/cover/tree.jpg');
-  background-size: cover;
-  background-position: 50% 5%;
-  background-repeat: no-repeat;
 }
-
 
 /** Nav */
 #navbar {
