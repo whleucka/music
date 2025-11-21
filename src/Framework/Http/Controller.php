@@ -89,7 +89,10 @@ class Controller implements HttpController
     public function validate(array $ruleset = [], mixed $id = null): mixed
     {
         $valid = true;
-        $request = $this->request->request->data();
+        $req = $this->request->request->data();
+        $body = json_decode(file_get_contents('php://input'), true);
+        $request = [...$req, ...$body];
+
         $data = [];
 
         foreach ($ruleset as $field => $set) {
