@@ -147,7 +147,7 @@ class Kernel implements HttpKernel
         }
 
         // Set the headers
-        foreach ($controller->getHeaders() as $key => $value) {
+        foreach ($controller?->getHeaders() as $key => $value) {
             $response->setHeader($key, $value);
         }
 
