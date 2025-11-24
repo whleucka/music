@@ -43,7 +43,7 @@ class PlaylistsController extends Controller
     #[Get("/playlists/list/{hash}", "playlists.list", ["auth"])]
     public function list(string $hash): string
     {
-        return $this->render("playlists/list.html.twig", [
+        return $this->render("playlists/add-track-modal.html.twig", [
             "hash" => $hash,
             "playlists" => $this->playlist_provider->getPlaylistListFromDB($this->user->id, $hash),
         ]);
@@ -51,13 +51,14 @@ class PlaylistsController extends Controller
 
     // Add track to user playlist
     #[Get("/playlists/add-track/{uuid}/{hash}", "playlist.add-track", ["auth"])]
-    public function add(string $uuid, string $hash): void
+    public function add(string $uuid, string $hash): string
     {
         $playlist = $this->playlist_provider->getPlaylistByUUID($this->user->id, $uuid);
         $track = $this->track_provider->getTrackFromHash($hash);
         if ($playlist && $track) {
             $this->playlist_provider->toggleTrackPlaylist($playlist->id, $track->id);
         }
+        return $this->list($hash);
     }
 
     // Add search to user playlist

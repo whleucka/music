@@ -18,10 +18,6 @@
     <span class="menu">
         <div class="btn-group dropstart">
             <button type="button" 
-                hx-trigger="click" 
-                hx-get="/playlists/list/{{ track.hash }}" 
-                hx-target="next .playlists" 
-                hx-swap="outerHTML"
                 class="btn dropdown-toggle dot-menu" 
                 data-bs-display="static"
                 data-bs-toggle="dropdown" 
@@ -47,14 +43,7 @@
                 {% endif %}
                 {% if playlists %}
                 <li>
-                    <a class="dropdown-item" href="#">
-                        <div class="d-flex align-items-center">
-                            <span class="flex-grow-1">Playlist</span>
-                            <i class="bi bi-three-dots-vertical"></i>
-                        </div>
-                    </a>
-                    <ul class="dropdown-menu dropdown-submenu playlists">
-                    </ul>
+                    <span hx-on::after-request="bootstrap.Modal.getOrCreateInstance('#app-modal').show()" class="dropdown-item" hx-get="/playlists/list/{{ track.hash }}" hx-swap="innerHTML" hx-target="#app-modal .modal-content"><i class="bi bi-plus-circle pe-1"></i> Add to Playlist</span>
                 </li>
                 {% endif %}
             </ul>

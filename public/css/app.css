@@ -324,9 +324,11 @@ html, body {
 }
 #playlists #load div > div:hover {
   background-color: #ddd;
-
 }
-
+#app-modal li:hover {
+  background-color: #f1f2f6 !important;
+  font-weight: bold;
+}
 
 #actions .btn-group {
   position: relative;

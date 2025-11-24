@@ -11,5 +11,12 @@
         <section id="navbar" hx-get="/navbar" hx-trigger="load, navbar from:body"></section>
         <section id="view" class="flex-grow-1">{% block view %}{% endblock %}</section>
         <section id="player" hx-get="/player" hx-trigger="load, player from:body"></section>
+        </div>
     </section>
+    <div class="modal" id="app-modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+        </div>
+      </div>
+    </div>
 {% endblock %}
