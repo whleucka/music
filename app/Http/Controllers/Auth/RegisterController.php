@@ -27,7 +27,7 @@ class RegisterController extends Controller
     #[Post("/register", "auth.register.post", ["max_requests" => 20])]
     public function post(): string
     {
-        $this->setValidationMessage("password.min_length", "Must be at least 10 characters");
+        $this->setValidationMessage("password.min_length", "Must be at least 4 characters");
         $this->setValidationMessage("password_match.match", "Password does not match");
         $valid = $this->validate([
             "first_name" => ["required"],

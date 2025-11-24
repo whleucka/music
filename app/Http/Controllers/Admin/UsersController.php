@@ -75,7 +75,7 @@ class UsersController extends AdminController
             "first_name" => ["required"],
             "surname" => [],
             "email" => ["required", "email", "unique:users"],
-            "password" => ["required", "min_length:10", "regex:^(?=.*[A-Z])(?=.*\W)(?=.*\d).+$"],
+            "password" => ["required", "min_length:4"],
             "password_match" => ["required", "match:password"],
         ];
 
