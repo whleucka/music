@@ -228,7 +228,8 @@ html, body {
 }
 
 #player #volume {
-  width: 200px;
+  width: 480px;
+  padding-left: 70px;
 }
 
 #player #volume #volume-progress {
@@ -464,17 +465,21 @@ html, body {
   background-color: #f1f2f6 !important;
 }
 
-#navbar #menu #top-search {
-  width: 180px;
-}
-
 #navbar #menu #top-search input {
   border: 1px solid #ddd;
+  max-width: 150px;
 }
 
 #navbar #menu .nav-item {
   white-space: nowrap;
 }
+#navbar .avatar {
+  height: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+}
+
 
 /**
 * Spinner/Loader
@@ -487,6 +492,9 @@ html, body {
 
 /** Larger devices */
 @media (min-width: 576px) {
+  #navbar #menu #top-search input {
+    max-width: 100%;
+  }
   .header {
     height: 200px;
   }
