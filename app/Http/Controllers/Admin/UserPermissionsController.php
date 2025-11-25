@@ -12,13 +12,20 @@ class UserPermissionsController extends AdminController
 {
     public function __construct()
     {
+        $this->table_pk = "user_permissions.id";
+
         $this->table_columns = [
-            "Module" => "(SELECT title FROM modules WHERE modules.id = module_id) as module_id",
-            "User" => "(SELECT CONCAT(first_name, ' ', surname) FROM users WHERE users.id = user_id) as user_id",
-            "Create" => "has_create",
-            "Edit" => "has_edit",
-            "Delete" => "has_delete",
-            "Export CSV" => "has_export",
+            "ID" => "user_permissions.id",
+            "Module" => "modules.title",
+            "User" => "CONCAT(users.first_name, ' ', users.surname)",
+            "Create" => "user_permissions.has_create",
+            "Edit" => "user_permissions.has_edit",
+            "Delete" => "user_permissions.has_delete",
+            "Export CSV" => "user_permissions.has_export",
+        ];
+        $this->table_joins = [
+            "INNER JOIN modules ON modules.id = user_permissions.module_id",
+            "INNER JOIN users ON users.id = user_permissions.user_id",
         ];
 
         $this->table_format = [

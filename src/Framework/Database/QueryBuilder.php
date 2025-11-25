@@ -179,7 +179,7 @@ class QueryBuilder
             $limit = "";
         }
         $sql = sprintf(
-            "SELECT %s FROM `%s`%s%s%s%s%s%s",
+            "SELECT %s FROM %s%s%s%s%s%s%s",
             implode(", ", $this->select),
             $this->table,
             $this->where ? " WHERE " . implode(" AND ", $this->where) : "",
@@ -199,7 +199,7 @@ class QueryBuilder
     private function buildInsert(): string
     {
         $sql = sprintf(
-            "INSERT INTO `%s` (%s) VALUES (%s)",
+            "INSERT INTO %s (%s) VALUES (%s)",
             $this->table,
             implode(", ", array_keys($this->insert)),
             implode(",", array_fill(0, count($this->insert), "?"))
@@ -210,7 +210,7 @@ class QueryBuilder
     private function buildUpdate(): string
     {
         $sql = sprintf(
-            "UPDATE `%s` SET %s%s",
+            "UPDATE %s SET %s%s",
             $this->table,
             implode(
                 ", ",
@@ -227,7 +227,7 @@ class QueryBuilder
     private function buildDelete(): string
     {
         $sql = sprintf(
-            "DELETE FROM `%s`%s",
+            "DELETE FROM %s%s",
             $this->table,
             $this->where ? " WHERE " . implode(" AND ", $this->where) : ""
         );
