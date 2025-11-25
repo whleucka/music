@@ -16,15 +16,16 @@
       <header class="d-flex justify-content-center align-items-center p-2">
         <h4 class="m-0"><i class="bi bi-shield-check pe-1"></i> <span class="desc">Admin</span></h4>
       </header>
-    <div class="d-flex justify-content-center align-items-center mt-5">
-      <div class="spinner-grow" role="status">
-        <span class="visually-hidden">Loading...</span>
+      <div class="d-flex justify-content-center align-items-center mt-5">
+        <div class="spinner-grow" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
       </div>
-    </div>
     </nav>
     <section id="view" class="d-flex flex-column flex-grow-1">
       <nav id="nav-top" class="d-flex align-items-center">
         <button class="btn d-none d-md-block" id="sidebar-toggle" hx-get="/admin/sidebar/toggle" hx-target="#nav-sidebar" hx-select="#nav-sidebar" hx-swap="outerHTML" hx-on::after-request="sidebarLinkActiveLoad()"><i class="bi bi-list"></i></button>
+        <a class="navbar-brand d-sm-block d-md-none fw-bold me-2" href="/admin/dashboard"><i class="bi bi-shield-check pe-1"></i> Admin</a>
         <div class="hx-indicator p-2">
           <div class="spinner"></div>
         </div>

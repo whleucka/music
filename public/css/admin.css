@@ -113,9 +113,13 @@ nav#nav-sidebar header h4 {
  * Nav top
  */
 #nav-top {
-  height: 48px;
   background-color: #fff;
   border-bottom: 1px solid #ddd;
+}
+
+#nav-top .navbar-brand {
+  font-size: 1.3rem;
+  padding: 12px; 
 }
 
 #nav-top .avatar {
