@@ -15,7 +15,6 @@ class ModulesController extends AdminController
             "Link" => "link",
             "Title" => "title",
             "Icon" => "icon",
-            "Updated" => "updated_at",
             "Created" => "created_at",
         ];
 
