@@ -180,7 +180,8 @@ nav#nav-sidebar header h4 {
 #table #table-action {
   height: 29px;
   font-size: 0.9em;
-  max-width: 150px;
+  width: 54px;
+  background-image: none !important;
 }
 
 #pagination .page-link {
