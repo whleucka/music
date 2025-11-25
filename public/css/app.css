@@ -85,6 +85,7 @@ html, body {
 }
 .dropdown-menu .dropdown-item {
   max-width: 320px;
+  margin-top: 5px;
 }
 .dropstart .dropdown-toggle::before {
   content: none;
@@ -467,7 +468,7 @@ html, body {
 
 #navbar #menu #top-search input {
   border: 1px solid #ddd;
-  max-width: 150px;
+  max-width: 130px;
 }
 
 #navbar #menu .nav-item {

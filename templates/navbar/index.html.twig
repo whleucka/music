@@ -10,42 +10,42 @@
               <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <img class="avatar" src="{{ user_avatar }}" />
               </button>
-              <ul class="dropdown-menu">
+              <ul class="dropdown-menu dropdown-menu-end">
                   <a class="dropdown-item" href="/playlist">
                     <li>
-                        Now Playing
+                        <span class="bi bi-headphones me-2"></span> Now Playing
                     </li>
                   </a>
                   <a class="dropdown-item" href="/tracks">
                     <li>
-                        Tracks
+                        <span class="bi bi-disc me-2"></span> Tracks
                     </li>
                   </a>
                   <a class="dropdown-item" href="/playlists">
                     <li>
-                        Playlists
+                        <span class="bi bi-file-music me-2"></span> Playlists
                     </li>
                   </a>
                   <a class="dropdown-item" href="/radio">
                     <li>
-                        Radio
+                        <span class="bi bi-broadcast me-2"></span> Radio
                     </li>
                   </a>
                   <a class="dropdown-item" href="/podcasts">
                     <li>
-                        Podcasts
+                        <span class="bi bi-mic me-2"></span> Podcasts
                     </li>
                   </a>
                   {% if user_role == 'admin' %}
                   <a hx-boost="false" class="dropdown-item" href="/admin/dashboard">
                     <li>
-                        Admin
+                        <span class="bi bi-shield-check me-2"></span> Admin
                     </li>
                   </a>
                   {% endif %}
                   <a hx-boost="false" class="dropdown-item" href="/admin/sign-out">
                     <li>
-                      <span class="bi bi-door-closed"></span> <span class="ps-2">Sign Out</span>
+                      <span class="bi bi-door-closed me-2"></span> Sign Out
                     </li>
                   </a> 
               </ul>
