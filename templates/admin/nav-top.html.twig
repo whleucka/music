@@ -1,0 +1,30 @@
+<nav id="nav-top" class="d-flex align-items-center">
+  <button class="btn d-none d-md-block" id="sidebar-toggle" hx-get="/admin/sidebar/toggle" hx-target="#nav-sidebar" hx-select="#nav-sidebar" hx-swap="outerHTML" hx-on::after-request="sidebarLinkActiveLoad()"><i class="bi bi-list"></i></button>
+  <a class="navbar-brand d-sm-block d-md-none fw-bold me-2" href="/admin/dashboard"><i class="bi bi-shield-check ps-2 pe-1"></i> Admin</a>
+  <div class="hx-indicator p-2">
+    <div class="spinner"></div>
+  </div>
+  <div class="d-flex align-items-center ms-auto">
+    <div class="dropdown">
+      <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <img class="avatar" src="{{ user.avatar }}" />
+      </button>
+      <ul class="dropdown-menu" hx-boost="true" hx-trigger="click" hx-select="#module" hx-target="#module" hx-swap="outerHTML">
+        {% for link in sidebar.links %}
+          {% if link['children'] %}
+          <li class="ps-2 d-block d-md-none text-secondary">{{ link.title }}</li>
+          {% for module in link['children'] %}
+            {% include "admin/menu-links.html.twig" with {'module': module, 'depth': 0 } only %} 
+          {% endfor %}
+          {% endif %}
+        {% endfor %}
+        <li class="ps-2 d-block d-md-none text-secondary">Session</li>
+        <a class="dropdown-item" href="/admin/sign-out" hx-boost="false">
+          <li>
+            <span class="bi bi-door-closed"></span> <span class="ps-2">Sign Out</span>
+          </li>
+        </a>
+      </ul>
+    </div> 
+  </div>
+</nav>
