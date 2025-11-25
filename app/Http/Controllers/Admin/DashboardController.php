@@ -15,16 +15,16 @@ class DashboardController extends AdminController
         parent::__construct();
     }
 
-    #[Get("/sales/total", "sales.total")]
-    public function sales(): string
+    #[Get("/tracks/count", "tracks.count")]
+    public function tracks_count(): int
     {
-        return $this->provider->getTotalSales();
+        return $this->provider->getTracksCount();
     }
 
-    #[Get("/sales/today", "sales.today")]
-    public function sales_today(): string
+    #[Get("/albums/count", "albums.count")]
+    public function albums_count(): int
     {
-        return $this->provider->getTodaySales();
+        return $this->provider->getAlbumsCount();
     }
 
     #[Get("/users/count", "users.count")]

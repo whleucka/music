@@ -1,0 +1,20 @@
+<div class="modal-header">
+  <h1 class="modal-title fs-5">Add to Playlist</h1>
+  <button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-target="#app-modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+  <ul class="list-group">
+      {% for playlist in playlists %}
+      <a href="#" 
+          class="text-decoration-none playlist-add-link"
+          hx-trigger="click"
+          hx-get="/playlists/add-track/{{ playlist.uuid }}/{{ hash }}" 
+          hx-swap="innerHTML"
+          hx-target="#app-modal .modal-content">
+        <li class="list-group-item mt-1 text-center">
+            {% if playlist.has_track %}<i class="bi bi-check text-success pe-1"></i>{% else %}<i class="bi bi-x text-danger pe-1"></i>{% endif %}{{ playlist.name }}
+        </li>
+      </a>
+      {% endfor %}
+  </ul>
+</div>

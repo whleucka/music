@@ -4,14 +4,16 @@ namespace App\Providers\Auth;
 
 class DashboardService
 {
-    public function getTotalSales(): string
+    public function getTracksCount(): int
     {
-        return '$' . number_format(0, 2);
+        return db()->execute("SELECT count(*) 
+            FROM tracks")->fetchColumn();
     }
 
-    public function getTodaySales(): string
+    public function getAlbumsCount(): int
     {
-        return '$' . number_format(0, 2);
+        return db()->execute("SELECT count(DISTINCT album) 
+            FROM track_meta")->fetchColumn();
     }
 
     public function getUsersCount(): int
