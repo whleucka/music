@@ -32,9 +32,10 @@
       <table class="table table-hover table m-0">
         <thead>
           <tr>
-            <td colspan="100%" class="checkbox-cell p-0">
             {% if table_actions|length > 0 %}
-              <div class="d-flex align-items-center ps-2 pb-2">
+            <th>
+            {% if table_actions|length > 0 %}
+              <div class="d-flex align-items-center">
                 <input id="select-all" onClick="selectAllToggle(event)" type="checkbox" />
                 <select name="table_action" class="form-select p-1 ms-2" id="table-action" disabled>
                   <option disabled selected>Action</option>
@@ -45,11 +46,6 @@
                 <button hx-post="/admin/{{ module.link }}/table-action" hx-confirm="Are you sure you want to apply this action?" hx-select="#module" hx-target="#module" hx-swap="outerHTML" type="submit" class="btn btn-sm btn-primary ms-1" id="table-action-submit" disabled>OK</button>
               </div>
             {% endif %}
-            </td>
-          </tr>
-          <tr>
-            {% if table_actions|length > 0 %}
-            <th>
             </th>
             {% endif %}
             {% for column,title in headers %}
