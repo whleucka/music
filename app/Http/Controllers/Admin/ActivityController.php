@@ -15,6 +15,7 @@ class ActivityController extends AdminController
         $this->table_pk = "users.id";
 
         $this->table_columns = [
+            "ID" => "users.id",
             "User" => "users.email",
             "IP" => "INET_NTOA(sessions.ip) as ip",
             "URI" => "sessions.uri",
