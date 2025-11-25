@@ -25,6 +25,7 @@ abstract class AdminController extends Controller
     protected array $table_columns = [];
     protected array $table_actions = [];
     protected array $table_format = [];
+    protected array $table_joins = [];
 
     protected int $per_page = 10;
     protected int $page = 1;
@@ -361,8 +362,9 @@ abstract class AdminController extends Controller
 
     private function runTableQuery(bool $limit = true): bool|PDOStatement
     {
+        $tables = $this->table_name . ' ' . implode(" ", $this->table_joins);
         $q = qb()->select(array_values($this->table_columns))
-            ->from($this->table_name)
+            ->from($tables)
             ->params($this->query_params)
             ->where($this->query_where)
             ->orderBy(["{$this->query_order_by} {$this->query_sort}"]);

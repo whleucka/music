@@ -12,11 +12,17 @@ class ActivityController extends AdminController
     {
         $this->has_create = $this->has_edit = $this->has_delete = false;
 
+        $this->table_pk = "users.id";
+
         $this->table_columns = [
-            "User" => "(SELECT email FROM users WHERE users.id = user_id) as user_id",
-            "IP" => "INET_NTOA(ip) as ip",
-            "URI" => "uri",
-            "Created" => "created_at",
+            "User" => "users.email",
+            "IP" => "INET_NTOA(sessions.ip) as ip",
+            "URI" => "sessions.uri",
+            "Created" => "sessions.created_at",
+        ];
+
+        $this->table_joins = [
+            "INNER JOIN users ON users.id = sessions.user_id"
         ];
 
         $this->filter_dropdowns = [
