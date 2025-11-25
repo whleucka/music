@@ -22,6 +22,7 @@ class UserPermissionsController extends AdminController
             "Edit" => "user_permissions.has_edit",
             "Delete" => "user_permissions.has_delete",
             "Export CSV" => "user_permissions.has_export",
+            "Created" => "user_permissions.created_at",
         ];
         $this->table_joins = [
             "INNER JOIN modules ON modules.id = user_permissions.module_id",
