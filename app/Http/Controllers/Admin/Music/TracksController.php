@@ -16,11 +16,16 @@ class TracksController extends AdminController
 
         $this->table_columns = [
             "ID" => "tracks.id",
-            "Hash" => "tracks.hash",
+            "Cover" => "tracks.hash as cover",
             "Artist" => "track_meta.artist",
             "Album" => "track_meta.album",
             "Title" => "track_meta.title",
+            "Hash" => "tracks.hash",
             "Created" => "tracks.created_at",
+        ];
+
+        $this->table_format = [
+            "cover" => fn($column, $value) => "<img loading='lazy' class='thumbnail rounded' src='http://music.home/tracks/cover/$value/64/64' alt='icon' />",
         ];
 
         $this->table_joins = [
@@ -31,6 +36,7 @@ class TracksController extends AdminController
             "Artist",
             "Album",
             "Title",
+            "Hash",
         ];
 
         parent::__construct("tracks");

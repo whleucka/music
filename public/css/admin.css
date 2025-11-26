@@ -40,6 +40,10 @@ html,body {
   border-color: none;
   box-shadow: none;
 }
+img.thumbnail {
+  width: 42px;
+  height: 42px;
+}
 
 /**
  * Sidebar
