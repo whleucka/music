@@ -25,17 +25,19 @@ It lets you stream your personal music collection anywhere, with playlist and se
 ---
 
 ## 🖼️ Screenshots
-
-<img width="200" height="1030" alt="image" src="https://github.com/user-attachments/assets/b5a63ff2-e51d-4d8a-ae90-f0383a073cc2" />
-<img width="200" height="1030" alt="image" src="https://github.com/user-attachments/assets/58f125ef-939d-4f20-a97f-94c2f17e788d" />
-<img width="200" height="1030" alt="image" src="https://github.com/user-attachments/assets/495226ef-7354-4d0c-a720-00c759cf318e" />
+<div align="center">
+  <img width="744" height="1030" alt="image" src="https://github.com/user-attachments/assets/6022dc1a-a1f7-4175-b9b3-dfa4503fdf15" />
+  <p>Music app</p>
+  <img width="1138" height="1030" alt="image" src="https://github.com/user-attachments/assets/49b59be7-ee8d-4b48-9d04-5012605cd598" />
+  <p>Music backend</p>
+</div>
 
 ---
 
 ## ⚙️ Tech Stack
 
 - **Backend:** PHP (Echo framework)  
-- **Frontend:** htmx + TailwindCSS  
+- **Frontend:** htmx + Bootstrap 5  
 - **Database:** MySQL / MariaDB  
 - **Transcoding:** FFmpeg  
 
