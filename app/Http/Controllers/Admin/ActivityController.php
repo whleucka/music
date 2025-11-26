@@ -23,7 +23,7 @@ class ActivityController extends AdminController
         ];
 
         $this->table_joins = [
-            "INNER JOIN users ON users.id = sessions.user_id"
+            "LEFT JOIN users ON users.id = sessions.user_id"
         ];
 
         $this->filter_dropdowns = [
@@ -31,7 +31,8 @@ class ActivityController extends AdminController
         ];
 
         $this->filter_links = [
-            "All" => "1=1",
+            "Frontend" => "user_id IS NULL",
+            "Backend" => "user_id IS NOT NULL",
             "Me" => "user_id = " . user()->id,
         ];
 
