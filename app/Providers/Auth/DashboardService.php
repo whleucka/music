@@ -26,8 +26,7 @@ class DashboardService
     {
         return db()->execute("SELECT COUNT(DISTINCT user_id) AS active_users
             FROM sessions
-            WHERE created_at >= NOW() - INTERVAL 30 MINUTE AND 
-            user_id IS NOT NULL;")->fetchColumn();
+            WHERE created_at >= NOW() - INTERVAL 30 MINUTE")->fetchColumn();
     }
 
     public function getCustomersCount(): int
@@ -50,16 +49,14 @@ class DashboardService
     public function getTotalRequests(): int
     {
         return db()->execute("SELECT count(*) 
-            FROM sessions
-            WHERE user_id IS NULL")->fetchColumn();
+            FROM sessions")->fetchColumn();
     }
 
     public function getTodayRequests(): int
     {
         return db()->execute("SELECT count(*) 
             FROM sessions 
-            WHERE DATE(created_at) = CURDATE() AND
-            user_id IS NULL")->fetchColumn();
+            WHERE DATE(created_at) = CURDATE()")->fetchColumn();
     }
 
     public function getTotalRequestsChart() {}
@@ -70,8 +67,7 @@ class DashboardService
             HOUR(created_at) AS hour,
             COUNT(*) AS total
             FROM sessions
-            WHERE DATE(created_at) = CURDATE() AND
-            user_id IS NULL
+            WHERE DATE(created_at) = CURDATE()
             GROUP BY HOUR(created_at)
             ORDER BY hour");
         $hours = range(0, 23);
@@ -120,7 +116,6 @@ class DashboardService
                 COUNT(*) AS total
             FROM sessions
             WHERE YEARWEEK(created_at, 1) = YEARWEEK(CURDATE(), 1)
-              AND user_id IS NULL
             GROUP BY day_date
             ORDER BY day_date");
         $labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
@@ -169,8 +164,7 @@ class DashboardService
             COUNT(*) AS total
             FROM sessions
             WHERE YEAR(created_at) = YEAR(CURDATE()) AND 
-            MONTH(created_at) = MONTH(CURDATE()) AND
-            user_id IS NULL
+            MONTH(created_at) = MONTH(CURDATE())
             GROUP BY day_number
             ORDER BY day_number");
         $daysInMonth = date('t');
@@ -214,8 +208,7 @@ class DashboardService
     {
         $data = db()->fetchAll("SELECT DATE_FORMAT(created_at, '%Y-%m') AS month, COUNT(*) AS total
             FROM sessions
-            WHERE created_at >= DATE_FORMAT(CURDATE(), '%Y-01-01') AND
-            user_id IS NULL
+            WHERE created_at >= DATE_FORMAT(CURDATE(), '%Y-01-01')
             GROUP BY month
             ORDER BY month");
         $labels = [];
