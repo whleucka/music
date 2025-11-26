@@ -275,13 +275,18 @@ nav#nav-sidebar header h4 {
 }
 #dashboard #tracks {
   color: #fff;
-  background-color: #3a786c;
+  background-color: #5cccab;
   border-left: 8px solid #adffef;
 }
 #dashboard #albums {
   color: #fff;
-  background-color: #c9ad1c;
-  border-left: 8px solid #fff1ab;
+  background-color: #8f386f;
+  border-left: 8px solid #e6199a;
+}
+#dashboard #artists {
+  color: #fff;
+  background-color: #cfbb04;
+  border-left: 8px solid #fff7b3;
 }
 #dashboard #customers {
   color: #fff;

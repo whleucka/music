@@ -16,6 +16,12 @@ class DashboardService
             FROM track_meta")->fetchColumn();
     }
 
+    public function getArtistsCount(): int
+    {
+        return db()->execute("SELECT count(DISTINCT artist) 
+            FROM track_meta")->fetchColumn();
+    }
+
     public function getUsersCount(): int
     {
         return db()->execute("SELECT count(*) 

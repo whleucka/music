@@ -60,12 +60,12 @@
         <p>Total Requests</p>
       </div>
 
-      <div id="tracks" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
-        <i class="bi bi-music-note icon"></i>
-        <div class="text-end count" hx-get="/admin/dashboard/tracks/count" hx-swap="textContent" hx-trigger="load">
+      <div id="artists" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+        <i class="bi bi-person icon"></i>
+        <div class="text-end count" hx-get="/admin/dashboard/artists/count" hx-swap="textContent" hx-trigger="load">
           --
         </div>
-        <p>Total Tracks</p>
+        <p>Total Artists</p>
       </div>
 
       <div id="albums" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
@@ -75,6 +75,15 @@
         </div>
         <p>Total Albums</p>
       </div>
+
+      <div id="tracks" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
+        <i class="bi bi-music-note icon"></i>
+        <div class="text-end count" hx-get="/admin/dashboard/tracks/count" hx-swap="textContent" hx-trigger="load">
+          --
+        </div>
+        <p>Total Tracks</p>
+      </div>
+
     </div>
   </div>
 
