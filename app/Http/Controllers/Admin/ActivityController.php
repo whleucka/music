@@ -12,10 +12,10 @@ class ActivityController extends AdminController
     {
         $this->has_create = $this->has_edit = $this->has_delete = false;
 
-        $this->table_pk = "users.id";
+        $this->table_pk = "sessions.id";
 
         $this->table_columns = [
-            "ID" => "users.id",
+            "ID" => "sessions.id",
             "User" => "users.email",
             "IP" => "INET_NTOA(sessions.ip) as ip",
             "URI" => "sessions.uri",
