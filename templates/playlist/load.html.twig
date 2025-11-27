@@ -1,36 +1,35 @@
+<div id="actions" class="sticky-top bg-white d-flex py-1 table-responsive">
+    {% if tracks %}
+    <button class="btn btn-sm btn-danger" type="submit" hx-get="/playlist/clear" hx-swap="none">Clear playlist</button>
+    {% endif %}
+    <button class="btn btn-sm btn-primary" hx-get="/playlists" hx-swap="outerHTML" hx-target="#view" hx-select="#view">New playlist</button>
+    {% if playlists %}
+    <div class="btn-group">
+        <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            Load playlist
+        </button>
+        <ul class="dropdown-menu">
+            {% for playlist in playlists %}
+            <li>
+                <a class="dropdown-item" 
+                    hx-get="/playlists/play/{{ playlist.uuid }}" hx-swap="none" href="#">{{ playlist.name }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    {% if has_liked %}
+        <button class="btn btn-sm btn-primary" type="submit" hx-get="/playlist/liked" hx-swap="none">Liked tracks</button>
+    {% endif %}
+    <button class="btn btn-sm btn-primary" type="submit" hx-get="/playlist/random" hx-swap="none">Random tracks</button>
+</div>
 {% if tracks %}
-    <div id="actions" class="sticky-top bg-white d-flex py-1 table-responsive">
-        <button class="btn btn-sm btn-danger" type="submit" hx-get="/playlist/clear" hx-swap="none">Clear playlist</button>
-    </div>
-    <div class="mt-2">
-        {% for track in tracks %}
-            {% include "playlist/row.html.twig" %}
-        {% endfor %}
-    </div>
-    <script>document.getElementById("top-play").style.display = "block";</script>
+<div class="mt-2">
+    {% for track in tracks %}
+        {% include "playlist/row.html.twig" %}
+    {% endfor %}
+</div>
 {% else %}
-    <div id="actions" class="sticky-top bg-white d-flex py-1 table-responsive">
-        <button class="btn btn-sm btn-primary" hx-get="/playlists" hx-swap="outerHTML" hx-target="#view" hx-select="#view">New playlist</button>
-        {% if playlists %}
-        <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                Load playlist
-            </button>
-            <ul class="dropdown-menu">
-                {% for playlist in playlists %}
-                <li>
-                    <a class="dropdown-item" 
-                        hx-get="/playlists/play/{{ playlist.uuid }}" hx-swap="none" href="#">{{ playlist.name }}</a>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-        {% if has_liked %}
-            <button class="btn btn-sm btn-primary" type="submit" hx-get="/playlist/liked" hx-swap="none">Liked tracks</button>
-        {% endif %}
-        <button class="btn btn-sm btn-primary" type="submit" hx-get="/playlist/random" hx-swap="none">Random tracks</button>
-    </div>
-    <div class="mt-2 load-msg"><em>Playlist is empty</em></div>
-    <script>document.getElementById("top-play").style.display = "none";</script>
+<div class="mt-2 load-msg"><em>Playlist is empty</em></div>
 {% endif %}
+<script>document.getElementById("top-play").style.display = "none";</script>
