@@ -32,22 +32,24 @@
       <table class="table table-hover table m-0">
         <thead>
           <tr>
-            {% if table_actions|length > 0 %}
             <th>
             {% if table_actions|length > 0 %}
-              <div class="d-flex align-items-center">
+              <div class="d-flex">
                 <input id="select-all" onClick="selectAllToggle(event)" type="checkbox" />
-                <select name="table_action" class="form-select p-1 ms-2" id="table-action" disabled>
-                  <option disabled selected>Action</option>
-                  {% for action in table_actions %}
-                  <option value="{{ action.value }}">{{ action.label }}</option>
-                  {% endfor %}
-                </select>
-                <button hx-post="/admin/{{ module.link }}/table-action" hx-confirm="Are you sure you want to apply this action?" hx-select="#module" hx-target="#module" hx-swap="outerHTML" type="submit" class="btn btn-sm btn-primary ms-1" id="table-action-submit" disabled>OK</button>
+                <div id="select-all-toggle" style="display: none;">
+                  <div class="d-flex">
+                    <select name="table_action" class="form-select p-1 ms-2" id="table-action" disabled>
+                      <option disabled selected>Action</option>
+                      {% for action in table_actions %}
+                      <option value="{{ action.value }}">{{ action.label }}</option>
+                      {% endfor %}
+                    </select>
+                    <button hx-post="/admin/{{ module.link }}/table-action" hx-confirm="Are you sure you want to apply this action?" hx-select="#module" hx-target="#module" hx-swap="outerHTML" type="submit" class="btn btn-sm btn-primary ms-1" id="table-action-submit" disabled>OK</button>
+                  </div>
+                </div>
               </div>
             {% endif %}
             </th>
-            {% endif %}
             {% for column,title in headers %}
             <th hx-get="/admin/{{ module.link }}/sort/{{ loop.index0 }}" hx-target="#table" hx-select="#table" hx-swap="outerHTML" class="pointer {% if column == filters.order_by %}active {% if filters.sort == 'ASC' %}asc{% else %}desc{% endif %}{% endif %}" nowrap>{{ title }}</th>
             {% endfor %}
@@ -172,5 +174,8 @@
   var setMultiActionDisabled = (state) => {
     document.getElementById("table-action").disabled = state;
     document.getElementById("table-action-submit").disabled = state;
+    document.getElementById("select-all-toggle").style.display = !state 
+      ? 'block' 
+      : 'none';
   }
 </script>
