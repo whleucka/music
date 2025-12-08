@@ -14,7 +14,7 @@
 
       <div id="users-active" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
         <i class="bi bi-people icon"></i>
-        <div class="text-end count" hx-get="/admin/dashboard/users/active" hx-swap="textContent" hx-trigger="load">
+        <div class="text-end count" hx-get="/admin/dashboard/users/active" hx-swap="textContent" hx-trigger="load, every 1m">
           --
         </div>
         <p>Active Users</p>
@@ -28,25 +28,9 @@
         <p>Total Users</p>
       </div>
 
-      <!--<div id="customers" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
-        <i class="bi bi-person-bounding-box icon"></i>
-        <div class="text-end count" hx-get="/admin/dashboard/customers/count" hx-swap="textContent" hx-trigger="load">
-          --
-        </div>
-        <p>Total Customers</p>
-      </div>
-
-      <div id="customers-new" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
-        <i class="bi bi-person-bounding-box icon"></i>
-        <div class="text-end count" hx-get="/admin/dashboard/customers/new" hx-swap="textContent" hx-trigger="load">
-          --
-        </div>
-        <p>New Customers</p>
-      </div>-->
-
       <div id="requests-today" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
         <i class="bi bi-clock icon"></i>
-        <div class="text-end count" hx-get="/admin/dashboard/requests/count/today" hx-swap="textContent" hx-trigger="load">
+        <div class="text-end count" hx-get="/admin/dashboard/requests/count/today" hx-swap="textContent" hx-trigger="load, every 30s">
           --
         </div>
         <p>Today's Requests</p>
@@ -54,7 +38,7 @@
 
       <div id="requests" class="d-flex align-items-center justify-content-center flex-column rounded top-alert">
         <i class="bi bi-graph-up icon"></i>
-        <div class="text-end count" hx-get="/admin/dashboard/requests/count/total" hx-swap="textContent" hx-trigger="load">
+        <div class="text-end count" hx-get="/admin/dashboard/requests/count/total" hx-swap="textContent" hx-trigger="load, every 30s">
           --
         </div>
         <p>Total Requests</p>
