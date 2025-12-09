@@ -44,6 +44,7 @@ class RadioService
             "album" => $name,
             "title" => $name,
             "shuffle" => false,
+            "type" => "radio",
         ];
         brain()->player->setState($player);
     }

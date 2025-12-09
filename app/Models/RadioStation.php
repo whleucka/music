@@ -11,7 +11,7 @@ class RadioStation extends Model
         parent::__construct('radio_stations', $id);
     }
 
-    public function cover()
+    public function cover(): ?string
     {
         $fi = new FileInfo($this->cover);
         return $fi ? $fi->path : null;
@@ -49,5 +49,45 @@ class RadioStation extends Model
         } catch (\Exception $ex) {
             error_log("imagick error: check logs " . $ex->getMessage());
         }
+    }
+
+    public function stream(): void
+    {
+        // Prevent PHP from timing out
+        set_time_limit(0);
+
+        // Turn off output buffering
+        while (ob_get_level()) ob_end_clean();
+
+        // Send proper headers
+        header('Content-Type: audio/mpeg');
+        header('Cache-Control: no-cache');
+        header('Connection: keep-alive');
+
+        // Build ffmpeg command
+        $cmd = sprintf(
+            'ffmpeg -i %s -f mp3 -c:a libmp3lame -b:a 256k -',
+            escapeshellarg($this->src)
+        );
+
+        // Open process
+        $process = popen($cmd, 'r');
+
+        if (!$process) {
+            http_response_code(500);
+            echo "Failed to start ffmpeg process.";
+            exit;
+        }
+
+        // Stream to browser
+        while (!feof($process)) {
+            $buffer = fread($process, 8192);
+            if ($buffer === false) break;
+
+            echo $buffer;
+            flush();
+        }
+
+        pclose($process);
     }
 }

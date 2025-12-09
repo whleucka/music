@@ -36,7 +36,7 @@ class RadioController extends Controller
 
         if ($station) {
             $fi = new FileInfo($station->cover);
-            $this->radio_provider->setPlayer($hash, '#', $fi->path, $station->city, $station->province, $station->country, $station->name);
+            $this->radio_provider->setPlayer($hash, '/radio/stream/'.$station->hash, $fi->path, $station->city, $station->province, $station->country, $station->name);
             $this->hxTrigger("player");
         }
     }
@@ -48,6 +48,16 @@ class RadioController extends Controller
         $station = $this->radio_provider->getStationFromHash($hash);
         if ($station) {
             $station->renderCover($width, $height);
+        }
+    }
+
+    // Stream a station for playback
+    #[Get("/radio/stream/{hash}", "radio.stream", ["auth"])]
+    public function stream(string $hash): void
+    {
+        $station = $this->radio_provider->getStationFromHash($hash);
+        if ($station) {
+            $station->stream();
         }
     }
 }

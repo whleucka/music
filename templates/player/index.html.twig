@@ -39,6 +39,7 @@
 
 <script>
     var id = '{{ player.id }}';
+    var player_type = '{{ player.type }}'
     var player = document.getElementById("audio");
     var topPlayButton = document.querySelector("#top-play");
     var playButton = document.querySelector("#play");
@@ -62,6 +63,10 @@
                 updatePositionState();
                 requestAnimationFrame(updateProgress);
             }
+        }
+        if (player_type == 'radio') {
+          setTrackProgress(100);
+          setBufferProgress(0);
         }
     };
 
