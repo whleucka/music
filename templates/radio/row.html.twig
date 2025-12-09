@@ -3,7 +3,6 @@
     hx-get={% block play_link %}"/radio/play/{{ station.hash }}"{% endblock %}
     hx-swap="none" 
     hx-trigger="click"
-    onClick="playRadio('{{ station.src }}')"
     class="radio-row d-flex align-items-center mt-2 truncate {% if id == station.hash %}active{% endif %}">
     <span class="cover px-1">
         <img loading="lazy" title="{{ station.name|raw }}" onError="this.src = '/images/no-album.png'" src="/radio/cover/{{ station.hash }}/46/46" alt="cover" />
