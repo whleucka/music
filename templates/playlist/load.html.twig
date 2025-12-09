@@ -29,7 +29,10 @@
         {% include "playlist/row.html.twig" %}
     {% endfor %}
 </div>
-<script>document.getElementById("top-play").style.display = "block";</script>
+<script>
+document.getElementById("top-play").style.display = "block";
+document.getElementById('{{ id }}').focus();
+</script>
 {% else %}
 <div class="mt-2 load-msg"><em>Playlist is empty</em></div>
 <script>document.getElementById("top-play").style.display = "none";</script>

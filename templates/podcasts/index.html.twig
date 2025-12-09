@@ -1,10 +1,10 @@
 {% extends "layout/app.html.twig" %}
 
 {% block view %}
-    <section id="podcasts" class="h-100 scroll-cont">
-        <div class="header bg-orange bg-wave">
-            <h2 class="p-2 fw-bold"><i class="bi bi-mic"></i> Podcasts</h2>
-        </div>
-        <div id="load" class="p-2" hx-indicator="#content-loader" hx-get="/podcasts/load" hx-trigger="load, podcasts from:body"></div>
-    </section>
+<section id="podcasts" class="h-100 scroll-cont">
+    <div class="header bg-orange bg-wave">
+        <h2 class="p-2 fw-bold"><i class="bi bi-mic"></i> Podcasts</h2>
+    </div>
+    <div id="load" class="p-2" hx-indicator="#content-loader" hx-get="/podcasts/load" hx-trigger="load, podcasts from:body"></div>
+</section>
 {% endblock %}

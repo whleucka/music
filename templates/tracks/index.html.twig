@@ -1,11 +1,11 @@
 {% extends "layout/app.html.twig" %}
 
 {% block view %}
-    <section id="tracks" class="h-100 scroll-cont">
-        <div class="header bg-sin bg-wave">
-            <h2 class="p-2 fw-bold"><i class="bi bi-disc"></i> Tracks</h2>
-            <div id="search" class="p-2" hx-get="/tracks/control" hx-trigger="load"></div>
-        </div>
-        <div id="load" class="p-2" hx-indicator="#content-loader" hx-get="/tracks/load" hx-trigger="load, tracks from:body"></div>
-    </section>
+<section id="tracks" class="h-100 scroll-cont">
+    <div class="header bg-sin bg-wave">
+        <h2 class="p-2 fw-bold"><i class="bi bi-disc"></i> Tracks</h2>
+        <div id="search" class="p-2" hx-get="/tracks/control" hx-trigger="load"></div>
+    </div>
+    <div id="load" class="p-2" hx-indicator="#content-loader" hx-get="/tracks/load" hx-trigger="load, tracks from:body"></div>
+</section>
 {% endblock %}

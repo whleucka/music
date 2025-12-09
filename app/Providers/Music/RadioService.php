@@ -14,21 +14,6 @@ class RadioService
             ORDER BY country,province,city");
     }
 
-    public function getRadioStationIndex()
-    {
-        return brain()->radio->station_index;
-    }
-
-    public function clearRadioStationIndex()
-    {
-        brain()->radio->station_index = null;
-    }
-
-    public function setRadioStationIndex(int $index)
-    {
-        brain()->radio->station_index = $index;
-    }
-
     public function getStationFromHash(string $hash)
     {
         return RadioStation::where("hash", $hash)->get();

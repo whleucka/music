@@ -48,7 +48,7 @@ class TracksController extends Controller
             "playlists" => $this->playlist_provider->getUserPlaylistsFromDB($this->user->id),
             "term" => $this->track_provider->getSearchTerm(),
             "tracks" => $this->track_provider->getSearchResultsFromDB($this->user->id),
-            // "top_played" => $this->track_provider->getTopPlayedFromDB($this->user->id),
+            "id" => $this->player_provider->getPlayer()["id"],
         ]);
     }
 

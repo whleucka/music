@@ -3,13 +3,17 @@
 namespace App\Http\Controllers\Music;
 
 use App\Models\FileInfo;
+use App\Providers\Music\PlayerService;
 use App\Providers\Music\RadioService;
 use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Route\Get;
 
 class RadioController extends Controller
 {
-    public function __construct(private RadioService $radio_provider)
+    public function __construct(
+        private RadioService $radio_provider,
+        private PlayerService $player_provider
+    )
     {}
 
     // Render podcasts
@@ -25,7 +29,7 @@ class RadioController extends Controller
     {
         return $this->render("radio/load.html.twig", [
             "stations" => $this->radio_provider->getRadioStationsFromDB(),
-            "station_index" => $this->radio_provider->getRadioStationIndex(),
+            "id" => $this->player_provider->getPlayer()["id"],
         ]);
     }
 

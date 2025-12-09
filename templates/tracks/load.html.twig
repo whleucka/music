@@ -1,39 +1,44 @@
 {% if tracks %}
-    <div id="actions" class="sticky-top bg-white d-flex py-1 table-responsive">
-        {% if term %}
-        <button class="btn btn-sm btn-danger" type="submit" hx-get="/tracks/clear" hx-target="#tracks #search">Clear search</button>
-        {% endif %}
-        <button class="btn btn-sm btn-primary" hx-get="/tracks/set-playlist" hx-swap="none">Play all</button>
-        <p></p>
-        {% if playlists %}
-        <div class="btn-group">
-            <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                Add to playlist
-            </button>
-            <ul class="dropdown-menu">
-                {% for playlist in playlists %}
-                <li>
-                    <a class="dropdown-item" 
-                        hx-get="/playlists/add-tracks/{{ playlist.uuid }}" hx-swap="none" href="#">{{ playlist.name }}</a>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-        <button class="btn btn-sm btn-primary" hx-get="/playlists" hx-swap="outerHTML" hx-target="#view" hx-select="#view">Create new playlist</button>
-        {% endif %}
-    </div>
-    <div class="mt-2">
-        {% for track in tracks %}
-            {% include "tracks/row.html.twig" %}
-        {% endfor %}
-    </div>
+  <div id="actions" class="sticky-top bg-white d-flex py-1 table-responsive">
+      {% if term %}
+      <button class="btn btn-sm btn-danger" type="submit" hx-get="/tracks/clear" hx-target="#tracks #search">Clear search</button>
+      {% endif %}
+      <button class="btn btn-sm btn-primary" hx-get="/tracks/set-playlist" hx-swap="none">Play all</button>
+      <p></p>
+      {% if playlists %}
+      <div class="btn-group">
+          <button type="button" class="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              Add to playlist
+          </button>
+          <ul class="dropdown-menu">
+              {% for playlist in playlists %}
+              <li>
+                  <a class="dropdown-item" 
+                      hx-get="/playlists/add-tracks/{{ playlist.uuid }}" hx-swap="none" href="#">{{ playlist.name }}</a>
+              </li>
+              {% endfor %}
+          </ul>
+      </div>
+      <button class="btn btn-sm btn-primary" hx-get="/playlists" hx-swap="outerHTML" hx-target="#view" hx-select="#view">Create new playlist</button>
+      {% endif %}
+  </div>
+  <div class="mt-2">
+      {% for track in tracks %}
+          {% include "tracks/row.html.twig" %}
+      {% endfor %}
+  </div>
+  {% if not term %}
+  <script>
+    document.getElementById('{{ id }}').focus();
+  </script>
+  {% endif %}
 {% else %}
-    <div id="actions" class="sticky-top bg-white d-flex py-1 table-responsive">
-        <a class="btn btn-sm btn-primary" hx-boost="true" href="/playlists" hx-swap="outerHTML" hx-target="#view" hx-select="#view">Create new playlist</a>
-    </div>
-    {% if term %}
-      <div class="mt-2 load-msg"><em>No search results for '{{ term }}'</em></div>
-    {% endif %}
-    <div class="mt-3" hx-get="/tracks/recently-played" hx-trigger="load, recently-played from:body"></div>
-    <div class="mt-3" hx-get="/tracks/top-played-user" hx-trigger="load, top-played-user from:body"></div>
+  <div id="actions" class="sticky-top bg-white d-flex py-1 table-responsive">
+      <a class="btn btn-sm btn-primary" hx-boost="true" href="/playlists" hx-swap="outerHTML" hx-target="#view" hx-select="#view">Create new playlist</a>
+  </div>
+  {% if term %}
+    <div class="mt-2 load-msg"><em>No search results for '{{ term }}'</em></div>
+  {% endif %}
+  <div class="mt-3" hx-get="/tracks/recently-played" hx-trigger="load, recently-played from:body"></div>
+  <div class="mt-3" hx-get="/tracks/top-played-user" hx-trigger="load, top-played-user from:body"></div>
 {% endif %}
