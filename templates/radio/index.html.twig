@@ -7,5 +7,35 @@
         </div>
         <div id="load" class="p-2" hx-indicator="#content-loader" hx-get="/radio/load" hx-trigger="load, radio from:body"></div>
     </section>
+<script>
+var playRadio = (src) => {
+    // Clear the active row
+    const radioRows = document.querySelectorAll(".radio-row");
+    radioRows.forEach((el) => {
+      el.classList.remove("active");
+    })
+
+    const audio = document.getElementById('audio');
+
+    // Remove any existing src so browser doesn't touch it
+    audio.removeAttribute('src');
+
+    // Kill any previous HLS instance
+    if (window.hls) {
+        window.hls.destroy();
+    }
+
+    if (Hls.isSupported()) {
+        window.hls = new Hls({
+            enableWorker: true,
+            lowLatencyMode: true
+        });
+        window.hls.loadSource(src);
+        window.hls.attachMedia(audio);
+    } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
+        audio.src = src; // Safari
+    }
+};
+</script>
 {% endblock %}
 

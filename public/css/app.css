@@ -71,6 +71,29 @@ html, body {
 .bg-light {
 }
 
+/** Radio Stations */
+.radio-row:not(:last-child) {
+  margin-bottom: 6px;
+}
+
+.radio-row:hover {
+  cursor: pointer;
+  background-color: rgba(0,0,0, 0.05);
+}
+
+.radio-row .cover img {
+  width: 46px;
+  height: 46px;
+  border-radius: 6px;
+}
+.radio-row.active .name {
+  font-weight: 800;
+}
+
+.radio-row .location {
+  font-size: 0.8rem;
+}
+
 /** Tracks */
 .track-row {
   overflow: visible !important;

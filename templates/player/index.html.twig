@@ -34,7 +34,7 @@
             </div>
         </div>
     </span>
-    <audio id="audio" src="{{ player.source }}">Your browser does not support the audio element.</audio>
+    <audio id="audio" {% if player.source and player.source != '#' %}src="{{ player.source }}"{% endif %}>Your browser does not support the audio element.</audio>
 </div>
 
 <script>
@@ -43,7 +43,7 @@
     var topPlayButton = document.querySelector("#top-play");
     var playButton = document.querySelector("#play");
     var trackProgress = document.querySelector(".track-progress");
-    var bufferProgress = document.querySelector(".buffer");10800
+    var bufferProgress = document.querySelector(".buffer");
     var volumeProgress = document.querySelector("#volume-progress");
     var currentTrack = document.getElementById(id);
     var defaultSkipTime = 10;

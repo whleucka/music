@@ -11,6 +11,7 @@ return new class implements Migration
     {
          return Schema::create($this->table, function (Blueprint $table) {
             $table->id();
+            $table->uuid("hash")->default("(UUID())");
             $table->varchar("name");
             $table->varchar("country")->nullable();
             $table->varchar("province")->nullable();

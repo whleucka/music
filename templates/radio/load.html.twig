@@ -1,6 +1,8 @@
-{% if radio %}
+{% if stations %}
     <div class="mt-2">
-        <p>wip</p>
+    {% for station in stations %}
+        {% include "radio/row.html.twig" %}
+    {% endfor %}
     </div>
 {% else %}
     <div class="mt-2 load-msg"><em>There are no radio stations yet</em></div>
