@@ -32,6 +32,9 @@ var playRadio = (src) => {
         });
         window.hls.loadSource(src);
         window.hls.attachMedia(audio);
+        hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            audio.play().catch(err => console.log(err));
+        });
     } else if (audio.canPlayType('application/vnd.apple.mpegurl')) {
         audio.src = src; // Safari
     }
