@@ -1,7 +1,4 @@
 <div id="top-search" class="d-flex">
-    <div id="content-loader" class="htmx-indicator d-flex justify-content-center align-items-center">
-        <img src="/images/sonic.gif" alt="loading" />
-    </div>
     <form method="GET" hx-get="/tracks/search?redirect=true" hx-on::after-request="document.querySelector('#search-term').value = ''" swap="none">
         <input id="search-term" class="form-control" type="input" placeholder="Search tracks" name="term" />
     </form>

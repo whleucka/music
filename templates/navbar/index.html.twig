@@ -1,59 +1,64 @@
-<nav id="menu" class="navbar navbar-expand-md bg-body-tertiary">
-    <div class="container-fluid" hx-boost="true" hx-swap="outerHTML" hx-select="#view" hx-target="#view">
-        <div class="d-flex align-items-center">
-          <a class="navbar-brand fw-bold me-2" href="/playlist"><img width="24" height="24" src="/icons/favicon-32x32.png" alt="logo" /> Music</a>
-        </div>
-        <div class="d-flex ms-auto justify-content-end">
-          {% include "navbar/control.html.twig" %}
-          <div class="d-flex align-items-center ms-auto">
-            <div class="dropdown">
-              <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <img class="avatar" src="{{ user_avatar }}" />
-              </button>
-              <ul class="dropdown-menu dropdown-menu-end">
-                  <a class="dropdown-item" href="/playlist">
-                    <li>
-                        <span class="bi bi-headphones me-2"></span> Now Playing
-                    </li>
-                  </a>
-                  <a class="dropdown-item" href="/tracks">
-                    <li>
-                        <span class="bi bi-disc me-2"></span> Tracks
-                    </li>
-                  </a>
-                  <a class="dropdown-item" href="/playlists">
-                    <li>
-                        <span class="bi bi-file-music me-2"></span> Playlists
-                    </li>
-                  </a>
-                  <a class="dropdown-item" href="/radio">
-                    <li>
-                        <span class="bi bi-broadcast me-2"></span> Radio
-                    </li>
-                  </a>
-                  <a class="dropdown-item" href="/podcasts">
-                    <li>
-                        <span class="bi bi-mic me-2"></span> Podcasts
-                    </li>
-                  </a>
-                  {% if user_role == 'admin' %}
-                  <a hx-boost="false" class="dropdown-item" href="/admin/dashboard">
-                    <li>
-                        <span class="bi bi-shield-check me-2"></span> Admin
-                    </li>
-                  </a>
-                  {% endif %}
-                  <a hx-boost="false" class="dropdown-item" href="/admin/sign-out">
-                    <li>
-                      <span class="bi bi-door-closed me-2"></span> Sign Out
-                    </li>
-                  </a> 
-              </ul>
-            </div> 
+<div style="position: relative">
+  <nav id="menu" class="navbar navbar-expand-md bg-body-tertiary">
+      <div class="container-fluid" hx-boost="true" hx-swap="outerHTML" hx-select="#view" hx-target="#view">
+          <div class="d-flex align-items-center">
+            <a class="navbar-brand fw-bold me-2" href="/playlist"><img width="24" height="24" src="/icons/favicon-32x32.png" alt="logo" /> Music</a>
           </div>
-        </div>
-    </div>
-</nav>
+          <div class="d-flex ms-auto justify-content-end">
+            {% include "navbar/control.html.twig" %}
+            <div class="d-flex align-items-center ms-auto">
+              <div class="dropdown">
+                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <img class="avatar" src="{{ user_avatar }}" />
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <a class="dropdown-item" href="/playlist">
+                      <li>
+                          <span class="bi bi-headphones me-2"></span> Now Playing
+                      </li>
+                    </a>
+                    <a class="dropdown-item" href="/tracks">
+                      <li>
+                          <span class="bi bi-disc me-2"></span> Tracks
+                      </li>
+                    </a>
+                    <a class="dropdown-item" href="/playlists">
+                      <li>
+                          <span class="bi bi-file-music me-2"></span> Playlists
+                      </li>
+                    </a>
+                    <a class="dropdown-item" href="/radio">
+                      <li>
+                          <span class="bi bi-broadcast me-2"></span> Radio
+                      </li>
+                    </a>
+                    <a class="dropdown-item" href="/podcasts">
+                      <li>
+                          <span class="bi bi-mic me-2"></span> Podcasts
+                      </li>
+                    </a>
+                    {% if user_role == 'admin' %}
+                    <a hx-boost="false" class="dropdown-item" href="/admin/dashboard">
+                      <li>
+                          <span class="bi bi-shield-check me-2"></span> Admin
+                      </li>
+                    </a>
+                    {% endif %}
+                    <a hx-boost="false" class="dropdown-item" href="/admin/sign-out">
+                      <li>
+                        <span class="bi bi-door-closed me-2"></span> Sign Out
+                      </li>
+                    </a> 
+                </ul>
+              </div> 
+            </div>
+          </div>
+      </div>
+  </nav>
+  <div id="content-loader" class="progress" style="height: 4px; background-color: inherit;">
+      <div class="indeterminate" style="background-color: red;"></div>
+  </div>
+</div>
 <script>
     // Close navbar on click
     const menuToggle = document.getElementById('navbarNav');
