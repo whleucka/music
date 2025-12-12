@@ -244,54 +244,63 @@ nav#nav-sidebar header h4 {
   position: absolute;
   opacity: 0.4;
 }
+/* Apple-inspired colors (soft, distinct, premium) */
+
 #dashboard #users {
   color: #fff;
-  background-color: #08961d;
-  border-left: 8px solid #87ff99;
+  background-color: #5fbf72;          /* calm Apple green */
+  border-left: 8px solid #d8f7e1;     /* frosted mint glow */
 }
+
 #dashboard #users-active {
   color: #fff;
-  background-color: #ff8c19;
-  border-left: 8px solid #ffdfbf;
+  background-color: #ffb05e;          /* warm peach/orange */
+  border-left: 8px solid #ffe8d1;     /* gentle peach glow */
 }
+
 #dashboard #requests {
   color: #fff;
-  background-color: #c800ff;
-  border-left: 8px solid #e482ff;
+  background-color: #c77aff;          /* soft lavender-purple */
+  border-left: 8px solid #eedcff;     /* cloud lilac glow */
 }
+
 #dashboard #requests-today {
   color: #fff;
-  background-color: #003cff;
-  border-left: 8px solid #4287f5;
+  background-color: #6f8dff;          /* soft periwinkle blue */
+  border-left: 8px solid #dfe6ff;     /* airy sky glow */
+}
+
+#dashboard #modules {
+  color: #fff;
+  background-color: #ff7474;          /* pastel coral red */
+  border-left: 8px solid #ffe0e0;     /* soft coral glow */
+}
+
+#dashboard #sales {
+  color: #fff;
+  background-color: #5ab8aa;          /* aqua-teal */
+  border-left: 8px solid #dbfaf4;     /* frosty aqua glow */
+}
+
+#dashboard #sales-today {
+  color: #fff;
+  background-color: #e2c558;          /* warm honey gold */
+  border-left: 8px solid #fff5d2;     /* soft golden glow */
+}
+
+#dashboard #customers {
+  color: #fff;
+  background-color: #8665ff;          /* smooth violet */
+  border-left: 8px solid #e7e1ff;     /* lavender fog glow */
+}
+
+#dashboard #customers-new {
+  color: #fff;
+  background-color: #ff6fbf;          /* soft rose pink */
+  border-left: 8px solid #ffe1f2;     /* airy pink glow */
 }
 #dashboard #requests-today-chart {
   width: 100%;
-}
-#dashboard #modules {
-  color: #fff;
-  background-color: #ff2929;
-  border-left: 8px solid #ffbfbf;
-  
-}
-#dashboard #sales {
-  color: #fff;
-  background-color: #3a786c;
-  border-left: 8px solid #adffef;
-}
-#dashboard #sales-today {
-  color: #fff;
-  background-color: #c9ad1c;
-  border-left: 8px solid #fff1ab;
-}
-#dashboard #customers {
-  color: #fff;
-  background-color: #6200ff;
-  border-left: 8px solid #c3a3ff;
-}
-#dashboard #customers-new {
-  color: #fff;
-  background-color: #e330da;
-  border-left: 8px solid #ffa3fa;
 }
 #dashboard .chart {
   height: 350px;
