@@ -13,13 +13,13 @@ It lets you stream your personal music collection anywhere, with playlist and se
 - **Search** by artist, track, album, or genre  
 - **Playlists** – create, delete, and play your custom lists  
 - **Liked tracks** – keep your favorites easily accessible  
-- **Responsive web client** built with htmx for smooth updates  
+- **Responsive web client** built with htmx for smooth updates
+- **Radio:** HLS-based HD radio stream support  
 
 ---
 
 ## 🚧 Coming Soon
 
-- **Radio:** HLS-based HD radio stream support  
 - **Podcasts:** Integration with [ListenNotes](https://www.listennotes.com/)  
 
 ---
