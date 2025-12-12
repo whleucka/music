@@ -248,9 +248,6 @@ nav#nav-sidebar header h4 {
   position: absolute;
   opacity: 0.4;
 }
-
-/* Apple-inspired soft gradients + bright airy borders */
-
 #dashboard #users {
   color: #fff;
   background-color: #5ca8ff;               /* soft macOS blue */
@@ -259,8 +256,8 @@ nav#nav-sidebar header h4 {
 
 #dashboard #users-active {
   color: #fff;
-  background-color: #4fd4a8;               /* mint green */
-  border-left: 8px solid #d7fff0;          /* apple-mint highlight */
+  background-color: #ffb05e;          /* warm peach/orange */
+  border-left: 8px solid #ffe8d1;     /* gentle peach glow */
 }
 
 #dashboard #requests {
@@ -271,8 +268,8 @@ nav#nav-sidebar header h4 {
 
 #dashboard #requests-today {
   color: #fff;
-  background-color: #6f9dff;               /* softer iOS blue */
-  border-left: 8px solid #e0ebff;          /* gentle sky glow */
+  background-color: #5fbf72;          /* calm Apple green */
+  border-left: 8px solid #d8f7e1;     /* frosted mint glow */
 }
 
 #dashboard #modules {
@@ -289,28 +286,15 @@ nav#nav-sidebar header h4 {
 
 #dashboard #albums {
   color: #fff;
-  background-color: #bd7cff;               /* soft plum purple */
-  border-left: 8px solid #f0e4ff;          /* light lilac glow */
+  background-color: #e8cf6a;
+  border-left: 8px solid #fff6d7;
 }
 
 #dashboard #artists {
   color: #fff;
-  background-color: #e7c45e;               /* warm honey gold */
-  border-left: 8px solid #fff6d9;          /* soft buttery glow */
-}
-
-#dashboard #customers {
-  color: #fff;
-  background-color: #8b65ff;               /* smooth violet */
-  border-left: 8px solid #e9e4ff;          /* foggy violet glow */
-}
-
-#dashboard #customers-new {
-  color: #fff;
   background-color: #ff6fb1;               /* soft rose-pink */
   border-left: 8px solid #ffe0f0;          /* airy cotton-candy glow */
 }
-
 #dashboard #requests-today-chart {
   width: 100%;
 }
