@@ -4,7 +4,6 @@
 **Music** is a self-hosted web app built on the [Echo PHP framework](https://github.com/whleucka/echo).  
 It lets you stream your personal music collection anywhere, with playlist and search support right in the browser.
 
----
 
 ## 🎵 Features
 
@@ -16,13 +15,10 @@ It lets you stream your personal music collection anywhere, with playlist and se
 - **Responsive web client** built with htmx for smooth updates
 - **Radio:** HLS-based HD radio stream support  
 
----
-
 ## 🚧 Coming Soon
 
 - **Podcasts:** Integration with [ListenNotes](https://www.listennotes.com/)  
 
----
 
 ## 🖼️ Screenshots
 <div align="center">
@@ -32,7 +28,6 @@ It lets you stream your personal music collection anywhere, with playlist and se
   <p>Music backend</p>
 </div>
 
----
 
 ## ⚙️ Tech Stack
 
@@ -41,7 +36,6 @@ It lets you stream your personal music collection anywhere, with playlist and se
 - **Database:** MySQL / MariaDB  
 - **Transcoding:** FFmpeg  
 
----
 
 ## 🪪 License
 
