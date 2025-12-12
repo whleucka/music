@@ -248,59 +248,71 @@ nav#nav-sidebar header h4 {
   position: absolute;
   opacity: 0.4;
 }
+
+/* Apple-inspired soft gradients + bright airy borders */
+
 #dashboard #users {
   color: #fff;
-  background-color: #08961d;
-  border-left: 8px solid #87ff99;
+  background-color: #5ca8ff;               /* soft macOS blue */
+  border-left: 8px solid #d9eaff;          /* frosty glow-blue */
 }
+
 #dashboard #users-active {
   color: #fff;
-  background-color: #ff8c19;
-  border-left: 8px solid #ffdfbf;
+  background-color: #4fd4a8;               /* mint green */
+  border-left: 8px solid #d7fff0;          /* apple-mint highlight */
 }
+
 #dashboard #requests {
   color: #fff;
-  background-color: #c800ff;
-  border-left: 8px solid #e482ff;
+  background-color: #d883ff;               /* light lavender/purple */
+  border-left: 8px solid #f3e4ff;          /* cloud-lavender glow */
 }
+
 #dashboard #requests-today {
   color: #fff;
-  background-color: #003cff;
-  border-left: 8px solid #4287f5;
+  background-color: #6f9dff;               /* softer iOS blue */
+  border-left: 8px solid #e0ebff;          /* gentle sky glow */
 }
-#dashboard #requests-today-chart {
-  width: 100%;
-}
+
 #dashboard #modules {
   color: #fff;
-  background-color: #ff2929;
-  border-left: 8px solid #ffbfbf;
-  
+  background-color: #ff7f7f;               /* pastel red/coral */
+  border-left: 8px solid #ffe3e3;          /* gentle coral glow */
 }
+
 #dashboard #tracks {
   color: #fff;
-  background-color: #5cccab;
-  border-left: 8px solid #adffef;
+  background-color: #5fd4cc;               /* teal/aqua */
+  border-left: 8px solid #e2fffc;          /* airy aqua glow */
 }
+
 #dashboard #albums {
   color: #fff;
-  background-color: #8f386f;
-  border-left: 8px solid #e6199a;
+  background-color: #bd7cff;               /* soft plum purple */
+  border-left: 8px solid #f0e4ff;          /* light lilac glow */
 }
+
 #dashboard #artists {
   color: #fff;
-  background-color: #cfbb04;
-  border-left: 8px solid #fff7b3;
+  background-color: #e7c45e;               /* warm honey gold */
+  border-left: 8px solid #fff6d9;          /* soft buttery glow */
 }
+
 #dashboard #customers {
   color: #fff;
-  background-color: #6200ff;
-  border-left: 8px solid #c3a3ff;
+  background-color: #8b65ff;               /* smooth violet */
+  border-left: 8px solid #e9e4ff;          /* foggy violet glow */
 }
+
 #dashboard #customers-new {
   color: #fff;
-  background-color: #e330da;
-  border-left: 8px solid #ffa3fa;
+  background-color: #ff6fb1;               /* soft rose-pink */
+  border-left: 8px solid #ffe0f0;          /* airy cotton-candy glow */
+}
+
+#dashboard #requests-today-chart {
+  width: 100%;
 }
 #dashboard .chart {
   height: 350px;
