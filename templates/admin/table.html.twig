@@ -32,9 +32,9 @@
       <table class="table table-hover table m-0">
         <thead>
           <tr>
-            <th>
             {% if table_actions|length > 0 %}
-              <div class="d-flex">
+            <th>
+              <div class="d-flex justify-content-center align-items-center">
                 <input id="select-all" onClick="selectAllToggle(event)" type="checkbox" />
                 <div id="select-all-toggle" style="display: none;">
                   <div class="d-flex">
@@ -48,8 +48,8 @@
                   </div>
                 </div>
               </div>
-            {% endif %}
             </th>
+            {% endif %}
             {% for column,title in headers %}
             <th hx-get="/admin/{{ module.link }}/sort/{{ loop.index0 }}" hx-target="#table" hx-select="#table" hx-swap="outerHTML" class="pointer {% if column == filters.order_by %}active {% if filters.sort == 'ASC' %}asc{% else %}desc{% endif %}{% endif %}" nowrap>{{ title }}</th>
             {% endfor %}
