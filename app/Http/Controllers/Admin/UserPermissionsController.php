@@ -17,7 +17,7 @@ class UserPermissionsController extends AdminController
         $this->table_columns = [
             "ID" => "user_permissions.id",
             "Module" => "modules.title",
-            "User" => "CONCAT(users.first_name, ' ', users.surname)",
+            "User" => "CONCAT(users.first_name, ' ', users.surname) as user_id",
             "Create" => "user_permissions.has_create",
             "Edit" => "user_permissions.has_edit",
             "Delete" => "user_permissions.has_delete",
@@ -37,7 +37,7 @@ class UserPermissionsController extends AdminController
         ];
 
         $this->filter_dropdowns = [
-            "module_id" => "SELECT id as value, title as label FROM modules WHERE parent_id IS NOT NULL AND enabled = 1 ORDER BY label",
+            "modules.title" => "SELECT title as value, title as label FROM modules WHERE parent_id IS NOT NULL AND enabled = 1 ORDER BY label",
             "user_id" => "SELECT id as value, CONCAT(first_name, ' ', surname) as label FROM users WHERE role != 'admin' ORDER BY label",
         ];
 
@@ -83,7 +83,7 @@ class UserPermissionsController extends AdminController
         if ($request) {
             $module_id = $request->module_id;
             $user_id = $request->user_id;
-            $user = User::find($user_id);
+            $user = $user_id ? User::find($user_id) : null;
             if ($user) {
                 $exists = $user->hasPermission($module_id);
                 if ($id) {

@@ -30,8 +30,8 @@ class ModulesController extends AdminController
         ];
 
         $this->filter_links = [
-            "Root Nodes" => "parent_id IS NULL",
-            "Leaf Nodes" => "parent_id IS NOT NULL",
+            "Parents" => "parent_id IS NULL",
+            "Children" => "parent_id IS NOT NULL",
         ];
 
         $this->form_columns = [
