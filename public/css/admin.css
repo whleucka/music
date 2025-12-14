@@ -149,10 +149,11 @@ nav#nav-sidebar header h4 {
   white-space: nowrap;
 }
 #table .table th {
-  opacity: 0.6;
+  color: #888;
 }
 #table .table th.active {
-  opacity: 1;
+  color: #000;
+  font-weight: 900;
 }
 #table .table th.active.desc:after {
   content: ' ▼';
@@ -173,11 +174,15 @@ nav#nav-sidebar header h4 {
 #table #row-actions i {
   font-size: 1.2rem;
 }
+#table #table-action-submit {
+  height: 29px;
+  font-size: 0.7rem;
+}
 #table .table th.checkbox-cell {
   width: 1px !important;
   white-space: nowrap;
 }
-#table .table .checkbox-cell input {
+#table input[type=checkbox] {
   width: 15px;
   height: 15px;
 }
