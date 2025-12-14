@@ -27,7 +27,7 @@ class ActivityController extends AdminController
         ];
 
         $this->filter_dropdowns = [
-            "user_id" => "SELECT id as value, CONCAT(first_name, ' ', surname) as label FROM users ORDER BY label",
+            "users.email" => "SELECT email as value, CONCAT(first_name, ' ', surname) as label FROM users ORDER BY label",
         ];
 
         $this->filter_links = [
