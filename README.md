@@ -30,7 +30,7 @@ It lets you stream your personal music collection anywhere, with playlist and se
   <img width="744" height="1030" alt="image" src="https://github.com/user-attachments/assets/1133fc9b-6cb5-491b-9431-825044316fe6" />
   <p>Music app</p>
   <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/12f89fd8-54a9-47ee-aa4f-9c415ce409ed" />
-  <p>Music backend</p>
+  <p>Music admin backend</p>
 </div>
 
 ## 🪪 License
