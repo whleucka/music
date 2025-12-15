@@ -255,9 +255,35 @@ html, body {
   background: linear-gradient(to left, #24FE41, #FDFC47); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
+/* HTML: <div class="loader"></div> */
 #player .loader {
-  display: none;
-  transform: scale(0.8);
+  opacity: 0.5;
+  border: 1px solid #bbb;
+  border-radius: 5px;
+  width: 60px;
+  height: 60px;
+  filter: grayscale(100%);
+  aspect-ratio: 1;
+  background:
+    linear-gradient( 45deg,#00AAFF 50%,#0000 0),
+    linear-gradient(-45deg,#F1BBBB 50%,#0000 0),
+    linear-gradient( 45deg,#0000 50%,#AA00FF 0),
+    linear-gradient(-45deg,#0000 50%,#FF00AA 0),
+    #00AAFF;
+  background-size: 200% 200%;
+  background-repeat: no-repeat;
+  animation: l3 2.5s infinite; 
+}
+@keyframes l3 {
+  0%   {background-position:100% 0,0    0   ,0 100%,100% 100%}
+  15%,
+  25%  {background-position:100% 0,0    0   ,0 100%,0    0   }
+  40%,
+  50%  {background-position:100% 0,0    0   ,100% 0,0    0   }
+  65%,
+  75%  {background-position:100% 0,100% 100%,100% 0,0    0   }
+  90%,
+  100% {background-position:0 100%,100% 100%,100% 0,0    0   }
 }
 
 .lds-ellipsis,
@@ -512,7 +538,7 @@ html, body {
   position: absolute;
   top: 0px;
   z-index: 1000;
-  height: 5px;
+  height: 4px;
   width: 100%;
   border-radius: 2px;
   background-clip: padding-box;
