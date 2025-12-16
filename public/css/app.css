@@ -257,7 +257,7 @@ html, body {
 
 /* HTML: <div class="loader"></div> */
 #player .loader {
-  opacity: 0.5;
+  opacity: 0.3;
   border: 1px solid #bbb;
   border-radius: 5px;
   width: 60px;
