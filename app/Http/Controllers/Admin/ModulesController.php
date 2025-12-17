@@ -12,6 +12,7 @@ class ModulesController extends AdminController
     {
         $this->table_columns = [
             "ID" => "id",
+            "Enabled" => "enabled",
             "Link" => "link",
             "Title" => "title",
             "Icon" => "icon",
@@ -20,6 +21,7 @@ class ModulesController extends AdminController
 
         $this->table_format = [
             "icon" => fn($column, $value) => "<i class='bi bi-$value' />",
+            "enabled" => "check",
         ];
 
         $this->query_order_by = "item_order";
@@ -35,6 +37,7 @@ class ModulesController extends AdminController
         ];
 
         $this->form_columns = [
+            "Enabled" => "enabled",
             "Parent" => "parent_id",
             "Link" => "link",
             "Title" => "title",
@@ -50,6 +53,7 @@ class ModulesController extends AdminController
         ];
 
         $this->form_controls = [
+            "enabled" => "checkbox",
             "parent_id" => "dropdown",
             "link" => "input",
             "title" => "input",
@@ -64,6 +68,7 @@ class ModulesController extends AdminController
         ];
 
         $this->validation_rules = [
+            "enabled" => [],
             "parent_id" => [],
             "link" => [],
             "title" => ["required"],
