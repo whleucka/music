@@ -268,8 +268,8 @@ abstract class AdminController extends Controller
 
     private function massageRequest(?int $id, array $request): array
     {
-        foreach ($request as $column => $value) {
-            $control = $this->form_controls[$column] ?? null;
+        foreach ($this->form_controls as $column => $control) {
+            $value = $request[$column] ?? null;
             // Handle null
             if ($value === "NULL") $request[$column] = null;
             // Handle checkboxes
