@@ -110,7 +110,7 @@ class PlaylistController extends Controller
                 }
             }
             $meta = $track->meta();
-            $this->playlist_provider->setPlayer($hash, "/tracks/stream/$hash", $meta->cover, $meta->artist, $meta->album, $meta->title);
+            $this->player_provider->setPlayer($hash, "/tracks/stream/$hash", $meta->cover, $meta->artist, $meta->album, $meta->title, "playlist");
             $this->track_provider->logPlay($this->user->id, $track->id);
             $this->hxTrigger("player, recently-played, top-played-user");
         }

@@ -176,27 +176,13 @@ class PlaylistService
         return $shuffle;
     }
 
-    public function setPlayer(string $id, string $source, string $cover, string $artist, string $album, string $title): void
-    {
-        $player = [
-            "id" => $id,
-            "source" => $source,
-            "cover" => $cover,
-            "artist" => $artist,
-            "album" => $album,
-            "title" => $title,
-            "shuffle" => $this->getShuffle(),
-        ];
-        brain()->player->setState($player);
-    }
-
     public function setPlaylistTrack(int $index): void
     {
         $playlist = $this->getPlaylistTracks();
         $this->setPlaylistTrackIndex($index);
         $track = $playlist[$index] ?? null;
         if ($track) {
-            $this->setPlayer($track['hash'], "/tracks/stream/{$track['hash']}", $track['cover'], $track['artist'], $track['album'], $track['title']);
+            $this->setPlayer($track['hash'], "/tracks/stream/{$track['hash']}", $track['cover'], $track['artist'], $track['album'], $track['title'], 'playlist');
         }
     }
 

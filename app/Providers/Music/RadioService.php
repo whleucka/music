@@ -18,19 +18,4 @@ class RadioService
     {
         return RadioStation::where("hash", $hash)->get();
     }
-
-    public function setPlayer(string $id, string $source, string $cover, string $city, string $province, string $country, string $name): void
-    {
-        $player = [
-            "id" => $id,
-            "source" => $source,
-            "cover" => $cover,
-            "artist" => $city . ', ' . $province . ', ' . $country,
-            "album" => $name,
-            "title" => $name,
-            "shuffle" => false,
-            "type" => "radio",
-        ];
-        brain()->player->setState($player);
-    }
 }

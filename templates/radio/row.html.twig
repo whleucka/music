@@ -14,3 +14,17 @@
         </div>
     </div>
 </div>
+<script>
+  var current_src = player.src;
+
+  player.addEventListener('error', reloadStream);
+  player.addEventListener('ended', reloadStream);
+
+  var reloadStream = () => {
+    console.log('Reloading stream');
+    player.pause();
+    player.src = current_src + '?t=' + Date.now(); // cache buster
+    player.load();
+    player.play().catch(() => {});
+  }
+</script>

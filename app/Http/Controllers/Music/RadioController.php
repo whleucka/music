@@ -40,7 +40,7 @@ class RadioController extends Controller
 
         if ($station) {
             $fi = new FileInfo($station->cover);
-            $this->radio_provider->setPlayer($hash, '/radio/stream/'.$station->hash, $fi->path, $station->city, $station->province, $station->country, $station->name);
+            $this->player_provider->setPlayer($hash, "/radio/stream/{$station->hash}", $fi->path, $station->city . ', ' . $station->province . ', ' . $station->country, $station->name, $station->name, "radio");
             $this->hxTrigger("player");
         }
     }
