@@ -179,6 +179,8 @@ html, body {
 
 #player #cover {
   padding: 10px;
+  width: 80px;
+  height: 80px;
 }
 
 #player #cover img {
