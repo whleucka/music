@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers\Music;
 
+use App\Providers\Music\PodcastService;
 use Echo\Framework\Http\Controller;
 use Echo\Framework\Routing\Route\Get;
 
 class PodcastsController extends Controller
 {
+    public function __construct(private PodcastService $podcast_provider)
+    {
+        
+    }
+
     // Render podcasts
     #[Get("/podcasts", "podcasts.index", ["auth"])]
     public function index(): string

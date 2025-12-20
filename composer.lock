@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f3c93b74b277da75e3398a76dfe47480",
+    "content-hash": "0b05a4d0e26b94e8e72d74db10f36c21",
     "packages": [
         {
             "name": "chillerlan/php-qrcode",
@@ -473,6 +473,53 @@
                 "source": "https://github.com/laravel/serializable-closure"
             },
             "time": "2025-03-28T16:31:40+00:00"
+        },
+        {
+            "name": "listennotes/podcast-api",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ListenNotes/podcast-api-php.git",
+                "reference": "45f166de0a99990a6e67b20c4f7caa6e57599eed"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ListenNotes/podcast-api-php/zipball/45f166de0a99990a6e67b20c4f7caa6e57599eed",
+                "reference": "45f166de0a99990a6e67b20c4f7caa6e57599eed",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "ext-json": "*",
+                "php": "^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "bamarni/composer-bin-plugin": "^1.4",
+                "phpunit/phpunit": "^9.5"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ListenNotes\\PodcastApi\\": "listennotes/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Listen Notes, Inc.",
+                    "email": "hello@listennotes.com"
+                }
+            ],
+            "description": "PHP bindings for the Listen Notes Podcast API",
+            "support": {
+                "issues": "https://github.com/ListenNotes/podcast-api-php/issues",
+                "source": "https://github.com/ListenNotes/podcast-api-php/tree/main"
+            },
+            "time": "2025-03-17T21:02:17+00:00"
         },
         {
             "name": "maximebf/consolekit",
