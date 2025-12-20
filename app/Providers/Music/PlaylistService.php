@@ -182,7 +182,8 @@ class PlaylistService
         $this->setPlaylistTrackIndex($index);
         $track = $playlist[$index] ?? null;
         if ($track) {
-            $this->setPlayer($track['hash'], "/tracks/stream/{$track['hash']}", $track['cover'], $track['artist'], $track['album'], $track['title'], 'playlist');
+            $player_service = new PlayerService;
+            $player_service->setPlayer($track['hash'], "/tracks/stream/{$track['hash']}", $track['cover'], $track['artist'], $track['album'], $track['title'], 'playlist');
         }
     }
 

@@ -13,13 +13,8 @@ return new class implements Migration
             $table->id();
             $table->char("hash", 32);
             $table->unsignedBigInteger("user_id");
-            $table->varchar("thumbnail");
-            $table->varchar("title");
-            $table->text("description");
-            $table->varchar("publisher");
-            $table->varchar("website");
             $table->timestamps();
-            $table->unique("hash");
+            $table->unique("hash,user_id");
             $table->primaryKey("id");
             $table->foreignKey("user_id")->references("users", "id")->onDelete("CASCADE");
         });
