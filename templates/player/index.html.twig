@@ -59,7 +59,6 @@
                     let buffer = (bufferedEnd / player.duration) * 100;
                     setBufferProgress(buffer - progress);
                 }
-                updatePositionState();
                 requestAnimationFrame(updateProgress);
             }
         }
@@ -193,6 +192,7 @@
 
     player.onpause = () => {
         navigator.mediaSession.playbackState = 'paused';
+        updatePositionState();
         playButton.innerHTML = `<i class="bi bi-play"></i>`;
         trackProgress.classList.add("disable");
     }
